@@ -1,0 +1,261 @@
+#! /usr/bin/perl
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+use Pod::Usage;
+use YAML;
+
+my %Opt = 
+  (
+   boards_txt => '/Applications/Arduino.app/Contents/Resources/Java/hardware/arduino/boards.txt',
+  );
+
+GetOptions(\%Opt,
+	   "boards_txt=s", # filename of the boards.txt file
+	   "find!",        # search for data
+	   "dump!",        # dump the whole database
+	   "boards!",      # dump a list of boards
+	   "help!",  
+	   "info!",
+	  );
+
+if ($Opt{help} || $Opt{info})
+  {
+    usage();
+  }
+
+my $db = parse_boards($Opt{boards_txt});
+
+if ($Opt{dump}) 
+  { 
+    dump_data("$Opt{boards_txt} contains:", $db);
+  }
+elsif ($Opt{find})
+  {
+    my @terms = @ARGV or usage();
+    find_data($db, \@terms);
+  }
+elsif ($Opt{boards})
+  {
+    dump_boards($db);
+  }
+else
+  {
+    my $tag = shift @ARGV or usage();
+    
+    if (my $key = shift @ARGV)
+      {
+	die "$key isn't defined for the $tag board, "
+	  unless $db->{$tag} && exists $db->{$tag}->{$key};
+
+	print $db->{$tag}->{$key}, "\n";
+      }
+    else
+      {
+	die "The $tag board isn't defined, "
+	  unless $db->{$tag};
+
+	dump_data("The $tag board:", $db->{$tag});
+      }
+  }
+
+## here endeth the main
+
+sub usage 
+  {
+    pod2usage(-verbose => 2);
+  }
+
+# return HoH: {board}->{field} = value
+sub parse_boards
+  {
+    my $filename = shift;
+
+    my %b;
+
+    open(my $fh, '<', $filename) 
+      or die "Can't open $filename, ";
+
+    while(<$fh>)
+      {
+	my ($board, $key, $value) = /^\s*(\S+?)\.(\S+?)\s*=\s*(.+?)\s*$/
+	  or next;
+
+	$b{$board}->{$key} = $value;
+      }
+
+    return \%b;
+  }
+
+# A rudimentary search engine
+sub find_data
+  {
+    my ($db, $term_list) = @_;
+
+    my @q = map { qr/$_/i } @$term_list;
+    my $q = join(' && ', map { "/$_/i" } @$term_list);
+
+    my %hit;
+    foreach my $b (keys %$db)
+      {
+	foreach my $k (keys %{$db->{$b}})
+	  {
+	    my $v = $db->{$b}->{$k};
+	    $hit{$b}->{$k} = $v if !grep { $v !~ /$_/i } @q;
+	  }
+      }
+
+    dump_data("Matches for $q:", \%hit);
+  }
+
+# The list of boards...
+sub dump_boards
+  {
+    my $db = shift or return;
+
+    my %name;
+    my $max_l = 0;
+    foreach my $b (keys %$db)
+      {
+	$name{$b} = $db->{$b}->{name} || 'Anonymous';
+	$max_l    = length($b) if $max_l < length($b);
+      }
+
+    my $fmt = sprintf("%%-%ds %%s\n", $max_l + 2);
+
+    printf $fmt, "Tag", "Board Name";
+    foreach my $b (sort keys %name)
+      {
+	printf $fmt, $b, $name{$b};
+      }
+  }
+
+
+# dump arbitrary data with a title
+sub dump_data
+  {
+    my ($title, $data) = @_;
+
+    print "# $title\n", Dump($data);
+  }
+
+__END__
+
+=head1 NAME
+ 
+ard-parse-boards - Read data from the Arduino boards.txt file
+  
+=head1 USAGE
+ 
+    Dump all the data in the file:
+    $ ard-parse-boards --dump
+
+    See which boards we know about:
+    $ ard-parse-boards --boards
+
+    Look for a particular board...
+    $ ard-parse-boards --find uno
+
+    ...multiple terms are implicitly ANDed:
+    $ ard-parse-boards --find duemil 328
+
+    Dump all the data for a particular board:
+    $ ard-parse-boards atmega328
+
+    Extract a particular field:
+    $ ard-parse-boards atmega328 build.f_cpu
+ 
+=head1 DESCRIPTION
+
+The Arduino software package ships with a boards.txt file which tells
+the Arduino IDE details about particular hardware. So when the user
+says he's got a shiny new Arduino Uno, boards.txt knows that it has a
+16MHz ATmega328 on it. It would be nice to access these data from the
+command line too.
+
+In normal operation you simply specify the tag given to the board in
+the boards.txt file, and optionally a field name. This program then
+extracts the data to STDOUT.
+
+Most boards have names which are quite unwieldy, so we always refer to
+a board by a tag, not its name. Strictly the tag is the bit before the
+first dot in the boards.txt key. You can see a list of board tags and
+names with the C<--boards> option.
+
+=head1 OPTIONS
+
+=over
+
+=item --boards_txt=[file]
+
+Specify the full path to the boards.txt file.
+
+=back
+ 
+The following options all disable the normal 'lookup' operation.
+
+=over
+
+=item --dump 
+
+Dump the complete database in YAML format.
+
+=item ---boards
+
+Print a list of the tag and name of every board in the file.
+
+=item --find [query] <query> ...
+
+Find matching data. Strictly, return a list of values which match all
+of the query terms, treating each term as a case-insensitive regexp.
+
+For example:
+
+=over
+
+=item --find 328
+
+List data containing 328 (anywhere in the value).
+
+=item --find due
+
+List data containing 'due' (e.g. duemilanove).
+
+=item --find 328 due
+
+List data containing both 328 and due.
+
+=back
+
+=back
+ 
+=head1 BUGS AND LIMITATIONS
+
+There are no known bugs in this application.
+
+Please report problems to the author.
+
+Patches are welcome.
+ 
+=head1 AUTHOR
+
+Martin Oldfield, ex-atelier@mjo.tc
+
+Thanks to Mark Sproul who suggested doing something like this to me ages ago.
+ 
+=head1 LICENCE AND COPYRIGHT
+ 
+Copyright (c) 2011, Martin Oldfield. All rights reserved.
+ 
+This file is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation; either version 2.1 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+
+
