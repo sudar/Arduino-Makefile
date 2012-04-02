@@ -19,7 +19,7 @@ endif
 
 ARDUINO_DIR = $(MPIDE_DIR)
 
-AVR_TOOLS_PATH = $(ARDUINO_DIR)/hardware/pic32/compiler/pic32-tools/bin
+AVR_TOOLS_PATH = $(ARDUINO_DIR)/hardware/pic32/compiler/pic32-tools/bin/
 
 ifneq ($(OSTYPE),Linux)
 AVRDUDE_TOOLS_PATH = $(ARDUINO_DIR)/hardware/tools/avr/bin
@@ -61,6 +61,10 @@ CHIPKIT_MK_PATH := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(CHIPKIT_MK_PATH)/Arduino.mk
 
 # MPIDE still comes with the compilers on Linux, unlike Arduino
-CC      = $(AVR_TOOLS_PATH)/$(CC_NAME)
-CXX     = $(AVR_TOOLS_PATH)/$(CXX_NAME)
-OBJCOPY = $(AVR_TOOLS_PATH)/$(OBJCOPY_NAME)
+CC      := $(addprefix $(AVR_TOOLS_PATH),$(CC))
+CXX     := $(addprefix $(AVR_TOOLS_PATH),$(CXX))
+OBJCOPY := $(addprefix $(AVR_TOOLS_PATH),$(OBJCOPY))
+OBJDUMP := $(addprefix $(AVR_TOOLS_PATH),$(OBJDUMP))
+AR      := $(addprefix $(AVR_TOOLS_PATH),$(AR))
+SIZE    := $(addprefix $(AVR_TOOLS_PATH),$(SIZE))
+NM      := $(addprefix $(AVR_TOOLS_PATH),$(NM))
