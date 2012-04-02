@@ -282,6 +282,14 @@ ifndef ISP_EXT_FUSE
 ISP_EXT_FUSE       = $(shell $(PARSE_BOARD) $(BOARD_TAG) bootloader.extended_fuses)
 endif
 
+ifndef BOARD
+BOARD = $(shell $(PARSE_BOARD), $(BOARD_TAG), board)
+endif
+
+ifndef LDSCRIPT
+LDSCRIPT = $(shell $(PARSE_BOARD), $(BOARD_TAG), ldscript)
+endif
+
 # Everything gets built in here
 OBJDIR  	  = build-cli
 

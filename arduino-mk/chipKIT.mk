@@ -33,10 +33,6 @@ else
 AVRDUDE_ETC_PATH = $(AVRDUDE_TOOLS_PATH)
 endif
 
-ifndef BOARD
-BOARD = $(shell $(PARSE_BOARD) $(BOARD_TAG) board)
-endif
-
 ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/pic32/cores/pic32
 ARDUINO_LIB_PATH = $(ARDUINO_DIR)/hardware/pic32/libraries
 BOARDS_TXT  = $(ARDUINO_DIR)/hardware/pic32/boards.txt
@@ -49,10 +45,8 @@ AR_NAME = pic32-ar
 OBJDUMP_NAME = pic32-objdump
 OBJCOPY_NAME = pic32-objcopy
 
-LDSCRIPT = $(shell  $(PARSE_BOARD) $(BOARD_TAG) ldscript)
-LDSCRIPT_FILE = $(ARDUINO_CORE_PATH)/$(LDSCRIPT)
-
 MCU_FLAG_NAME=mprocessor
+LDSCRIPT_FILE = $(ARDUINO_CORE_PATH)/$(LDSCRIPT)
 EXTRA_LDFLAGS  = -T$(ARDUINO_CORE_PATH)/$(LDSCRIPT)
 EXTRA_CPPFLAGS = -mno-smart-io -D$(BOARD)
 
@@ -60,6 +54,7 @@ CHIPKIT_MK_PATH := $(dir $(lastword $(MAKEFILE_LIST)))
 
 include $(CHIPKIT_MK_PATH)/Arduino.mk
 
+ifeq ($(OSTYPE),Linux)
 # MPIDE still comes with the compilers on Linux, unlike Arduino
 CC      := $(addprefix $(AVR_TOOLS_PATH),$(CC))
 CXX     := $(addprefix $(AVR_TOOLS_PATH),$(CXX))
@@ -68,3 +63,4 @@ OBJDUMP := $(addprefix $(AVR_TOOLS_PATH),$(OBJDUMP))
 AR      := $(addprefix $(AVR_TOOLS_PATH),$(AR))
 SIZE    := $(addprefix $(AVR_TOOLS_PATH),$(SIZE))
 NM      := $(addprefix $(AVR_TOOLS_PATH),$(NM))
+endif
