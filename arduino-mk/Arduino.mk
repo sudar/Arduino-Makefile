@@ -356,14 +356,18 @@ LIB_CPP_SRCS  = $(wildcard $(patsubst %,%/*.cpp,$(SYS_LIBS)))
 LIB_OBJS      = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(LIB_C_SRCS)) \
 		$(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS))
 
-CPPFLAGS      = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
+ifndef MCU_FLAG_NAME
+MCU_FLAG_NAME = mmcu
+endif
+
+CPPFLAGS      = -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
 			-I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
 			$(SYS_INCLUDES) -g -Os -w -Wall \
 			-ffunction-sections -fdata-sections
 CFLAGS        = -std=gnu99
 CXXFLAGS      = -fno-exceptions
-ASFLAGS       = -mmcu=$(MCU) -I. -x assembler-with-cpp
-LDFLAGS       = -mmcu=$(MCU) -Wl,--gc-sections -Os
+ASFLAGS       = -$(MCU_FLAG_NAME)=$(MCU) -I. -x assembler-with-cpp
+LDFLAGS       = -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -Os $(EXTRA_LDFLAGS)
 
 # Expand and pick the first port
 ARD_PORT      = $(firstword $(wildcard $(ARDUINO_PORT)))
