@@ -13,6 +13,12 @@
 
 OSTYPE := $(shell uname)
 
+ifeq ($(wildcard $(MPIDE_DIR)),)
+$(error "Error: the MPIDE_DIR variable must point to your MPIDE installation")
+endif
+
+ARDUINO_DIR = $(MPIDE_DIR)
+
 AVR_TOOLS_PATH = $(ARDUINO_DIR)/hardware/pic32/compiler/pic32-tools/bin
 
 ifneq ($(OSTYPE),Linux)

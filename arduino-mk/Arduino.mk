@@ -183,7 +183,9 @@ endif
 # Some paths
 #
 
-ifneq (ARDUINO_DIR,)
+ifeq ($(wildcard $(ARDUINO_DIR)),)
+$(error "Error: the ARDUINO_DIR variable must point to your Arduino IDE installation")
+endif
 
 ifndef AVR_TOOLS_PATH
 AVR_TOOLS_PATH    = $(ARDUINO_DIR)/hardware/tools
@@ -219,8 +221,6 @@ endif
 
 ifndef ARDUINO_VAR_PATH
 ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
-endif
-
 endif
 
 ########################################################################
