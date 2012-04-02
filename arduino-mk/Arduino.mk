@@ -186,11 +186,23 @@ endif
 ifneq (ARDUINO_DIR,)
 
 ifndef AVR_TOOLS_PATH
-AVR_TOOLS_PATH    = $(ARDUINO_DIR)/hardware/tools/avr/bin
+AVR_TOOLS_PATH    = $(ARDUINO_DIR)/hardware/tools
 endif
 
-ifndef ARDUINO_ETC_PATH
-ARDUINO_ETC_PATH  = $(ARDUINO_DIR)/hardware/tools/avr/etc
+ifndef AVRDUDE_TOOLS_PATH
+ifeq ($(OSTYPE),Linux)
+AVRDUDE_TOOLS_PATH    = $(AVR_TOOLS_PATH)
+else
+AVRDUDE_TOOLS_PATH = $(AVR_TOOLS_PATH)/avr/bin
+endif
+endif
+
+ifndef AVRDUDE_ETC_PATH
+ifeq ($(OSTYPE),Linux)
+AVRDUDE_ETC_PATH  = $(AVRDUDE_TOOLS_PATH)
+else
+AVRDUDE_ETC_PATH  = $(AVR_TOOLS_PATH)/avr/etc
+endif
 endif
 
 ifndef AVRDUDE_CONF
@@ -476,7 +488,7 @@ $(OBJDIR)/%.sym: $(OBJDIR)/%.elf
 # Avrdude
 #
 ifndef AVRDUDE
-AVRDUDE          = $(AVR_TOOLS_PATH)/avrdude
+AVRDUDE          = $(AVRDUDE_TOOLS_PATH)/avrdude
 endif
 
 AVRDUDE_COM_OPTS = -q -V -p $(MCU)
