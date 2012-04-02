@@ -197,9 +197,17 @@ ifndef AVRDUDE_CONF
 AVRDUDE_CONF     = $(ARDUINO_ETC_PATH)/avrdude.conf
 endif
 
+ifndef ARDUINO_LIB_PATH
 ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
+endif
+
+ifndef ARDUINO_CORE_PATH
 ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/arduino/cores/arduino
+endif
+
+ifndef ARDUINO_VAR_PATH
 ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
+endif
 
 endif
 
