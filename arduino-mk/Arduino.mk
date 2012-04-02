@@ -183,10 +183,12 @@ endif
 # Some paths
 #
 
+OSTYPE := $(shell uname)
+
 ifneq (ARDUINO_DIR,)
 
 ifndef AVR_TOOLS_PATH
-AVR_TOOLS_PATH    = $(ARDUINO_DIR)/hardware/tools/avr/bin/
+AVR_TOOLS_PATH    = $(ARDUINO_DIR)/hardware/tools
 endif
 
 ifndef ARDUINO_ETC_PATH
@@ -316,7 +318,6 @@ AR      := avr-ar
 SIZE    := avr-size
 NM      := avr-nm
 
-OSTYPE := $(shell uname)
 ifneq ($(OSTYPE),Linux)
 # Compilers distributed with the IDE in OS X and Windows, but not Linux
 CC      := $(addprefix $(AVR_TOOLS_PATH),$(CC))
