@@ -208,7 +208,7 @@ endif
 endif
 
 ifndef AVRDUDE_CONF
-AVRDUDE_CONF     = $(ARDUINO_ETC_PATH)/avrdude.conf
+AVRDUDE_CONF     = $(AVRDUDE_ETC_PATH)/avrdude.conf
 endif
 
 ifndef ARDUINO_LIB_PATH
