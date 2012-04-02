@@ -215,51 +215,52 @@ BOARDS_TXT  = $(ARDUINO_DIR)/hardware/arduino/boards.txt
 endif
 
 ifndef PARSE_BOARD
-PARSE_BOARD = ard-parse-boards --boards_txt=$(BOARDS_TXT)
+# result = $(call READ_BOARD_TXT, 'boardname', 'parameter')
+PARSE_BOARD = $(shell grep $(1).$(2) $(BOARDS_TXT) | cut -d = -f 2 )
 endif
 
 # Which variant ? This affects the include path
 ifndef VARIANT
-VARIANT = $(shell $(PARSE_BOARD) $(BOARD_TAG) build.variant)
+VARIANT = $(call PARSE_BOARD,$(BOARD_TAG),build.variant)
 endif
 
 # processor stuff
 ifndef MCU
-MCU   = $(shell $(PARSE_BOARD) $(BOARD_TAG) build.mcu)
+MCU   = $(call PARSE_BOARD,$(BOARD_TAG),build.mcu)
 endif
 
 ifndef F_CPU
-F_CPU = $(shell $(PARSE_BOARD) $(BOARD_TAG) build.f_cpu)
+F_CPU = $(call PARSE_BOARD,$(BOARD_TAG),build.f_cpu)
 endif
 
 # normal programming info
 ifndef AVRDUDE_ARD_PROGRAMMER
-AVRDUDE_ARD_PROGRAMMER = $(shell $(PARSE_BOARD) $(BOARD_TAG) upload.protocol)
+AVRDUDE_ARD_PROGRAMMER = $(call PARSE_BOARD,$(BOARD_TAG),upload.protocol)
 endif
 
 ifndef AVRDUDE_ARD_BAUDRATE
-AVRDUDE_ARD_BAUDRATE   = $(shell $(PARSE_BOARD) $(BOARD_TAG) upload.speed)
+AVRDUDE_ARD_BAUDRATE = $(call PARSE_BOARD,$(BOARD_TAG),upload.speed)
 endif
 
 # fuses if you're using e.g. ISP
 ifndef ISP_LOCK_FUSE_PRE
-ISP_LOCK_FUSE_PRE  = $(shell $(PARSE_BOARD) $(BOARD_TAG) bootloader.unlock_bits)
+ISP_LOCK_FUSE_PRE = $(call PARSE_BOARD,$(BOARD_TAG),bootloader.unlock_bits)
 endif
 
 ifndef ISP_LOCK_FUSE_POST
-ISP_LOCK_FUSE_POST = $(shell $(PARSE_BOARD) $(BOARD_TAG) bootloader.lock_bits)
+ISP_LOCK_FUSE_POST = $(call PARSE_BOARD,$(BOARD_TAG),bootloader.lock_bits)
 endif
 
 ifndef ISP_HIGH_FUSE
-ISP_HIGH_FUSE      = $(shell $(PARSE_BOARD) $(BOARD_TAG) bootloader.high_fuses)
+ISP_HIGH_FUSE = $(call PARSE_BOARD,$(BOARD_TAG),bootloader.high_fuses)
 endif
 
 ifndef ISP_LOW_FUSE
-ISP_LOW_FUSE       = $(shell $(PARSE_BOARD) $(BOARD_TAG) bootloader.low_fuses)
+ISP_LOW_FUSE = $(call PARSE_BOARD,$(BOARD_TAG),bootloader.low_fuses)
 endif
 
 ifndef ISP_EXT_FUSE
-ISP_EXT_FUSE       = $(shell $(PARSE_BOARD) $(BOARD_TAG) bootloader.extended_fuses)
+ISP_EXT_FUSE = $(call PARSE_BOARD,$(BOARD_TAG),bootloader.extended_fuses)
 endif
 
 # Everything gets built in here
@@ -506,7 +507,7 @@ size:		$(OBJDIR) $(TARGET_HEX)
 		$(SIZE) $(TARGET_HEX)
 
 show_boards:	
-		$(PARSE_BOARD) --boards
+	@cat $(BOARDS_TXT) | grep -E "^[[:alnum:]]" | cut -d . -f 1 | uniq
 
 .PHONY:	all clean depends upload raw_upload reset size show_boards
 
