@@ -404,8 +404,8 @@ endif
 
 CPPFLAGS      = -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
 			-I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
-			$(SYS_INCLUDES) -g -Os -w -Wall \
-			-ffunction-sections -fdata-sections $(EXTRA_CPPFLAGS)
+			$(SYS_INCLUDES) -w -Wall -O2 \
+			-fno-exceptions -ffunction-sections -fdata-sections $(EXTRA_CPPFLAGS)
 
 ifndef USE_GNU99
 CFLAGS        = -std=gnu99
