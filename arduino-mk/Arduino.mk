@@ -187,23 +187,29 @@ ifeq ($(wildcard $(ARDUINO_DIR)),)
 $(error "Error: the ARDUINO_DIR variable must point to your Arduino IDE installation")
 endif
 
+OSTYPE := $(shell uname)
+
+ifndef TOOLS_PATH
+TOOLS_PATH = $(ARDUINO_DIR)/hardware/tools/
+endif
+
 ifndef AVR_TOOLS_PATH
-AVR_TOOLS_PATH    = $(ARDUINO_DIR)/hardware/tools
+AVR_TOOLS_PATH    = $(TOOLS_PATH)/avr/bin/
 endif
 
 ifndef AVRDUDE_TOOLS_PATH
 ifeq ($(OSTYPE),Linux)
-AVRDUDE_TOOLS_PATH    = $(AVR_TOOLS_PATH)
+AVRDUDE_TOOLS_PATH = $(TOOLS_PATH)
 else
-AVRDUDE_TOOLS_PATH = $(AVR_TOOLS_PATH)/avr/bin
+AVRDUDE_TOOLS_PATH = $(TOOLS_PATH)/avr/bin
 endif
 endif
 
 ifndef AVRDUDE_ETC_PATH
 ifeq ($(OSTYPE),Linux)
-AVRDUDE_ETC_PATH  = $(AVRDUDE_TOOLS_PATH)
+AVRDUDE_ETC_PATH = $(TOOLS_PATH)
 else
-AVRDUDE_ETC_PATH  = $(AVR_TOOLS_PATH)/avr/etc
+AVRDUDE_ETC_PATH = $(TOOLS_PATH)/avr/etc
 endif
 endif
 
@@ -364,13 +370,25 @@ ifndef NM_NAME
 NM_NAME      = avr-nm
 endif
 
-CC      = $(AVR_TOOLS_PATH)/$(CC_NAME)
-CXX     = $(AVR_TOOLS_PATH)/$(CXX_NAME)
-OBJCOPY = $(AVR_TOOLS_PATH)/$(OBJCOPY_NAME)
-OBJDUMP = $(AVR_TOOLS_PATH)/$(OBJDUMP_NAME)
-AR      = $(AVR_TOOLS_PATH)/$(AR_NAME)
-SIZE    = $(AVR_TOOLS_PATH)/$(SIZE_NAME)
-NM      = $(AVR_TOOLS_PATH)/$(NM_NAME)
+CC      = $(CC_NAME)
+CXX     = $(CXX_NAME)
+OBJCOPY = $(OBJCOPY_NAME)
+OBJDUMP = $(OBJDUMP_NAME)
+AR      = $(AR_NAME)
+SIZE    = $(SIZE_NAME)
+NM      = $(NM_NAME)
+
+ifneq ($(OSTYPE),Linux)
+# Compilers distributed with the IDE in OS X and Windows, but not Linux
+CC      := $(addprefix $(AVR_TOOLS_PATH),$(CC))
+CXX     := $(addprefix $(AVR_TOOLS_PATH),$(CXX))
+OBJCOPY := $(addprefix $(AVR_TOOLS_PATH),$(OBJCOPY))
+OBJDUMP := $(addprefix $(AVR_TOOLS_PATH),$(OBJDUMP))
+AR      := $(addprefix $(AVR_TOOLS_PATH),$(AR))
+SIZE    := $(addprefix $(AVR_TOOLS_PATH),$(SIZE))
+NM      := $(addprefix $(AVR_TOOLS_PATH),$(NM))
+endif
+
 REMOVE  = rm -f
 MV      = mv -f
 CAT     = cat
