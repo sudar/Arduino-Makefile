@@ -66,6 +66,7 @@
 #          0.9 26.iv.2012  M J Oldfield
 #                          - Allow the punter to specify boards.txt file
 #                            and parser independently (after Peplin on github)
+#			   - Support user libraries (Peplin's patch)
 #
 ########################################################################
 #
