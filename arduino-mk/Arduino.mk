@@ -187,24 +187,50 @@ endif
 # Some paths
 #
 
-ifneq (ARDUINO_DIR,)
-
-ifndef AVR_TOOLS_PATH
-AVR_TOOLS_PATH    = $(ARDUINO_DIR)/hardware/tools/avr/bin
+ifeq ($(wildcard $(ARDUINO_DIR)),)
+$(error "Error: the ARDUINO_DIR variable must point to your Arduino IDE installation")
 endif
 
-ifndef ARDUINO_ETC_PATH
-ARDUINO_ETC_PATH  = $(ARDUINO_DIR)/hardware/tools/avr/etc
+OSTYPE := $(shell uname)
+
+ifndef TOOLS_PATH
+TOOLS_PATH = $(ARDUINO_DIR)/hardware/tools/
+endif
+
+ifndef AVR_TOOLS_PATH
+AVR_TOOLS_PATH    = $(TOOLS_PATH)/avr/bin/
+endif
+
+ifndef AVRDUDE_TOOLS_PATH
+ifeq ($(OSTYPE),Linux)
+AVRDUDE_TOOLS_PATH = $(TOOLS_PATH)
+else
+AVRDUDE_TOOLS_PATH = $(TOOLS_PATH)/avr/bin
+endif
+endif
+
+ifndef AVRDUDE_ETC_PATH
+ifeq ($(OSTYPE),Linux)
+AVRDUDE_ETC_PATH = $(TOOLS_PATH)
+else
+AVRDUDE_ETC_PATH = $(TOOLS_PATH)/avr/etc
+endif
 endif
 
 ifndef AVRDUDE_CONF
-AVRDUDE_CONF     = $(ARDUINO_ETC_PATH)/avrdude.conf
+AVRDUDE_CONF     = $(AVRDUDE_ETC_PATH)/avrdude.conf
 endif
 
+ifndef ARDUINO_LIB_PATH
 ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
-ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/arduino/cores/arduino
-ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
+endif
 
+ifndef ARDUINO_CORE_PATH
+ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/arduino/cores/arduino
+endif
+
+ifndef ARDUINO_VAR_PATH
+ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
 endif
 
 ########################################################################
@@ -274,6 +300,10 @@ ifndef ISP_EXT_FUSE
 ISP_EXT_FUSE       = $(shell $(PARSE_BOARD) $(BOARD_TAG) bootloader.extended_fuses)
 endif
 
+ifndef BOARD
+BOARD = $(shell $(PARSE_BOARD), $(BOARD_TAG), board)
+endif
+
 # Everything gets built in here
 OBJDIR  	  = build-cli
 
@@ -320,13 +350,53 @@ CORE_LIB   = $(OBJDIR)/libcore.a
 DEP_FILE   = $(OBJDIR)/depends.mk
 
 # Names of executables
-CC      = $(AVR_TOOLS_PATH)/avr-gcc
-CXX     = $(AVR_TOOLS_PATH)/avr-g++
-OBJCOPY = $(AVR_TOOLS_PATH)/avr-objcopy
-OBJDUMP = $(AVR_TOOLS_PATH)/avr-objdump
-AR      = $(AVR_TOOLS_PATH)/avr-ar
-SIZE    = $(AVR_TOOLS_PATH)/avr-size
-NM      = $(AVR_TOOLS_PATH)/avr-nm
+ifndef CC_NAME
+CC_NAME      = avr-gcc
+endif
+
+ifndef CXX_NAME
+CXX_NAME     = avr-g++
+endif
+
+ifndef OBJCOPY_NAME
+OBJCOPY_NAME = avr-objcopy
+endif
+
+ifndef OBJDUMP_NAME
+OBJDUMP_NAME = avr-objdump
+endif
+
+ifndef AR_NAME
+AR_NAME      = avr-ar
+endif
+
+ifndef SIZE_NAME
+SIZE_NAME    = avr-size
+endif
+
+ifndef NM_NAME
+NM_NAME      = avr-nm
+endif
+
+CC      = $(CC_NAME)
+CXX     = $(CXX_NAME)
+OBJCOPY = $(OBJCOPY_NAME)
+OBJDUMP = $(OBJDUMP_NAME)
+AR      = $(AR_NAME)
+SIZE    = $(SIZE_NAME)
+NM      = $(NM_NAME)
+
+ifneq ($(OSTYPE),Linux)
+# Compilers distributed with the IDE in OS X and Windows, but not Linux
+CC      := $(addprefix $(AVR_TOOLS_PATH),$(CC))
+CXX     := $(addprefix $(AVR_TOOLS_PATH),$(CXX))
+OBJCOPY := $(addprefix $(AVR_TOOLS_PATH),$(OBJCOPY))
+OBJDUMP := $(addprefix $(AVR_TOOLS_PATH),$(OBJDUMP))
+AR      := $(addprefix $(AVR_TOOLS_PATH),$(AR))
+SIZE    := $(addprefix $(AVR_TOOLS_PATH),$(SIZE))
+NM      := $(addprefix $(AVR_TOOLS_PATH),$(NM))
+endif
+
 REMOVE  = rm -f
 MV      = mv -f
 CAT     = cat
@@ -340,14 +410,22 @@ LIB_CPP_SRCS  = $(wildcard $(patsubst %,%/*.cpp,$(SYS_LIBS)))
 LIB_OBJS      = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(LIB_C_SRCS)) \
 		$(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS))
 
-CPPFLAGS      = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
+ifndef MCU_FLAG_NAME
+MCU_FLAG_NAME = mmcu
+endif
+
+CPPFLAGS      = -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
 			-I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
-			$(SYS_INCLUDES) -g -Os -w -Wall \
-			-ffunction-sections -fdata-sections
+			$(SYS_INCLUDES) -w -Wall -O2 \
+			-fno-exceptions -ffunction-sections -fdata-sections $(EXTRA_CPPFLAGS)
+
+ifndef USE_GNU99
 CFLAGS        = -std=gnu99
+endif
+
 CXXFLAGS      = -fno-exceptions
-ASFLAGS       = -mmcu=$(MCU) -I. -x assembler-with-cpp
-LDFLAGS       = -mmcu=$(MCU) -Wl,--gc-sections -Os
+ASFLAGS       = -$(MCU_FLAG_NAME)=$(MCU) -I. -x assembler-with-cpp
+LDFLAGS       = -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -Os $(EXTRA_LDFLAGS)
 
 # Expand and pick the first port
 ARD_PORT      = $(firstword $(wildcard $(ARDUINO_PORT)))
@@ -444,7 +522,7 @@ $(OBJDIR)/%.sym: $(OBJDIR)/%.elf
 # Avrdude
 #
 ifndef AVRDUDE
-AVRDUDE          = $(AVR_TOOLS_PATH)/avrdude
+AVRDUDE          = $(AVRDUDE_TOOLS_PATH)/avrdude
 endif
 
 AVRDUDE_COM_OPTS = -q -V -p $(MCU)
