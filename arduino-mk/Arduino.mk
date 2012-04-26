@@ -63,6 +63,10 @@
 #                            Goldenberg both reported this and
 #                            provided patches in the same spirit.
 #
+#          0.9 26.iv.2012  M J Oldfield
+#                          - Allow the punter to specify boards.txt file
+#                            and parser independently (after Peplin on github)
+#
 ########################################################################
 #
 # STANDARD ARDUINO WORKFLOW
@@ -215,7 +219,15 @@ BOARDS_TXT  = $(ARDUINO_DIR)/hardware/arduino/boards.txt
 endif
 
 ifndef PARSE_BOARD
-PARSE_BOARD = ard-parse-boards --boards_txt=$(BOARDS_TXT)
+PARSE_BOARD = ard-parse-boards
+endif
+
+ifndef PARSE_BOARD_OPTS
+PARSE_BOARD_OPTS = --boards_txt=$(BOARDS_TXT)
+endif
+
+ifndef PARSE_BOARD_CMD
+PARSE_BOARD_CMD = $(PARSE_BOARD) $(PARSE_BOARD_OPTS)
 endif
 
 # Which variant ? This affects the include path
