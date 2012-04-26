@@ -299,6 +299,11 @@ ifeq ($(strip $(NO_CORE)),)
 ifdef ARDUINO_CORE_PATH
 CORE_C_SRCS     = $(wildcard $(ARDUINO_CORE_PATH)/*.c)
 CORE_CPP_SRCS   = $(wildcard $(ARDUINO_CORE_PATH)/*.cpp)
+
+ifneq ($(strip $(NO_CORE_MAIN_FUNCTION)),)
+CORE_CPP_SRCS := $(filter-out %main.cpp, $(CORE_CPP_SRCS))
+endif
+
 CORE_OBJ_FILES  = $(CORE_C_SRCS:.c=.o) $(CORE_CPP_SRCS:.cpp=.o)
 CORE_OBJS       = $(patsubst $(ARDUINO_CORE_PATH)/%,  \
 			$(OBJDIR)/%,$(CORE_OBJ_FILES))

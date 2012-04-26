@@ -8,3 +8,11 @@ documentation](http://mjo.tc/atelier/2009/02/arduino-cli.html
 "Documentation") exists.
 
 If you're using Debian or Ubuntu, you can find this in the arduino-core package.
+
+## Options
+
+If you are defining your own `main()` function, you can stop the Ardunio's
+built-in `main()` from being compiled with your code by defining the
+`NO_CORE_MAIN_FUNCTION` variable:
+
+    NO_CORE_MAIN_FUNCTION = 1
