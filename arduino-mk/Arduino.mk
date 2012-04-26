@@ -173,6 +173,9 @@ endif
 
 ########################################################################
 
+# The path directory this Makefile is stored in
+ARDUINO_MK_PATH := $(dir $(lastword $(MAKEFILE_LIST)))
+
 #
 # Arduino version number
 ifndef ARDUINO_VERSION
@@ -214,8 +217,16 @@ ifndef BOARDS_TXT
 BOARDS_TXT  = $(ARDUINO_DIR)/hardware/arduino/boards.txt
 endif
 
+ifndef PARSE_BOARD_OPTS
+PARSE_BOARD_OPTS = --boards_txt=$(BOARDS_TXT)
+endif
+
+ifndef PARSE_BOARD_PATH
+PARSE_BOARD_PATH = $(ARDUINO_MK_PATH)/ard-parse-boards
+endif
+
 ifndef PARSE_BOARD
-PARSE_BOARD = ard-parse-boards --boards_txt=$(BOARDS_TXT)
+PARSE_BOARD = $(PARSE_BOARD_PATH) $(PARSE_BOARD_OPTS)
 endif
 
 # Which variant ? This affects the include path
