@@ -213,14 +213,32 @@ endif
 # Some paths
 #
 
+OSTYPE := $(shell uname)
+
 ifneq (ARDUINO_DIR,)
 
-ifndef AVR_TOOLS_PATH
-AVR_TOOLS_PATH    = $(ARDUINO_DIR)/hardware/tools/avr/bin
+ifndef TOOLS_PATH
+TOOLS_PATH = $(ARDUINO_DIR)/hardware/tools/
 endif
 
-ifndef ARDUINO_ETC_PATH
-ARDUINO_ETC_PATH  = $(ARDUINO_DIR)/hardware/tools/avr/etc
+ifndef AVR_TOOLS_PATH
+AVR_TOOLS_PATH    = $(TOOLS_PATH)/avr/bin/
+endif
+
+ifndef AVRDUDE_TOOLS_PATH
+ifeq ($(OSTYPE),Linux)
+AVRDUDE_TOOLS_PATH = $(TOOLS_PATH)
+else
+AVRDUDE_TOOLS_PATH = $(TOOLS_PATH)/avr/bin
+endif
+endif
+
+ifndef AVRDUDE_ETC_PATH
+ifeq ($(OSTYPE),Linux)
+AVRDUDE_ETC_PATH = $(TOOLS_PATH)
+else
+AVRDUDE_ETC_PATH = $(TOOLS_PATH)/avr/etc
+endif
 endif
 
 ifndef AVRDUDE_CONF
@@ -374,13 +392,25 @@ CORE_LIB   = $(OBJDIR)/libcore.a
 DEP_FILE   = $(OBJDIR)/depends.mk
 
 # Names of executables
-CC      = $(AVR_TOOLS_PATH)/avr-gcc
-CXX     = $(AVR_TOOLS_PATH)/avr-g++
-OBJCOPY = $(AVR_TOOLS_PATH)/avr-objcopy
-OBJDUMP = $(AVR_TOOLS_PATH)/avr-objdump
-AR      = $(AVR_TOOLS_PATH)/avr-ar
-SIZE    = $(AVR_TOOLS_PATH)/avr-size
-NM      = $(AVR_TOOLS_PATH)/avr-nm
+CC      := avr-gcc
+CXX     := avr-g++
+OBJCOPY := avr-objcopy
+OBJDUMP := avr-objdump
+AR      := avr-ar
+SIZE    := avr-size
+NM      := avr-nm
+
+ifneq ($(OSTYPE),Linux)
+# Compilers distributed with the IDE in OS X and Windows, but not Linux
+CC      := $(addprefix $(AVR_TOOLS_PATH),$(CC))
+CXX     := $(addprefix $(AVR_TOOLS_PATH),$(CXX))
+OBJCOPY := $(addprefix $(AVR_TOOLS_PATH),$(OBJCOPY))
+OBJDUMP := $(addprefix $(AVR_TOOLS_PATH),$(OBJDUMP))
+AR      := $(addprefix $(AVR_TOOLS_PATH),$(AR))
+SIZE    := $(addprefix $(AVR_TOOLS_PATH),$(SIZE))
+NM      := $(addprefix $(AVR_TOOLS_PATH),$(NM))
+endif
+
 REMOVE  = rm -f
 MV      = mv -f
 CAT     = cat
