@@ -72,7 +72,62 @@
 #                            defined (ex Peplin)
 #                          - Added a monitor target which talks to the
 #                            Arduino serial port (Peplin's suggestion)
-#                          
+#                          - Rejigged PATH calculations for general 
+#                            tidiness (ex Peplin)
+#                          - Moved the reset target to Perl for
+#                            clarity and better error handling (ex
+#                            Daniele Vergini)
+#                      
+########################################################################
+#
+# PATHS YOU NEED TO SET UP
+#
+# I've reworked the way paths to executables are constructed in this
+# version (0.9) of the Makefile.
+#
+# We need to worry about three different sorts of file:
+#
+# 1. Things which are included in this distribution e.g. ard-parse-boards
+#    => ARDMK_DIR
+#
+# 2. Things which are always in the Arduino distribution e.g. 
+#    boards.txt, libraries, &c.
+#    => ARDUINO_DIR
+#
+# 3. Things which might be bundled with the Arduino distribution, but
+#    might come from the system. Most of the toolchain is like this:
+#    on Linux it's supplied by the system.
+#    => AVR_TOOLS_DIR
+#
+# Having set these three variables, we can work out the rest assuming
+# that things are canonically arranged beneath the directories defined
+# above.
+#
+# On the Mac you might want to set:
+#
+#   ARDUINO_DIR   = /Applications/Arduino.app/Contents/Resources/Java
+#   ARDMK_DIR     = /usr/local
+#
+# On Linux, you might prefer:
+#
+#   ARDUINO_DIR   = /usr/share/arduino
+#   ARDMK_DIR     = /usr/local
+#   AVR_TOOLS_DIR = /usr
+#
+# You can either set these up in the Makefile, or put them in your 
+# environment e.g. in your .bashrc
+#
+# If you don't install the ard-... binaries to /usr/local/bin, but
+# instead copy them to e.g. /home/mjo/arduino.mk/bin then set
+#   ARDML_DIR = /home/mjo/arduino.mk
+# 
+########################################################################
+#
+# DEPENDENCIES
+#
+# The Perl programs need a couple of libraries:
+#    YAML
+#    Device::SerialPort
 #
 ########################################################################
 #
@@ -83,23 +138,13 @@
 #
 # For example:
 #
-#       ARDUINO_DIR  = /Applications/arduino-0013
-#
-#       TARGET       = CLItest
 #       ARDUINO_LIBS = Ethernet Ethernet/utility SPI
-#
 #       BOARD_TAG    = uno
 #       ARDUINO_PORT = /dev/cu.usb*
 #
 #       include /usr/local/share/Arduino.mk
 #
 # Hopefully these will be self-explanatory but in case they're not:
-#
-#    ARDUINO_DIR  - Where the Arduino software has been unpacked
-#
-#    TARGET       - The basename used for the final files. Canonically
-#                   this would match the .pde file, but it's not needed
-#                   here: you could always set it to xx if you wanted!
 #
 #    ARDUINO_LIBS - A list of any libraries used by the sketch (we
 #                   assume these are in
@@ -110,11 +155,6 @@
 #
 #    BOARD_TAG    - The ard-parse-boards tag for the board e.g. uno or mega
 #                   'make show_boards' shows a list
-#
-# You might also want to specify these, but normally they'll be read from the
-# boards.txt file i.e. implied by BOARD_TAG
-#
-#    MCU,F_CPU    - The target processor description
 #
 # Once this file has been created the typical workflow is just
 #
@@ -157,13 +197,42 @@
 #
 ########################################################################
 #
-# ARDUINO WITH OTHER TOOLS
+# PATHS
 #
-# If the tools aren't in the Arduino distribution, then you need to 
-# specify their location:
+# I've reworked the way paths to executables are constructed in this
+# version of Makefile.
 #
-#    AVR_TOOLS_PATH = /usr/bin
-#    AVRDUDE_CONF   = /etc/avrdude/avrdude.conf
+# We need to worry about three different sorts of file:
+#
+# 1. Things which are included in this distribution e.g. ard-parse-boards
+#    => ARDMK_DIR
+#
+# 2. Things which are always in the Arduino distribution e.g. 
+#    boards.txt, libraries, &c.
+#    => ARDUINO_DIR
+#
+# 3. Things which might be bundled with the Arduino distribution, but
+#    might come from the system. Most of the toolchain is like this:
+#    on Linux it's supplied by the system.
+#    => AVR_TOOLS_DIR
+#
+# Having set these three variables, we can work out the rest assuming
+# that things are canonically arranged beneath the directories defined
+# above.
+#
+# So, on the Mac you might want to set:
+#
+#   ARDUINO_DIR   = /Applications/Arduino.app/Contents/Resources/Java
+#   ARDMK_DIR     = /usr/local
+#
+# On Linux, you might prefer:
+#
+#   ARDUINO_DIR   = /usr/share/arduino
+#   ARDMK_DIR     = /usr/local
+#   AVR_TOOLS_DIR = /usr
+#
+#
+#  
 #
 ########################################################################
 #
@@ -209,36 +278,55 @@ ifndef ARDUINO_VERSION
 ARDUINO_VERSION = 100
 endif
 
+########################################################################
+# Arduino and system paths
 #
-# Some paths
-#
+ifdef ARDUINO_DIR
 
-ifneq (ARDUINO_DIR,)
+ifndef AVR_TOOLS_DIR
+AVR_TOOLS_DIR     = $(ARDUINO_DIR)/hardware/tools/avr
+# The avrdude bundled with Arduino can't find it's config
+AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
+endif
 
 ifndef AVR_TOOLS_PATH
-AVR_TOOLS_PATH    = $(ARDUINO_DIR)/hardware/tools/avr/bin
-endif
-
-ifndef ARDUINO_ETC_PATH
-ARDUINO_ETC_PATH  = $(ARDUINO_DIR)/hardware/tools/avr/etc
-endif
-
-ifndef AVRDUDE_CONF
-AVRDUDE_CONF     = $(ARDUINO_ETC_PATH)/avrdude.conf
+AVR_TOOLS_PATH    = $(AVR_TOOLS_DIR)/bin
 endif
 
 ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
 ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/arduino/cores/arduino
 ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
 
+else
+
+echo $(error "ARDUINO_DIR is not defined")
+
+endif
+
+########################################################################
+# Makefile distribution path
+#
+ifdef ARDMK_DIR
+
+ifndef ARDMK_PATH
+ARDMK_PATH = $(ARDMK_DIR)/bin
+endif
+
+else
+
+echo $(error "ARDMK_DIR is not defined")
+
+endif
+
+########################################################################
+# Miscellanea
+#
 ifndef ARDUINO_SKETCHBOOK
 ARDUINO_SKETCHBOOK = $(HOME)/sketchbook
 endif
 
 ifndef USER_LIB_PATH
 USER_LIB_PATH = $(ARDUINO_SKETCHBOOK)/libraries
-endif
-
 endif
 
 ########################################################################
@@ -257,6 +345,12 @@ MONITOR_CMD = screen
 endif
 
 ########################################################################
+# Reset
+ifndef RESET_CMD
+RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino $(ARD_RESET_OPTS)
+endif
+
+########################################################################
 # boards.txt parsing
 #
 ifndef BOARD_TAG
@@ -268,7 +362,7 @@ BOARDS_TXT  = $(ARDUINO_DIR)/hardware/arduino/boards.txt
 endif
 
 ifndef PARSE_BOARD
-PARSE_BOARD = ard-parse-boards
+PARSE_BOARD = $(ARDMK_PATH)/ard-parse-boards
 endif
 
 ifndef PARSE_BOARD_OPTS
@@ -554,10 +648,13 @@ raw_upload:	$(TARGET_HEX)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			-U flash:w:$(TARGET_HEX):i
 
+reset:		
+		$(RESET_CMD) $(ARD_PORT)
+
 # stty on MacOS likes -F, but on Debian it likes -f redirecting
 # stdin/out appears to work but generates a spurious error on MacOS at
 # least. Perhaps it would be better to just do it in perl ?
-reset:		
+reset_stty:		
 		for STTYF in 'stty -F' 'stty --file' 'stty -f' 'stty <' ; \
 		  do $$STTYF /dev/tty >/dev/null 2>/dev/null && break ; \
 		done ;\
@@ -591,6 +688,6 @@ show_boards:
 monitor:
 		$(MONITOR_CMD) $(ARD_PORT) $(MONITOR_BAUDRATE)
 
-.PHONY:	all clean depends upload raw_upload reset size show_boards monitor
+.PHONY:	all clean depends upload raw_upload reset reset_stty size show_boards monitor
 
 include $(DEP_FILE)

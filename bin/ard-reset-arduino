@@ -1,0 +1,115 @@
+#! /usr/bin/perl
+
+use strict;
+use warnings;
+
+use Device::SerialPort;
+use Getopt::Long;
+use Pod::Usage;
+
+my %Opt = 
+  ( 
+   period => 0.1,
+  );
+
+GetOptions(\%Opt, 
+	   "period=f",   # width of reset pulse in seconds
+	   "verbose!",
+	   "help!",  
+	   "info!",
+	  );
+
+if ($Opt{help} || $Opt{info})
+  {
+    usage();
+  }
+
+die "No Arduinos found!\n"
+  unless @ARGV;
+
+foreach my $dev (@ARGV)
+  {
+    my $p = Device::SerialPort->new($dev)
+      or die "Unable to open $dev: $!\n";
+    
+    my $dt = $Opt{period};
+
+    print STDERR "Setting DTR high for ${dt}s on $dev\n"
+      if $Opt{verbose};
+    
+    die "Invalid pulse width ($dt), "
+      unless $dt > 0.0;
+    
+    $p->pulse_dtr_on($dt * 1000.0);
+  }
+    
+## here endeth the main
+
+sub usage 
+  {
+    pod2usage(-verbose => 2);
+  }
+
+__END__
+
+=head1 NAME
+ 
+ard-reset-arduino - Reset an Arduino
+  
+=head1 USAGE
+ 
+    $ ard-reset-arduino /dev/cu.usb*
+
+    $ ard-reset-arduino --verbose --period=0.1 /dev/cu.usb*
+ 
+=head1 DESCRIPTION
+
+To reset (most) Arduinos, it's enough to just pulse the DTR line.
+
+You can do that from the shell with stty, but there's an interesting 
+diversity of command flags. This little program gives a uniform interface
+at the cost of requiring C<Device::SerialPort>.
+
+=head1 OPTIONS
+
+=over
+
+=item --verbose
+
+Watch what's going on on STDERR.
+
+=item --period=0.25
+
+Specify the DTR pulse width in seconds.
+
+=back
+ 
+=head1 BUGS AND LIMITATIONS
+
+There are no known bugs in this application.
+
+Please report problems to the author.
+
+Patches are welcome.
+ 
+=head1 AUTHOR
+
+Martin Oldfield, ex-atelier@mjo.tc
+
+Thanks to Daniele Vergini who suggested this to me, and supplied
+a command line version.
+ 
+=head1 LICENCE AND COPYRIGHT
+ 
+Copyright (c) 2012, Martin Oldfield. All rights reserved.
+ 
+This file is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation; either version 2.1 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+
+
