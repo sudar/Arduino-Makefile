@@ -64,11 +64,15 @@
 #                            provided patches in the same spirit.
 #
 #          0.9 26.iv.2012  M J Oldfield
-#                          - Allow the punter to specify boards.txt file
-#                            and parser independently (after Peplin on github)
+#                          - Allow the punter to specify boards.txt
+#                            file and parser independently (after
+#                            Peplin and Brotchie on github)
 #			   - Support user libraries (Peplin's patch)
 #                          - Remove main.cpp if NO_CORE_MAIN_CPP is
 #                            defined (ex Peplin)
+#                          - Added a monitor target which talks to the
+#                            Arduino serial port (Peplin's suggestion)
+#                          
 #
 ########################################################################
 #
@@ -131,6 +135,25 @@
 #   make reset       - reset the Arduino by tickling DTR on the serial port
 #   make raw_upload  - upload without first resetting
 #   make show_boards - list all the boards defined in boards.txt
+#   make monitor     - connect to the Arduino's serial port
+#
+########################################################################
+#
+# SERIAL MONITOR
+#
+# The serial monitor just invokes the GNU screen program with suitable
+# options. For more information see screen (1) and search for 
+# 'character special device'.
+#
+# The really useful thing to know is that ^A-k gets you out!
+#
+# The fairly useful thing to know is that you can bind another key to
+# escape too, by creating $HOME{.screenrc} containing e.g.
+#
+#    bindkey ^C kill
+#
+# If you want to change the baudrate, just set MONITOR_BAUDRATE. If you
+# don't set it, it defaults to 9600 baud.
 #
 ########################################################################
 #
@@ -216,6 +239,21 @@ ifndef USER_LIB_PATH
 USER_LIB_PATH = $(ARDUINO_SKETCHBOOK)/libraries
 endif
 
+endif
+
+########################################################################
+# Serial monitor (just a screen wrapper)
+#
+# Quite how to construct the monitor command seems intimately tied
+# to the command we're using (here screen). So, read the screen docs
+# for more information (search for 'character special device').
+#
+ifndef MONITOR_BAUDRATE
+MONITOR_BAUDRATE = 9600
+endif
+
+ifndef MONITOR_CMD
+MONITOR_CMD = screen
 endif
 
 ########################################################################
@@ -550,6 +588,9 @@ size:		$(OBJDIR) $(TARGET_HEX)
 show_boards:	
 		$(PARSE_BOARD_CMD) --boards
 
-.PHONY:	all clean depends upload raw_upload reset size show_boards
+monitor:
+		$(MONITOR_CMD) $(ARD_PORT) $(MONITOR_BAUDRATE)
+
+.PHONY:	all clean depends upload raw_upload reset size show_boards monitor
 
 include $(DEP_FILE)
