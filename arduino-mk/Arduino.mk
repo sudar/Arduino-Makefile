@@ -690,4 +690,5 @@ monitor:
 
 .PHONY:	all clean depends upload raw_upload reset reset_stty size show_boards monitor
 
-include $(DEP_FILE)
+# added - in the beginning, so that we don't get an error if the file is not present
+-include $(DEP_FILE)
