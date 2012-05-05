@@ -41,7 +41,7 @@ The Makefile also delegates resetting the board to a short Perl program.
 You'll need to install Device::SerialPort to use it though. On Debian or 
 Ubuntu do
 
-       apt-get install libdevice-serial-perl
+       apt-get install libdevice-serialport-perl libconfig-yaml-perl
 
 On other systems
 
