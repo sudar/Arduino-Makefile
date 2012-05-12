@@ -564,9 +564,11 @@ $(OBJDIR)/%.d: %.S
 $(OBJDIR)/%.d: %.s
 	$(CC) -MM $(CPPFLAGS) $(ASFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
+#backward compatibility for .pde files
+# We should check for Arduino version, if the file is .pde because a .pde file might be used in Arduino 1.0
 # the pde -> cpp -> o file
 $(OBJDIR)/%.cpp: %.pde
-	$(ECHO) '#include "WProgram.h"' > $@
+	$(ECHO) '#if ARDUINO >= 100\n    #include "Arduino.h"\n#else\n    #include "WProgram.h"\n#endif' > $@
 	$(CAT)  $< >> $@
 
 # the ino -> cpp -> o file
