@@ -285,8 +285,6 @@ ifdef ARDUINO_DIR
 
 ifndef AVR_TOOLS_DIR
 AVR_TOOLS_DIR     = $(ARDUINO_DIR)/hardware/tools/avr
-# The avrdude bundled with Arduino can't find it's config
-AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
 endif
 
 ifndef AVR_TOOLS_PATH
@@ -478,7 +476,7 @@ NM      = $(AVR_TOOLS_PATH)/avr-nm
 REMOVE  = rm -f
 MV      = mv -f
 CAT     = cat
-ECHO    = echo
+ECHO    = echo -e
 
 # General arguments
 SYS_LIBS      = $(patsubst %,$(ARDUINO_LIB_PATH)/%,$(ARDUINO_LIBS))
@@ -610,6 +608,14 @@ $(OBJDIR)/%.sym: $(OBJDIR)/%.elf
 #
 ifndef AVRDUDE
 AVRDUDE          = $(AVR_TOOLS_PATH)/avrdude
+endif
+
+ifndef AVRDUDE_CONF
+ifndef AVR_TOOLS_DIR
+# The avrdude bundled with Arduino can't find its config
+AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
+endif
+# If avrdude is installed separately, it can find its own config flie
 endif
 
 AVRDUDE_COM_OPTS = -q -V -p $(MCU)
