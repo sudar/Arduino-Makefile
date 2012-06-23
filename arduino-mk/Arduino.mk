@@ -473,7 +473,7 @@ OBJDUMP = $(AVR_TOOLS_PATH)/avr-objdump
 AR      = $(AVR_TOOLS_PATH)/avr-ar
 SIZE    = $(AVR_TOOLS_PATH)/avr-size
 NM      = $(AVR_TOOLS_PATH)/avr-nm
-REMOVE  = rm -f
+REMOVE  = rm -rf
 MV      = mv -f
 CAT     = cat
 ECHO    = echo -e
@@ -683,7 +683,7 @@ ispload:	$(TARGET_HEX)
 			-U lock:w:$(ISP_LOCK_FUSE_POST):m
 
 clean:
-		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEP_FILE) $(DEPS) $(USER_LIB_OBJS) @rm -rf ${OBJDIR} 
+		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEP_FILE) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR} 
 
 depends:	$(DEPS)
 		cat $(DEPS) > $(DEP_FILE)
