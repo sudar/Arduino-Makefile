@@ -301,10 +301,26 @@ endif
 ifdef ARDUINO_DIR
 
 ifndef AVR_TOOLS_DIR
-AVR_TOOLS_DIR     = $(ARDUINO_DIR)/hardware/tools/avr
+
+BUNDLED_AVR_TOOLS_DIR := $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/avr)
+
+ifdef BUNDLED_AVR_TOOLS_DIR
+$(info Using autodetected (bundled) AVR_TOOLS_DIR '$(BUNDLED_AVR_TOOLS_DIR)')
+AVR_TOOLS_DIR     = $(BUNDLED_AVR_TOOLS_DIR)
 # The avrdude bundled with Arduino can't find it's config
 AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
-endif
+
+else
+
+SYSTEMPATH_AVR_TOOLS_DIR := $(call dir_if_exists,$(abspath $(dir $(shell which avr-gcc))/..))
+ifdef SYSTEMPATH_AVR_TOOLS_DIR
+$(info Using autodetected (from PATH) AVR_TOOLS_DIR '$(SYSTEMPATH_AVR_TOOLS_DIR)')
+AVR_TOOLS_DIR     = $(SYSTEMPATH_AVR_TOOLS_DIR)
+endif # SYSTEMPATH_AVR_TOOLS_DIR
+
+endif # BUNDLED_AVR_TOOLS_EIR
+
+endif #ndef AVR_TOOLS_DIR
 
 ifndef AVR_TOOLS_PATH
 AVR_TOOLS_PATH    = $(AVR_TOOLS_DIR)/bin
