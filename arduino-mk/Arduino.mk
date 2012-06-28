@@ -263,6 +263,23 @@
 #
 ########################################################################
 
+dir_if_exists = $(shell test -e $(1)$(2) && echo $(1) || true)
+
+ifndef ARDUINO_DIR
+NIX_DEFAULT_ARDUINO_DIR := $(call dir_if_exists,/usr/share/arduino)
+ifdef NIX_DEFAULT_ARDUINO_DIR
+ARDUINO_DIR = $(NIX_DEFAULT_ARDUINO_DIR)
+endif
+
+MAC_DEFAULT_ARDUINO_DIR := $(call dir_if_exists,/Applications/Arduino.app/Contents/Resources/Java)
+ifdef MAC_DEFAULT_ARDUINO_DIR
+ARDUINO_DIR = $(MAC_DEFAULT_ARDUINO_DIR)
+endif
+
+ifdef ARDUINO_DIR
+$(info Using autodetected ARDUINO_DIR '$(ARDUINO_DIR)')
+endif
+endif
 ########################################################################
 # 
 # Default TARGET to cwd (ex Daniele Vergini)
