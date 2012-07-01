@@ -94,6 +94,7 @@
 #
 #         0.9.2 06.vi.2012 Sudar
 #         					- Allow user to choose source files (LOCAL_*_SRCS flags) (https://github.com/Gaftech)
+#         					- Modified 'make size' behaviour: using --mcu option and targeting .elf file instead of .hex file.(https://github.com/Gaftech)
 # 			                      
 ########################################################################
 #
@@ -518,6 +519,7 @@ CFLAGS        = -std=gnu99
 CXXFLAGS      = -fno-exceptions
 ASFLAGS       = -mmcu=$(MCU) -I. -x assembler-with-cpp
 LDFLAGS       = -mmcu=$(MCU) -Wl,--gc-sections -Os
+SIZEFLAGS     ?= --mcu=$(MCU) -C
 
 # Expand and pick the first port
 ARD_PORT      = $(firstword $(wildcard $(ARDUINO_PORT)))
@@ -705,8 +707,8 @@ clean:
 depends:	$(DEPS)
 		cat $(DEPS) > $(DEP_FILE)
 
-size:		$(OBJDIR) $(TARGET_HEX)
-		$(SIZE) $(TARGET_HEX)
+size:		$(OBJDIR) $(TARGET_ELF)
+		$(SIZE) $(SIZEFLAGS) $(TARGET_ELF)
 
 show_boards:	
 		$(PARSE_BOARD_CMD) --boards
