@@ -679,8 +679,8 @@ clean:
 depends:	$(DEPS)
 		cat $(DEPS) > $(DEP_FILE)
 
-size:		$(OBJDIR) $(TARGET_HEX)
-		$(SIZE) $(TARGET_HEX)
+size:		$(OBJDIR) $(TARGET_ELF)
+		$(SIZE) -C --mcu=$(MCU) $(TARGET_ELF)
 
 show_boards:	
 		$(PARSE_BOARD_CMD) --boards
