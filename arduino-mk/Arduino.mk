@@ -91,6 +91,9 @@
 #         					- Cleaner way to delete the build-cli directory when make clean is invoked
 #         					- The package name in Debian and Ubuntu is arduino-mk (https://github.com/maqifrnswa)
 #
+#
+#         0.9.2 06.vi.2012 Sudar
+#         					- Allow user to choose source files (LOCAL_*_SRCS flags) (https://github.com/Gaftech)
 # 			                      
 ########################################################################
 #
@@ -435,12 +438,12 @@ OBJDIR  	  = build-cli
 ########################################################################
 # Local sources
 #
-LOCAL_C_SRCS    = $(wildcard *.c)
-LOCAL_CPP_SRCS  = $(wildcard *.cpp)
-LOCAL_CC_SRCS   = $(wildcard *.cc)
-LOCAL_PDE_SRCS  = $(wildcard *.pde)
-LOCAL_INO_SRCS  = $(wildcard *.ino)
-LOCAL_AS_SRCS   = $(wildcard *.S)
+LOCAL_C_SRCS    ?= $(wildcard *.c)
+LOCAL_CPP_SRCS  ?= $(wildcard *.cpp)
+LOCAL_CC_SRCS   ?= $(wildcard *.cc)
+LOCAL_PDE_SRCS  ?= $(wildcard *.pde)
+LOCAL_INO_SRCS  ?= $(wildcard *.ino)
+LOCAL_AS_SRCS   ?= $(wildcard *.S)
 LOCAL_OBJ_FILES = $(LOCAL_C_SRCS:.c=.o)   $(LOCAL_CPP_SRCS:.cpp=.o) \
 		$(LOCAL_CC_SRCS:.cc=.o)   $(LOCAL_PDE_SRCS:.pde=.o) \
 		$(LOCAL_INO_SRCS:.ino=.o) $(LOCAL_AS_SRCS:.S=.o)
