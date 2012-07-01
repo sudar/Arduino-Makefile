@@ -3,6 +3,10 @@
 # Arduino command line tools Makefile
 # System part (i.e. project independent)
 #
+# Copyright (C) 2012 Gabriel Fournier <gabriel@gaftech.fr>, based on
+# - M J Oldfield work: https://github.com/mjoldfield/Arduino-Makefile
+# - sudar work: https://github.com/sudar/Arduino-Makefile.git
+# 
 # Copyright (C) 2010,2011,2012 Martin Oldfield <m@mjo.tc>, based on
 # work that is copyright Nicholas Zambetti, David A. Mellis & Hernando
 # Barragan.
@@ -77,7 +81,11 @@
 #                          - Moved the reset target to Perl for
 #                            clarity and better error handling (ex
 #                            Daniele Vergini)
-#                      
+#
+#          0.9.1 01.vii.2012 Gaftech
+#                          - Allow user to choose source files
+#                            (LOCAL_*_SRCS flags)
+#                     
 ########################################################################
 #
 # PATHS YOU NEED TO SET UP
@@ -421,12 +429,12 @@ OBJDIR  	  = build-cli
 ########################################################################
 # Local sources
 #
-LOCAL_C_SRCS    = $(wildcard *.c)
-LOCAL_CPP_SRCS  = $(wildcard *.cpp)
-LOCAL_CC_SRCS   = $(wildcard *.cc)
-LOCAL_PDE_SRCS  = $(wildcard *.pde)
-LOCAL_INO_SRCS  = $(wildcard *.ino)
-LOCAL_AS_SRCS   = $(wildcard *.S)
+LOCAL_C_SRCS    ?= $(wildcard *.c)
+LOCAL_CPP_SRCS  ?= $(wildcard *.cpp)
+LOCAL_CC_SRCS   ?= $(wildcard *.cc)
+LOCAL_PDE_SRCS  ?= $(wildcard *.pde)
+LOCAL_INO_SRCS  ?= $(wildcard *.ino)
+LOCAL_AS_SRCS   ?= $(wildcard *.S)
 LOCAL_OBJ_FILES = $(LOCAL_C_SRCS:.c=.o)   $(LOCAL_CPP_SRCS:.cpp=.o) \
 		$(LOCAL_CC_SRCS:.cc=.o)   $(LOCAL_PDE_SRCS:.pde=.o) \
 		$(LOCAL_INO_SRCS:.ino=.o) $(LOCAL_AS_SRCS:.S=.o)
