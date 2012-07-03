@@ -721,6 +721,8 @@ show_boards:
 monitor:
 		$(MONITOR_CMD) $(ARD_PORT) $(MONITOR_BAUDRATE)
 
+disasm: all $(OBJDIR)/$(TARGET).lss
+
 .PHONY:	all clean depends upload raw_upload reset reset_stty size show_boards monitor
 
 include $(DEP_FILE)
