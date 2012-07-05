@@ -150,8 +150,8 @@
 # Hopefully these will be self-explanatory but in case they're not:
 #
 #    ARDUINO_LIBS - A list of any libraries used by the sketch (we
-#                   assume these are in
-#                   $(ARDUINO_DIR)/hardware/libraries
+#                   assume these are in $(ARDUINO_DIR)/hardware/libraries
+#                   or your sketchbook's libraries directory)
 #
 #    ARDUINO_PORT - The port where the Arduino can be found (only needed
 #                   when uploading)
