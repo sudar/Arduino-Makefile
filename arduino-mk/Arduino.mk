@@ -292,7 +292,16 @@ endif
 #
 # Arduino version number
 ifndef ARDUINO_VERSION
+
+# Remove all the decimals, and right-pad with zeros, and finally grab the first 3 bytes.
+# Works for 1.0 and 1.0.1
+AUTO_ARDUINO_VERSION := $(shell cat $(ARDUINO_DIR)/lib/version.txt | sed -e 's/[.]//g' -e 's/$$/0000/' | head --bytes=3)
+ifdef AUTO_ARDUINO_VERSION
+$(info Using guessed/detected ARDUINO version define $(AUTO_ARDUINO_VERSION))
+ARDUINO_VERSION = $(AUTO_ARDUINO_VERSION)
+else
 ARDUINO_VERSION = 100
+endif
 endif
 
 ########################################################################
