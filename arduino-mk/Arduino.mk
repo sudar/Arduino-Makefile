@@ -197,45 +197,6 @@
 #
 ########################################################################
 #
-# PATHS
-#
-# I've reworked the way paths to executables are constructed in this
-# version of Makefile.
-#
-# We need to worry about three different sorts of file:
-#
-# 1. Things which are included in this distribution e.g. ard-parse-boards
-#    => ARDMK_DIR
-#
-# 2. Things which are always in the Arduino distribution e.g.
-#    boards.txt, libraries, &c.
-#    => ARDUINO_DIR
-#
-# 3. Things which might be bundled with the Arduino distribution, but
-#    might come from the system. Most of the toolchain is like this:
-#    on Linux it's supplied by the system.
-#    => AVR_TOOLS_DIR
-#
-# Having set these three variables, we can work out the rest assuming
-# that things are canonically arranged beneath the directories defined
-# above.
-#
-# So, on the Mac you might want to set:
-#
-#   ARDUINO_DIR   = /Applications/Arduino.app/Contents/Resources/Java
-#   ARDMK_DIR     = /usr/local
-#
-# On Linux, you might prefer:
-#
-#   ARDUINO_DIR   = /usr/share/arduino
-#   ARDMK_DIR     = /usr/local
-#   AVR_TOOLS_DIR = /usr
-#
-#
-#
-#
-########################################################################
-#
 # ARDUINO WITH ISP
 #
 # You need to specify some details of your ISP programmer and might
