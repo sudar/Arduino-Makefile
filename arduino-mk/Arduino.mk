@@ -159,7 +159,19 @@
 #    BOARD_TAG    - The ard-parse-boards tag for the board e.g. uno or mega
 #                   'make show_boards' shows a list
 #
-# Once this file has been created the typical workflow is just
+# If you have your additional libraries relative to your source, rather
+# than in your "sketchbook", also set USER_LIB_PATH, like this example:
+#
+#        USER_LIB_PATH := $(realpath ../../libraries)
+#
+# If you've added the Arduino-Makefile repository to your git repo as a
+# submodule (or other similar arrangement), you might have lines like this
+# in your Makefile:
+#
+#        ARDMK_DIR := $(realpath ../../tools/Arduino-Makefile)
+#        include $(ARDMK_DIR)/arduino-mk/Arduino.mk
+#
+# In any case, once this file has been created the typical workflow is just
 #
 #   $ make upload
 #
