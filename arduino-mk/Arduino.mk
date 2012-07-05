@@ -640,6 +640,9 @@ $(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp
 # various object conversions
 $(OBJDIR)/%.hex: $(OBJDIR)/%.elf
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
+	# Dump size for microcontroller.
+	echo
+	$(call avr_size,$<,$@)
 
 $(OBJDIR)/%.eep: $(OBJDIR)/%.elf
 	-$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" \
