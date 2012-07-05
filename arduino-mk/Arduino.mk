@@ -548,6 +548,14 @@ LDFLAGS       = -mmcu=$(MCU) -Wl,--gc-sections -Os
 # Expand and pick the first port
 ARD_PORT      = $(firstword $(wildcard $(ARDUINO_PORT)))
 
+# Command for avr_size: do $(call avr_size,elffile,hexfile)
+SIZE_ACCEPTS_MCU = $(shell $(SIZE) --help | grep 'AVR' && echo TRUE || true)
+ifdef SIZE_ACCEPTS_MCU
+avr_size = $(SIZE) --mcu=$(MCU) --format=avr $(1)
+else
+avr_size = $(SIZE) $(2)
+endif
+
 # Implicit rules for building everything (needed to get everything in
 # the right directory)
 #
@@ -722,7 +730,7 @@ depends:	$(DEPS)
 		cat $(DEPS) > $(DEP_FILE)
 
 size:		$(OBJDIR) $(TARGET_HEX)
-		$(SIZE) $(TARGET_HEX)
+		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
 
 show_boards:	
 		$(PARSE_BOARD_CMD) --boards
