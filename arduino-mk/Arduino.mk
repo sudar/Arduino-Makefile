@@ -266,17 +266,11 @@ $(call show_separator)
 $(info Arduino.mk Configuration:)
 
 ifndef ARDUINO_DIR
-    NIX_DEFAULT_ARDUINO_DIR := $(call dir_if_exists,/usr/share/arduino)
-    ifdef NIX_DEFAULT_ARDUINO_DIR
-       ARDUINO_DIR = $(NIX_DEFAULT_ARDUINO_DIR)
-    endif
-
-    MAC_DEFAULT_ARDUINO_DIR := $(call dir_if_exists,/Applications/Arduino.app/Contents/Resources/Java)
-    ifdef MAC_DEFAULT_ARDUINO_DIR
-      ARDUINO_DIR = $(MAC_DEFAULT_ARDUINO_DIR)
-    endif
-
-    ifdef ARDUINO_DIR
+    AUTO_ARDUINO_DIR := $(firstword \
+        $(call dir_if_exists,/usr/share/arduino) \
+        $(call dir_if_exists,/Applications/Arduino.app/Contents/Resources/Java) )
+    ifdef AUTO_ARDUINO_DIR
+       ARDUINO_DIR = $(AUTO_ARDUINO_DIR)
      $(call show_config_info,ARDUINO_DIR,[AUTODETECTED])
     endif
 
