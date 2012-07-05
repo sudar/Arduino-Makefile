@@ -154,7 +154,7 @@
 #                   $(ARDUINO_DIR)/hardware/libraries
 #
 #    ARDUINO_PORT - The port where the Arduino can be found (only needed
-#                   when uploading
+#                   when uploading)
 #
 #    BOARD_TAG    - The ard-parse-boards tag for the board e.g. uno or mega
 #                   'make show_boards' shows a list
