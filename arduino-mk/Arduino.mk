@@ -244,11 +244,11 @@
 #
 ########################################################################
 
-dir_if_exists = $(shell test -e $(1)$(2) && echo $(1) || true)
 # Useful functions
 # Returns the first argument (typically a directory), if the file or directory
 # named by concatenating the first and optionally second argument
 # (directory and optional filename) exists
+dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
 
 # For message printing: pad the right side of the first argument with spaces to
 # the number of bytes indicated by the second argument.
