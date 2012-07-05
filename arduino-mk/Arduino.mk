@@ -179,6 +179,11 @@
 #   make raw_upload  - upload without first resetting
 #   make show_boards - list all the boards defined in boards.txt
 #   make monitor     - connect to the Arduino's serial port
+#   make size        - show the size of the compiled output (relative to
+#                      resources, if you have a patched avr-size)
+#   make disasm      - generate a .lss file in build-cli that contains
+#                      disassembly of the compiled file interspersed
+#                      with your original source code.
 #
 ########################################################################
 #
