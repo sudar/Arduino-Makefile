@@ -117,6 +117,9 @@
 # You can either set these up in the Makefile, or put them in your
 # environment e.g. in your .bashrc
 #
+# If you don't specify these, we can try to guess, but that might not work
+# or work the way you want it to.
+#
 # If you don't install the ard-... binaries to /usr/local/bin, but
 # instead copy them to e.g. /home/mjo/arduino.mk/bin then set
 #   ARDML_DIR = /home/mjo/arduino.mk
