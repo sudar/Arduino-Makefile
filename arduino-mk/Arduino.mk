@@ -245,6 +245,25 @@
 ########################################################################
 
 dir_if_exists = $(shell test -e $(1)$(2) && echo $(1) || true)
+# Useful functions
+# Returns the first argument (typically a directory), if the file or directory
+# named by concatenating the first and optionally second argument
+# (directory and optional filename) exists
+
+# For message printing: pad the right side of the first argument with spaces to
+# the number of bytes indicated by the second argument.
+space_pad_to = $(shell echo $(1) "                                                      " | head --bytes=$(2))
+
+# Call with the name of the variable, a prefix tag if desired (like [AUTODETECTED]),
+# and an explanation if desired (like (found in $$PATH)
+show_config_info = $(info - $(call space_pad_to,$(2),20) $(1) = $($(1)) $(3))
+
+# Just a nice simple visual separator
+show_separator = $(info -------------------------)
+
+
+$(call show_separator)
+$(info Arduino.mk Configuration:)
 
 ifndef ARDUINO_DIR
 NIX_DEFAULT_ARDUINO_DIR := $(call dir_if_exists,/usr/share/arduino)
@@ -258,8 +277,11 @@ ARDUINO_DIR = $(MAC_DEFAULT_ARDUINO_DIR)
 endif
 
 ifdef ARDUINO_DIR
-$(info Using autodetected ARDUINO_DIR '$(ARDUINO_DIR)')
+$(call show_config_info,ARDUINO_DIR,[AUTODETECTED])
 endif
+
+else
+$(call show_config_info,ARDUINO_DIR)
 endif
 ########################################################################
 #
@@ -278,11 +300,14 @@ ifndef ARDUINO_VERSION
 # Works for 1.0 and 1.0.1
 AUTO_ARDUINO_VERSION := $(shell cat $(ARDUINO_DIR)/lib/version.txt | sed -e 's/[.]//g' -e 's/$$/0000/' | head --bytes=3)
 ifdef AUTO_ARDUINO_VERSION
-$(info Using guessed/detected ARDUINO version define $(AUTO_ARDUINO_VERSION))
 ARDUINO_VERSION = $(AUTO_ARDUINO_VERSION)
+$(call show_config_info,ARDUINO_VERSION,[AUTODETECTED])
 else
 ARDUINO_VERSION = 100
+$(call show_config_info,ARDUINO_VERSION,[DEFAULT])
 endif
+else
+$(call show_config_info,ARDUINO_VERSION)
 endif
 
 ########################################################################
@@ -293,28 +318,26 @@ ifdef ARDUINO_DIR
 ifndef AVR_TOOLS_DIR
 
 BUNDLED_AVR_TOOLS_DIR := $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/avr)
-
 ifdef BUNDLED_AVR_TOOLS_DIR
-$(info Using autodetected (bundled) AVR_TOOLS_DIR '$(BUNDLED_AVR_TOOLS_DIR)')
 AVR_TOOLS_DIR     = $(BUNDLED_AVR_TOOLS_DIR)
 # The avrdude bundled with Arduino can't find it's config
 AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
+$(call show_config_info,AVR_TOOLS_DIR,[BUNDLED],(in Arduino distribution))
 
 else
 
 SYSTEMPATH_AVR_TOOLS_DIR := $(call dir_if_exists,$(abspath $(dir $(shell which avr-gcc))/..))
 ifdef SYSTEMPATH_AVR_TOOLS_DIR
-$(info Using autodetected (from PATH) AVR_TOOLS_DIR '$(SYSTEMPATH_AVR_TOOLS_DIR)')
 AVR_TOOLS_DIR     = $(SYSTEMPATH_AVR_TOOLS_DIR)
+$(call show_config_info,AVR_TOOLS_DIR,[AUTODETECTED],(found in $$PATH))
 endif # SYSTEMPATH_AVR_TOOLS_DIR
 
-endif # BUNDLED_AVR_TOOLS_EIR
+endif # BUNDLED_AVR_TOOLS_DIR
 
+else
+
+$(call show_config_info,AVR_TOOLS_DIR)
 endif #ndef AVR_TOOLS_DIR
-
-ifndef AVR_TOOLS_PATH
-AVR_TOOLS_PATH    = $(AVR_TOOLS_DIR)/bin
-endif
 
 ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
 ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/arduino/cores/arduino
@@ -326,13 +349,26 @@ echo $(error "ARDUINO_DIR is not defined")
 
 endif
 
+ifdef AVR_TOOLS_DIR
+
+ifndef AVR_TOOLS_PATH
+AVR_TOOLS_PATH    = $(AVR_TOOLS_DIR)/bin
+endif
+
+endif
+
 ########################################################################
 # Makefile distribution path
 #
 ifdef ARDMK_DIR
+$(call show_config_info,ARDMK_DIR)
 
 ifndef ARDMK_PATH
 ARDMK_PATH = $(ARDMK_DIR)/bin
+$(call show_config_info,ARDMK_PATH,[COMPUTED],(relative to ARDMK_DIR))
+
+else
+$(call show_config_info,ARDMK_PATH)
 endif
 
 else
@@ -350,6 +386,9 @@ endif
 
 ifndef USER_LIB_PATH
 USER_LIB_PATH = $(ARDUINO_SKETCHBOOK)/libraries
+$(call show_config_info,USER_LIB_PATH,[DEFAULT],(in user sketchbook))
+else
+$(call show_config_info,USER_LIB_PATH)
 endif
 
 ########################################################################
@@ -378,6 +417,9 @@ endif
 #
 ifndef BOARD_TAG
 BOARD_TAG   = uno
+$(call show_config_info,BOARD_TAG,[DEFAULT])
+else
+$(call show_config_info,BOARD_TAG)
 endif
 
 ifndef BOARDS_TXT
@@ -468,12 +510,15 @@ CORE_CPP_SRCS   = $(wildcard $(ARDUINO_CORE_PATH)/*.cpp)
 
 ifneq ($(strip $(NO_CORE_MAIN_CPP)),)
 CORE_CPP_SRCS := $(filter-out %main.cpp, $(CORE_CPP_SRCS))
+$(call show_config_info,CORE_CPP_SRCS,[MODIFIED],(Modified by the variable NO_CORE_MAIN_CPP))
 endif
 
 CORE_OBJ_FILES  = $(CORE_C_SRCS:.c=.o) $(CORE_CPP_SRCS:.cpp=.o)
 CORE_OBJS       = $(patsubst $(ARDUINO_CORE_PATH)/%,  \
 			$(OBJDIR)/%,$(CORE_OBJ_FILES))
 endif
+else
+$(call show_config_info,CORE_CPP_SRCS,[MODIFIED],(Modified by the variable NO_CORE))
 endif
 
 
@@ -529,13 +574,37 @@ LDFLAGS       = -mmcu=$(MCU) -Wl,--gc-sections -Os
 # Expand and pick the first port
 ARD_PORT      = $(firstword $(wildcard $(ARDUINO_PORT)))
 
+ifndef SIZE_UTILITY_TYPE
 # Command for avr_size: do $(call avr_size,elffile,hexfile)
-SIZE_ACCEPTS_MCU = $(shell $(SIZE) --help | grep 'AVR' && echo TRUE || true)
-ifdef SIZE_ACCEPTS_MCU
-avr_size = $(SIZE) --mcu=$(MCU) --format=avr $(1)
+ifneq (,$(findstring AVR,$(shell $(SIZE) --help)))
+SIZE_UTILITY_TYPE = AVR_ENHANCED
 else
+SIZE_UTILITY_TYPE = BASIC
+endif
+$(call show_config_info,SIZE_UTILITY_TYPE,[AUTODETECTED])
+
+else
+$(call show_config_info,SIZE_UTILITY_TYPE,[MANUAL OVERRIDE],Warning - Manually overriding this is not recommended!)
+endif
+
+ifeq ($(SIZE_UTILITY_TYPE),BASIC)
+# We have a plain-old binutils version - just give it the hex.
 avr_size = $(SIZE) $(2)
 endif
+
+ifeq ($(SIZE_UTILITY_TYPE),AVR_ENHANCED)
+# We have a patched version of binutils that mentions AVR - pass the MCU
+# and the elf to get nice output.
+avr_size = $(SIZE) --mcu=$(MCU) --format=avr $(1)
+endif
+
+ifndef avr_size
+$(error "We told you not to override SIZE_UTILITY_TYPE!")
+endif
+
+# end of config output
+$(call show_separator)
+
 
 # Implicit rules for building everything (needed to get everything in
 # the right directory)
@@ -621,8 +690,8 @@ $(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp
 # various object conversions
 $(OBJDIR)/%.hex: $(OBJDIR)/%.elf
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
-	# Dump size for microcontroller.
-	echo
+	@echo
+	@echo
 	$(call avr_size,$<,$@)
 
 $(OBJDIR)/%.eep: $(OBJDIR)/%.elf
