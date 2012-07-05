@@ -710,9 +710,6 @@ TARGET_EEP = $(OBJDIR)/$(TARGET).eep
 TARGETS    = $(OBJDIR)/$(TARGET).*
 CORE_LIB   = $(OBJDIR)/libcore.a
 
-# A list of dependencies
-DEP_FILE   = $(OBJDIR)/depends.mk
-
 # Names of executables
 CC      = $(AVR_TOOLS_PATH)/avr-gcc
 CXX     = $(AVR_TOOLS_PATH)/avr-g++
@@ -825,54 +822,29 @@ $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 # normal local sources
-# .o rules are for objects, .d for dependency tracking
-# there seems to be an awful lot of duplication here!!!
 COMMON_DEPS := Makefile
 $(OBJDIR)/%.o: %.c $(COMMON_DEPS)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/%.o: %.cc $(COMMON_DEPS)
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/%.o: %.cpp $(COMMON_DEPS)
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/%.o: %.S $(COMMON_DEPS)
-	$(CC) -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
 $(OBJDIR)/%.o: %.s $(COMMON_DEPS)
 	$(CC) -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
-$(OBJDIR)/%.d: %.c $(COMMON_DEPS)
-	$(CC) -MM $(CPPFLAGS) $(CFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
-$(OBJDIR)/%.d: %.cc $(COMMON_DEPS)
-	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
-$(OBJDIR)/%.d: %.cpp $(COMMON_DEPS)
-	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
-$(OBJDIR)/%.d: %.S $(COMMON_DEPS)
-	$(CC) -MM $(CPPFLAGS) $(ASFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
-$(OBJDIR)/%.d: %.s $(COMMON_DEPS)
-	$(CC) -MM $(CPPFLAGS) $(ASFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
 # the pde -> o file
 $(OBJDIR)/%.o: %.pde
-	$(CXX) -x c++ -include $(PDE_INCLUDE) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
-
-# the pde -> d file
-$(OBJDIR)/%.d: %.pde
-	$(CXX) -x c++ -include $(PDE_INCLUDE) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
+	$(CXX) -x c++ -include $(PDE_INCLUDE) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # the ino -> o file
 $(OBJDIR)/%.o: %.ino
-	$(CXX) -x c++ -include Arduino.h -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
-
-# the ino -> d file
-$(OBJDIR)/%.d: %.ino
-	$(CXX) -x c++ -include Arduino.h -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
+	$(CXX) -x c++ -include Arduino.h -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # generated assembly
 $(OBJDIR)/%.s: $(OBJDIR)/%.cpp $(COMMON_DEPS)
@@ -966,9 +938,6 @@ $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 		$(AR) rcs $@ $(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 
-$(DEP_FILE):	$(OBJDIR) $(DEPS)
-		cat $(DEPS) > $(DEP_FILE)
-
 upload:		$(TARGET_HEX) verify_size
 		# Use submake so we can guarantee the reset happens
 		# before the upload, even with make -j
@@ -1014,10 +983,7 @@ ispload:	$(TARGET_EEP) $(TARGET_HEX) verify_size
 			-U lock:w:$(ISP_LOCK_FUSE_POST):m
 
 clean:
-		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEP_FILE) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR}
-
-depends:	$(DEPS)
-		$(CAT) $(DEPS) > $(DEP_FILE)
+		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR}
 
 size:		$(OBJDIR) $(TARGET_HEX)
 		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
@@ -1046,6 +1012,4 @@ generated_assembly: $(OBJDIR)/$(TARGET).s
 .PHONY:	all upload raw_upload reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly verify_size
 
 # added - in the beginning, so that we don't get an error if the file is not present
-ifneq ($(MAKECMDGOALS),clean)
--include $(DEP_FILE)
-endif
+-include $(DEPS)
