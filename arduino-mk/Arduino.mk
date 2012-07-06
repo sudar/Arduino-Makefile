@@ -3,6 +3,9 @@
 # Arduino command line tools Makefile
 # System part (i.e. project independent)
 #
+# Copyright (C) 2012 Sudar <http://sudarmuthu.com>, based on
+# - M J Oldfield work: https://github.com/mjoldfield/Arduino-Makefile
+#
 # Copyright (C) 2010,2011,2012 Martin Oldfield <m@mjo.tc>, based on
 # work that is copyright Nicholas Zambetti, David A. Mellis & Hernando
 # Barragan.
@@ -77,7 +80,18 @@
 #                          - Moved the reset target to Perl for
 #                            clarity and better error handling (ex
 #                            Daniele Vergini)
-#                      
+#
+#         0.9.1 06.vi.2012 Sudar
+#         					- Corrected the ubuntu package names
+#         					- Prevent the *file-not-found* error if the depends.mk file is not needed
+#         					- Delete the build-cli folder as well while doing make clean
+#         					- Added support for compiling .pde files in Arduino 1.0 environment
+#         					- Replaced = with += in CPPFLAGS assignment so that we can set CPPFLAGS per sketch if needed
+#         					- Changed AVRDUDE_CONF so it can be defined in per-project makefile (https://github.com/WizenedEE)
+#         					- Cleaner way to delete the build-cli directory when make clean is invoked
+#         					- The package name in Debian and Ubuntu is arduino-mk (https://github.com/maqifrnswa)
+#
+# 			                      
 ########################################################################
 #
 # PATHS YOU NEED TO SET UP
