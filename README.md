@@ -55,16 +55,20 @@ is set to `$HOME/sketchbook`.
 
 ## Notes from Sudar
 
-The following are the list of changes that I have made or merged in this fork. Hopefully it gets into mjoldfield repo one day :)
+The following are the list of changes that I have made or merged in this fork. Hopefully it gets into mjoldfield repo and ultimately into Ubuntu package one day :)
 
 ### 0.9.1 06.vi.2012 
 
-    - Corrected the ubuntu package names
-    - Prevent the *file-not-found* error if the depends.mk file is not needed
-    - Delete the build-cli folder as well while doing make clean
-    - Added support for compiling .pde files in Arduino 1.0 environment
-    - Replaced = with += in CPPFLAGS assignment so that we can set CPPFLAGS per sketch if needed
-    - Changed AVRDUDE_CONF so it can be defined in per-project makefile (https://github.com/WizenedEE)
-    - Cleaner way to delete the build-cli directory when make clean is invoked
-    - The package name in Debian and Ubuntu is arduino-mk (https://github.com/maqifrnswa)
+- Corrected the ubuntu package names
+- Prevent the *file-not-found* error if the depends.mk file is not needed
+- Delete the build-cli folder as well while doing make clean
+- Added support for compiling .pde files in Arduino 1.0 environment
+- Replaced = with += in CPPFLAGS assignment so that we can set CPPFLAGS per sketch if needed
+- Changed AVRDUDE_CONF so it can be defined in per-project makefile (https://github.com/WizenedEE)
+- Cleaner way to delete the build-cli directory when make clean is invoked
+- The package name in Debian and Ubuntu is arduino-mk (https://github.com/maqifrnswa)
 
+### 0.9.2 06.vi.2012 
+
+- Allow user to choose source files (LOCAL_*_SRCS flags) (https://github.com/Gaftech)
+- Modified 'make size' behaviour: using --mcu option and targeting .elf file instead of .hex file.(https://github.com/Gaftech)
