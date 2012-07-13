@@ -94,7 +94,7 @@
 #
 #         0.9.2 06.vi.2012 Sudar
 #         					- Allow user to choose source files (LOCAL_*_SRCS flags) (https://github.com/Gaftech)
-#         					- Modified 'make size' behaviour: using --mcu option and targeting .elf file instead of .hex file.(https://github.com/Gaftech)
+#         					- Modified 'make size' behavior: using --mcu option and targeting .elf file instead of .hex file.(https://github.com/Gaftech)
 # 			                      
 ########################################################################
 #
