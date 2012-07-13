@@ -101,6 +101,7 @@
 #         					- Categorize libs into user and system (https://github.com/rpavlik/)
 #         					- Dump size at the end of the build (https://github.com/rpavlik/)
 #         					- Lots and lots of improvements (https://github.com/rpavlik/)
+#         					- Changed bytes option for the head shell command, so that it works in Mac as well
 ########################################################################
 #
 # DEPENDENCIES
@@ -229,7 +230,7 @@ dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
 
 # For message printing: pad the right side of the first argument with spaces to
 # the number of bytes indicated by the second argument.
-space_pad_to = $(shell echo $(1) "                                                      " | head --bytes=$(2))
+space_pad_to = $(shell echo $(1) "                                                      " | head -c$(2))
 
 # Call with some text, and a prefix tag if desired (like [AUTODETECTED]),
 show_config_info = $(info - $(call space_pad_to,$(2),20) $(1))
@@ -272,7 +273,7 @@ ifndef ARDUINO_VERSION
 
     # Remove all the decimals, and right-pad with zeros, and finally grab the first 3 bytes.
     # Works for 1.0 and 1.0.1
-    AUTO_ARDUINO_VERSION := $(shell cat $(ARDUINO_DIR)/lib/version.txt | sed -e 's/[.]//g' -e 's/$$/0000/' | head --bytes=3)
+    AUTO_ARDUINO_VERSION := $(shell cat $(ARDUINO_DIR)/lib/version.txt | sed -e 's/[.]//g' -e 's/$$/0000/' | head -c3)
     ifdef AUTO_ARDUINO_VERSION
         ARDUINO_VERSION = $(AUTO_ARDUINO_VERSION)
         $(call show_config_variable,ARDUINO_VERSION,[AUTODETECTED])

@@ -80,3 +80,4 @@ The following are the list of changes that I have made or merged in this fork. H
 - Categorize libs into user and system (https://github.com/rpavlik/)
 - Dump size at the end of the build (https://github.com/rpavlik/)
 - Lots and lots of improvements (https://github.com/rpavlik/)
+- Changed bytes option for the head shell command, so that it works in Mac as well
