@@ -72,3 +72,11 @@ The following are the list of changes that I have made or merged in this fork. H
 
 - Allow user to choose source files (LOCAL_*_SRCS flags) (https://github.com/Gaftech)
 - Modified 'make size' behaviour: using --mcu option and targeting .elf file instead of .hex file.(https://github.com/Gaftech)
+
+
+### 0.9.3 13.vi.2012 
+
+- Autodetect ARDUINO_DIR, Arduino version (https://github.com/rpavlik/)
+- Categorize libs into user and system (https://github.com/rpavlik/)
+- Dump size at the end of the build (https://github.com/rpavlik/)
+- Lots and lots of improvements (https://github.com/rpavlik/)
