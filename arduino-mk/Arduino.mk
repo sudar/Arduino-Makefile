@@ -839,4 +839,6 @@ disasm: all $(OBJDIR)/$(TARGET).lss
 .PHONY:	all clean depends upload raw_upload reset reset_stty size show_boards monitor
 
 # added - in the beginning, so that we don't get an error if the file is not present
+ifneq ($(MAKECMDGOALS),clean)
 -include $(DEP_FILE)
+endif
