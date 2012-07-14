@@ -102,6 +102,53 @@
 #         					- Dump size at the end of the build (https://github.com/rpavlik/)
 #         					- Lots and lots of improvements (https://github.com/rpavlik/)
 #         					- Changed bytes option for the head shell command, so that it works in Mac as well
+#
+########################################################################
+#
+# PATHS YOU NEED TO SET UP
+#
+# I've reworked the way paths to executables are constructed in this
+# version (0.9) of the Makefile.
+#
+# We need to worry about three different sorts of file:
+#
+# 1. Things which are included in this distribution e.g. ard-parse-boards
+#    => ARDMK_DIR
+#
+# 2. Things which are always in the Arduino distribution e.g.
+#    boards.txt, libraries, &c.
+#    => ARDUINO_DIR
+#
+# 3. Things which might be bundled with the Arduino distribution, but
+#    might come from the system. Most of the toolchain is like this:
+#    on Linux it's supplied by the system.
+#    => AVR_TOOLS_DIR
+#
+# Having set these three variables, we can work out the rest assuming
+# that things are canonically arranged beneath the directories defined
+# above.
+#
+# On the Mac you might want to set:
+#
+#   ARDUINO_DIR   = /Applications/Arduino.app/Contents/Resources/Java
+#   ARDMK_DIR     = /usr/local
+#
+# On Linux, you might prefer:
+#
+#   ARDUINO_DIR   = /usr/share/arduino
+#   ARDMK_DIR     = /usr/local
+#   AVR_TOOLS_DIR = /usr
+#
+# You can either set these up in the Makefile, or put them in your
+# environment e.g. in your .bashrc
+#
+# If you don't specify these, we can try to guess, but that might not work
+# or work the way you want it to.
+#
+# If you don't install the ard-... binaries to /usr/local/bin, but
+# instead copy them to e.g. /home/mjo/arduino.mk/bin then set
+#   ARDML_DIR = /home/mjo/arduino.mk
+#
 ########################################################################
 #
 # DEPENDENCIES
@@ -258,6 +305,7 @@ ifndef ARDUINO_DIR
 else
     $(call show_config_variable,ARDUINO_DIR)
 endif
+
 ########################################################################
 #
 # Default TARGET to cwd (ex Daniele Vergini)
@@ -266,8 +314,6 @@ ifndef TARGET
 endif
 
 ########################################################################
-
-#
 # Arduino version number
 ifndef ARDUINO_VERSION
 
