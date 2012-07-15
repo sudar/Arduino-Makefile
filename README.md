@@ -71,13 +71,16 @@ The following are the list of changes that I have made or merged in this fork. H
 ### 0.9.2 06.vi.2012 
 
 - Allow user to choose source files (LOCAL_*_SRCS flags) (https://github.com/Gaftech)
-- Modified 'make size' behaviour: using --mcu option and targeting .elf file instead of .hex file.(https://github.com/Gaftech)
-
+- Modified "make size" behavior: using --mcu option and targeting .elf file instead of .hex file.(https://github.com/Gaftech)
 
 ### 0.9.3 13.vi.2012 
 
-- Autodetect ARDUINO_DIR, Arduino version (https://github.com/rpavlik/)
+- Auto detect ARDUINO_DIR, Arduino version (https://github.com/rpavlik/)
 - Categorize libs into user and system (https://github.com/rpavlik/)
 - Dump size at the end of the build (https://github.com/rpavlik/)
 - Lots and lots of improvements (https://github.com/rpavlik/)
 - Changed bytes option for the head shell command, so that it works in Mac as well
+- Auto detect Serial Baud rate from sketch if possible
+
+## Know Issues
+- Because of the way the makefile is structured, the configuration parameters gets printed twice. 

@@ -102,6 +102,7 @@
 #         					- Dump size at the end of the build (https://github.com/rpavlik/)
 #         					- Lots and lots of improvements (https://github.com/rpavlik/)
 #         					- Changed bytes option for the head shell command, so that it works in Mac as well
+#							- Auto detect Serial Baud rate from sketch if possible
 #
 ########################################################################
 #
@@ -238,7 +239,8 @@
 #    bindkey ^C kill
 #
 # If you want to change the baudrate, just set MONITOR_BAUDRATE. If you
-# don't set it, it defaults to 9600 baud.
+# don't set it, it tries to read from the sketch. If it couldn't read 
+# from the sketch, then it defaults to 9600 baud.
 #
 ########################################################################
 #
@@ -421,7 +423,19 @@ endif
 # for more information (search for 'character special device').
 #
 ifndef MONITOR_BAUDRATE
-    MONITOR_BAUDRATE = 9600
+	#This works only in linux. TODO: Port it to MAC OS also
+	SPEED = $(shell grep --max-count=1 --regexp="Serial.begin" $$(ls -1 *.ino) | sed -e 's/\/\/.*$$//g' -e 's/(/\t/' -e 's/)/\t/' | awk -F '\t' '{print $$2}' )
+	MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
+
+	ifeq ($(MONITOR_BAUDRATE),)
+		$(warning The monitor speed wasnt properly set. Set to 9600 by default)
+		$(shell sleep 1)
+		MONITOR_BAUDRATE = 9600
+	else
+        $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
+	endif
+else
+    $(call show_config_variable,MONITOR_BAUDRATE, [SPECIFIED])
 endif
 
 ifndef MONITOR_CMD
