@@ -428,11 +428,10 @@ ifndef MONITOR_BAUDRATE
 	MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
 
 	ifeq ($(MONITOR_BAUDRATE),)
-		$(warning The monitor speed wasnt properly set. Set to 9600 by default)
-		$(shell sleep 1)
 		MONITOR_BAUDRATE = 9600
+       $(call show_config_variable,MONITOR_BAUDRATE,[ASSUMED])
 	else
-        $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
+       $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
 	endif
 else
     $(call show_config_variable,MONITOR_BAUDRATE, [SPECIFIED])
