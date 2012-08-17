@@ -143,6 +143,7 @@
 #
 #   	0.10.2 15.xii.2012 Sudar
 #   		- Added sketch size verification. (https://github.com/fornellas)
+#   		- Show original line number for error messages (https://github.com/WizenedEE)
 #
 ########################################################################
 #
@@ -812,12 +813,12 @@ $(OBJDIR)/%.d: %.s $(COMMON_DEPS)
 # We should check for Arduino version, if the file is .pde because a .pde file might be used in Arduino 1.0
 # the pde -> cpp -> o file
 $(OBJDIR)/%.cpp: %.pde $(COMMON_DEPS)
-	$(ECHO) '#if ARDUINO >= 100\n    #include "Arduino.h"\n#else\n    #include "WProgram.h"\n#endif' > $@
+	$(ECHO) '#if ARDUINO >= 100\n    #include "Arduino.h"\n#else\n    #include "WProgram.h"\n#endif\n#line 1' > $@
 	$(CAT)  $< >> $@
 
 # the ino -> cpp -> o file
 $(OBJDIR)/%.cpp: %.ino $(COMMON_DEPS)
-	$(ECHO) '#include <Arduino.h>' > $@
+	$(ECHO) '#include <Arduino.h>\n#line 1' > $@
 	$(CAT)  $< >> $@
 
 $(OBJDIR)/%.o: $(OBJDIR)/%.cpp $(COMMON_DEPS)
