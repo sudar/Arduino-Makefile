@@ -95,7 +95,7 @@
 #         0.9.2 06.vi.2012 Sudar
 #         					- Allow user to choose source files (LOCAL_*_SRCS flags) (https://github.com/Gaftech)
 #         					- Modified 'make size' behavior: using --mcu option and targeting .elf file instead of .hex file.(https://github.com/Gaftech)
-# 			                      
+#
 #         0.9.3 13.vi.2012 Sudar
 #         					- Autodetect ARDUINO_DIR, Arduino version (https://github.com/rpavlik/)
 #         					- Categorize libs into user and system (https://github.com/rpavlik/)
@@ -529,6 +529,9 @@ LOCAL_CC_SRCS   ?= $(wildcard *.cc)
 LOCAL_PDE_SRCS  ?= $(wildcard *.pde)
 LOCAL_INO_SRCS  ?= $(wildcard *.ino)
 LOCAL_AS_SRCS   ?= $(wildcard *.S)
+LOCAL_SRCS      = $(LOCAL_C_SRCS)   $(LOCAL_CPP_SRCS) \
+		$(LOCAL_CC_SRCS)   $(LOCAL_PDE_SRCS) \
+		$(LOCAL_INO_SRCS) $(LOCAL_AS_SRCS)
 LOCAL_OBJ_FILES = $(LOCAL_C_SRCS:.c=.o)   $(LOCAL_CPP_SRCS:.cpp=.o) \
 		$(LOCAL_CC_SRCS:.cc=.o)   $(LOCAL_PDE_SRCS:.pde=.o) \
 		$(LOCAL_INO_SRCS:.ino=.o) $(LOCAL_AS_SRCS:.S=.o)
@@ -556,6 +559,17 @@ else
     $(call show_config_info,NO_CORE set so core library will not be built,[MANUAL])
 endif
 
+########################################################################
+# Determine ARDUINO_LIBS automatically
+#
+
+ifndef ARDUINO_LIBS
+    # automatically determine included libraries
+    ARDUINO_LIBS += $(filter $(notdir $(wildcard $(ARDUINO_DIR)/libraries/*)), \
+        $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
+    ARDUINO_LIBS += $(filter $(notdir $(wildcard $(ARDUINO_SKETCHBOOK)/libraries/*)), \
+        $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
+endif
 
 ########################################################################
 # Rules for making stuff
@@ -833,7 +847,7 @@ ispload:	$(TARGET_HEX)
 			-U lock:w:$(ISP_LOCK_FUSE_POST):m
 
 clean:
-		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEP_FILE) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR} 
+		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEP_FILE) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR}
 
 depends:	$(DEPS)
 		cat $(DEPS) > $(DEP_FILE)
