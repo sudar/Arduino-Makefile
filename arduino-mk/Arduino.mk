@@ -384,22 +384,25 @@ endif
 ########################################################################
 # Makefile distribution path
 #
-ifdef ARDMK_DIR
-    $(call show_config_variable,ARDMK_DIR)
+ifndef ARDMK_DIR
+    # presume it's a level above the path to our own file
+    ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST))))/..)
+    $(call show_config_variable,ARDMK_DIR,[COMPUTED],(relative to $(notdir $(lastword $(MAKEFILE_LIST)))))
+else
+    $(call show_config_variable,ARDMK_DIR,[USER])
+endif
 
+ifdef ARDMK_DIR
     ifndef ARDMK_PATH
         ARDMK_PATH = $(ARDMK_DIR)/bin
         $(call show_config_variable,ARDMK_PATH,[COMPUTED],(relative to ARDMK_DIR))
-
     else
         $(call show_config_variable,ARDMK_PATH)
     endif
-
 else
-
     echo $(error "ARDMK_DIR is not defined")
-
 endif
+
 
 ########################################################################
 # Miscellanea
@@ -574,7 +577,6 @@ endif
 ########################################################################
 # Determine ARDUINO_LIBS automatically
 #
-
 ifndef ARDUINO_LIBS
     # automatically determine included libraries
     ARDUINO_LIBS += $(filter $(notdir $(wildcard $(ARDUINO_DIR)/libraries/*)), \
