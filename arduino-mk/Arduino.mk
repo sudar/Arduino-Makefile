@@ -82,27 +82,36 @@
 #                            Daniele Vergini)
 #
 #         0.9.1 06.vi.2012 Sudar
-#         					- Corrected the ubuntu package names
-#         					- Prevent the *file-not-found* error if the depends.mk file is not needed
-#         					- Delete the build-cli folder as well while doing make clean
-#         					- Added support for compiling .pde files in Arduino 1.0 environment
-#         					- Replaced = with += in CPPFLAGS assignment so that we can set CPPFLAGS per sketch if needed
-#         					- Changed AVRDUDE_CONF so it can be defined in per-project makefile (https://github.com/WizenedEE)
-#         					- Cleaner way to delete the build-cli directory when make clean is invoked
-#         					- The package name in Debian and Ubuntu is arduino-mk (https://github.com/maqifrnswa)
+#                          - Corrected the ubuntu package names
+#                          - Prevent the *file-not-found* error if the depends.mk file is not needed
+#                          - Delete the build-cli folder as well while doing make clean
+#                          - Added support for compiling .pde files in Arduino 1.0 environment
+#                          - Replaced = with += in CPPFLAGS assignment so that we can set CPPFLAGS per sketch if needed
+#                          - Changed AVRDUDE_CONF so it can be defined in per-project makefile (https://github.com/WizenedEE)
+#                          - Cleaner way to delete the build-cli directory when make clean is invoked
+#                          - The package name in Debian and Ubuntu is arduino-mk (https://github.com/maqifrnswa)
 #
 #
 #         0.9.2 06.vi.2012 Sudar
-#         					- Allow user to choose source files (LOCAL_*_SRCS flags) (https://github.com/Gaftech)
-#         					- Modified 'make size' behavior: using --mcu option and targeting .elf file instead of .hex file.(https://github.com/Gaftech)
+#                          - Allow user to choose source files (LOCAL_*_SRCS flags) (https://github.com/Gaftech)
+#                          - Modified 'make size' behavior: using --mcu option and targeting .elf file instead of .hex file.(https://github.com/Gaftech)
 #
 #         0.9.3 13.vi.2012 Sudar
-#         					- Autodetect ARDUINO_DIR, Arduino version (https://github.com/rpavlik/)
-#         					- Categorize libs into user and system (https://github.com/rpavlik/)
-#         					- Dump size at the end of the build (https://github.com/rpavlik/)
-#         					- Lots and lots of improvements (https://github.com/rpavlik/)
-#         					- Changed bytes option for the head shell command, so that it works in Mac as well
-#							- Auto detect Serial Baud rate from sketch if possible
+#                          - Autodetect ARDUINO_DIR, Arduino version (https://github.com/rpavlik/)
+#                          - Categorize libs into user and system (https://github.com/rpavlik/)
+#                          - Dump size at the end of the build (https://github.com/rpavlik/)
+#                          - Lots and lots of improvements (https://github.com/rpavlik/)
+#                          - Changed bytes option for the head shell command, so that it works in Mac as well
+#                          - Auto detect Serial Baud rate from sketch if possible
+#
+#         0.9.3.1 18.viii.2012 jeffkowalski
+#                          - Autodetect ARDUINO_LIBS from includes in LOCAL_SRCS
+#                          - Autodetect ARDUINO_SKETCHBOOK from file
+#                            set by Arduino IDE
+#                          - Autodetect ARDMK_DIR based on location of
+#                            this file
+#                          - Added support for utility directory
+#                            within SYS and USER libraries
 #
 ########################################################################
 #
@@ -239,7 +248,7 @@
 #    bindkey ^C kill
 #
 # If you want to change the baudrate, just set MONITOR_BAUDRATE. If you
-# don't set it, it tries to read from the sketch. If it couldn't read 
+# don't set it, it tries to read from the sketch. If it couldn't read
 # from the sketch, then it defaults to 9600 baud.
 #
 ########################################################################
