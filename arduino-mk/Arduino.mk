@@ -405,7 +405,19 @@ endif
 # Miscellanea
 #
 ifndef ARDUINO_SKETCHBOOK
-    ARDUINO_SKETCHBOOK = $(HOME)/sketchbook
+    ifneq ($(wildcard $(HOME)/.arduino/preferences.txt),)
+	ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
+                                          $(HOME)/.arduino/preferences.txt | \
+                                     sed -e 's/sketchbook.path=//' )
+    endif
+    ifneq ($(ARDUINO_SKETCHBOOK),)
+        $(call show_config_variable,ARDUINO_SKETCHBOOK,[AUTODETECTED],(in arduino preferences file))
+    else
+        ARDUINO_SKETCHBOOK = $(HOME)/sketchbook
+        $(call show_config_variable,ARDUINO_SKETCHBOOK,[DEFAULT])
+    endif
+else
+    $(call show_config_variable,ARDUINO_SKETCHBOOK)
 endif
 
 ifndef USER_LIB_PATH
