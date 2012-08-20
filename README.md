@@ -82,5 +82,11 @@ The following are the list of changes that I have made or merged in this fork. H
 - Changed bytes option for the head shell command, so that it works in Mac as well
 - Auto detect Serial Baud rate from sketch if possible
 
+###   0.9.3.1 18.viii.2012 jeffkowalski
+- Autodetect ARDUINO_LIBS from includes in LOCAL_SRCS
+- Autodetect ARDUINO_SKETCHBOOK from file set by Arduino IDE
+- Autodetect ARDMK_DIR based on location of this file
+- Added support for utility directory within SYS and USER libraries
+
 ## Know Issues
 - Because of the way the makefile is structured, the configuration parameters gets printed twice. 
