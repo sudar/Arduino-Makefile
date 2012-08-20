@@ -82,27 +82,36 @@
 #                            Daniele Vergini)
 #
 #         0.9.1 06.vi.2012 Sudar
-#         					- Corrected the ubuntu package names
-#         					- Prevent the *file-not-found* error if the depends.mk file is not needed
-#         					- Delete the build-cli folder as well while doing make clean
-#         					- Added support for compiling .pde files in Arduino 1.0 environment
-#         					- Replaced = with += in CPPFLAGS assignment so that we can set CPPFLAGS per sketch if needed
-#         					- Changed AVRDUDE_CONF so it can be defined in per-project makefile (https://github.com/WizenedEE)
-#         					- Cleaner way to delete the build-cli directory when make clean is invoked
-#         					- The package name in Debian and Ubuntu is arduino-mk (https://github.com/maqifrnswa)
+#                          - Corrected the ubuntu package names
+#                          - Prevent the *file-not-found* error if the depends.mk file is not needed
+#                          - Delete the build-cli folder as well while doing make clean
+#                          - Added support for compiling .pde files in Arduino 1.0 environment
+#                          - Replaced = with += in CPPFLAGS assignment so that we can set CPPFLAGS per sketch if needed
+#                          - Changed AVRDUDE_CONF so it can be defined in per-project makefile (https://github.com/WizenedEE)
+#                          - Cleaner way to delete the build-cli directory when make clean is invoked
+#                          - The package name in Debian and Ubuntu is arduino-mk (https://github.com/maqifrnswa)
 #
 #
 #         0.9.2 06.vi.2012 Sudar
-#         					- Allow user to choose source files (LOCAL_*_SRCS flags) (https://github.com/Gaftech)
-#         					- Modified 'make size' behavior: using --mcu option and targeting .elf file instead of .hex file.(https://github.com/Gaftech)
-# 			                      
+#                          - Allow user to choose source files (LOCAL_*_SRCS flags) (https://github.com/Gaftech)
+#                          - Modified 'make size' behavior: using --mcu option and targeting .elf file instead of .hex file.(https://github.com/Gaftech)
+#
 #         0.9.3 13.vi.2012 Sudar
-#         					- Autodetect ARDUINO_DIR, Arduino version (https://github.com/rpavlik/)
-#         					- Categorize libs into user and system (https://github.com/rpavlik/)
-#         					- Dump size at the end of the build (https://github.com/rpavlik/)
-#         					- Lots and lots of improvements (https://github.com/rpavlik/)
-#         					- Changed bytes option for the head shell command, so that it works in Mac as well
-#							- Auto detect Serial Baud rate from sketch if possible
+#                          - Autodetect ARDUINO_DIR, Arduino version (https://github.com/rpavlik/)
+#                          - Categorize libs into user and system (https://github.com/rpavlik/)
+#                          - Dump size at the end of the build (https://github.com/rpavlik/)
+#                          - Lots and lots of improvements (https://github.com/rpavlik/)
+#                          - Changed bytes option for the head shell command, so that it works in Mac as well
+#                          - Auto detect Serial Baud rate from sketch if possible
+#
+#         0.9.3.1 18.viii.2012 jeffkowalski
+#                          - Autodetect ARDUINO_LIBS from includes in LOCAL_SRCS
+#                          - Autodetect ARDUINO_SKETCHBOOK from file
+#                            set by Arduino IDE
+#                          - Autodetect ARDMK_DIR based on location of
+#                            this file
+#                          - Added support for utility directory
+#                            within SYS and USER libraries
 #
 ########################################################################
 #
@@ -239,7 +248,7 @@
 #    bindkey ^C kill
 #
 # If you want to change the baudrate, just set MONITOR_BAUDRATE. If you
-# don't set it, it tries to read from the sketch. If it couldn't read 
+# don't set it, it tries to read from the sketch. If it couldn't read
 # from the sketch, then it defaults to 9600 baud.
 #
 ########################################################################
@@ -384,28 +393,43 @@ endif
 ########################################################################
 # Makefile distribution path
 #
-ifdef ARDMK_DIR
-    $(call show_config_variable,ARDMK_DIR)
+ifndef ARDMK_DIR
+    # presume it's a level above the path to our own file
+    ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST))))/..)
+    $(call show_config_variable,ARDMK_DIR,[COMPUTED],(relative to $(notdir $(lastword $(MAKEFILE_LIST)))))
+else
+    $(call show_config_variable,ARDMK_DIR,[USER])
+endif
 
+ifdef ARDMK_DIR
     ifndef ARDMK_PATH
         ARDMK_PATH = $(ARDMK_DIR)/bin
         $(call show_config_variable,ARDMK_PATH,[COMPUTED],(relative to ARDMK_DIR))
-
     else
         $(call show_config_variable,ARDMK_PATH)
     endif
-
 else
-
     echo $(error "ARDMK_DIR is not defined")
-
 endif
+
 
 ########################################################################
 # Miscellanea
 #
 ifndef ARDUINO_SKETCHBOOK
-    ARDUINO_SKETCHBOOK = $(HOME)/sketchbook
+    ifneq ($(wildcard $(HOME)/.arduino/preferences.txt),)
+	ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
+                                          $(HOME)/.arduino/preferences.txt | \
+                                     sed -e 's/sketchbook.path=//' )
+    endif
+    ifneq ($(ARDUINO_SKETCHBOOK),)
+        $(call show_config_variable,ARDUINO_SKETCHBOOK,[AUTODETECTED],(in arduino preferences file))
+    else
+        ARDUINO_SKETCHBOOK = $(HOME)/sketchbook
+        $(call show_config_variable,ARDUINO_SKETCHBOOK,[DEFAULT])
+    endif
+else
+    $(call show_config_variable,ARDUINO_SKETCHBOOK)
 endif
 
 ifndef USER_LIB_PATH
@@ -423,7 +447,7 @@ endif
 # for more information (search for 'character special device').
 #
 ifndef MONITOR_BAUDRATE
-	#This works only in linux. TODO: Port it to MAC OS also
+        #This works only in linux. TODO: Port it to MAC OS also
 	SPEED = $(shell grep --max-count=1 --regexp="Serial.begin" $$(ls -1 *.ino) | sed -e 's/\/\/.*$$//g' -e 's/(/\t/' -e 's/)/\t/' | awk -F '\t' '{print $$2}' )
 	MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
 
@@ -529,6 +553,9 @@ LOCAL_CC_SRCS   ?= $(wildcard *.cc)
 LOCAL_PDE_SRCS  ?= $(wildcard *.pde)
 LOCAL_INO_SRCS  ?= $(wildcard *.ino)
 LOCAL_AS_SRCS   ?= $(wildcard *.S)
+LOCAL_SRCS      = $(LOCAL_C_SRCS)   $(LOCAL_CPP_SRCS) \
+		$(LOCAL_CC_SRCS)   $(LOCAL_PDE_SRCS) \
+		$(LOCAL_INO_SRCS) $(LOCAL_AS_SRCS)
 LOCAL_OBJ_FILES = $(LOCAL_C_SRCS:.c=.o)   $(LOCAL_CPP_SRCS:.cpp=.o) \
 		$(LOCAL_CC_SRCS:.cc=.o)   $(LOCAL_PDE_SRCS:.pde=.o) \
 		$(LOCAL_INO_SRCS:.ino=.o) $(LOCAL_AS_SRCS:.S=.o)
@@ -556,6 +583,16 @@ else
     $(call show_config_info,NO_CORE set so core library will not be built,[MANUAL])
 endif
 
+########################################################################
+# Determine ARDUINO_LIBS automatically
+#
+ifndef ARDUINO_LIBS
+    # automatically determine included libraries
+    ARDUINO_LIBS += $(filter $(notdir $(wildcard $(ARDUINO_DIR)/libraries/*)), \
+        $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
+    ARDUINO_LIBS += $(filter $(notdir $(wildcard $(ARDUINO_SKETCHBOOK)/libraries/*)), \
+        $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
+endif
 
 ########################################################################
 # Rules for making stuff
@@ -597,6 +634,8 @@ ifneq (,$(strip $(LIBS_NOT_FOUND)))
     $(error The following libraries specified in ARDUINO_LIBS could not be found (searched USER_LIB_PATH and ARDUINO_LIB_PATH): $(LIBS_NOT_FOUND))
 endif
 
+SYS_LIBS     := $(wildcard $(SYS_LIBS) $(addsuffix /utility,$(SYS_LIBS)))
+USER_LIBS    := $(wildcard $(USER_LIBS) $(addsuffix /utility,$(USER_LIBS)))
 SYS_INCLUDES  = $(patsubst %,-I%,$(SYS_LIBS))
 USER_INCLUDES = $(patsubst %,-I%,$(USER_LIBS))
 LIB_C_SRCS    = $(wildcard $(patsubst %,%/*.c,$(SYS_LIBS)))
@@ -833,7 +872,7 @@ ispload:	$(TARGET_HEX)
 			-U lock:w:$(ISP_LOCK_FUSE_POST):m
 
 clean:
-		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEP_FILE) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR} 
+		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEP_FILE) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR}
 
 depends:	$(DEPS)
 		cat $(DEPS) > $(DEP_FILE)
