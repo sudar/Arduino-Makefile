@@ -705,7 +705,7 @@ $(OBJDIR)/%.eep: $(OBJDIR)/%.elf
 		--change-section-lma .eeprom=0 -O ihex $< $@
 
 $(OBJDIR)/%.lss: $(OBJDIR)/%.elf
-	$(OBJDUMP) -h -S $< > $@
+	$(OBJDUMP) -h --source --demangle --wide $< > $@
 
 $(OBJDIR)/%.sym: $(OBJDIR)/%.elf
 	$(NM) -n $< > $@
