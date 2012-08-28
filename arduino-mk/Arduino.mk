@@ -652,10 +652,10 @@ CPPFLAGS      += -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
 			-I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
 			$(SYS_INCLUDES) $(USER_INCLUDES) -g -Os -w -Wall \
 			-ffunction-sections -fdata-sections
-CFLAGS        = -std=gnu99
-CXXFLAGS      = -fno-exceptions
-ASFLAGS       = -mmcu=$(MCU) -I. -x assembler-with-cpp
-LDFLAGS       = -mmcu=$(MCU) -Wl,--gc-sections -Os
+CFLAGS        += -std=gnu99
+CXXFLAGS      += -fno-exceptions
+ASFLAGS       += -mmcu=$(MCU) -I. -x assembler-with-cpp
+LDFLAGS       += -mmcu=$(MCU) -Wl,--gc-sections -Os
 SIZEFLAGS     ?= --mcu=$(MCU) -C
 
 # Expand and pick the first port
