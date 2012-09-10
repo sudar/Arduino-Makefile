@@ -50,7 +50,7 @@ On other systems
 
 In order to use Arduino libraries installed in the user's sketchbook folder (the
 standard location for custom libraries when using the Arduino IDE), you need to
-set the `ARDUNIO_SKETCHBOOK` variable to point to this directory. By default it
+set the `ARDUINO_SKETCHBOOK` variable to point to this directory. By default it
 is set to `$HOME/sketchbook`.
 
 ## Notes from Sudar
@@ -88,5 +88,10 @@ The following are the list of changes that I have made or merged in this fork. H
 - Autodetect ARDMK_DIR based on location of this file
 - Added support for utility directory within SYS and USER libraries
 
+###   0.9.3.2 10.ix.2012 Sudar
+- Fixed a typo in README. Issue reported at upstream (https://github.com/mjoldfield/Arduino-Makefile/issues/21)
+
 ## Know Issues
 - Because of the way the makefile is structured, the configuration parameters gets printed twice. 
+- Doesn't work with Leonardo yet.
+- More todo's at https://github.com/sudar/Arduino-Makefile/issues/
