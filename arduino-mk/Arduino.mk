@@ -387,6 +387,18 @@ ifndef F_CPU
 F_CPU = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.f_cpu)
 endif
 
+ifndef F_CPU
+F_CPU = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.f_cpu)
+endif
+
+ifndef USB_VID
+USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid)
+endif
+
+ifndef USB_PID
+USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid)
+endif
+
 # normal programming info
 ifndef AVRDUDE_ARD_PROGRAMMER
 AVRDUDE_ARD_PROGRAMMER = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.protocol)
@@ -495,6 +507,7 @@ USER_LIB_OBJS = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(USER_LIB_
 		$(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(USER_LIB_C_SRCS))
 
 CPPFLAGS      = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
+			-DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID) \
 			-I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
 			$(SYS_INCLUDES) $(USER_INCLUDES) -g -Os -w -Wall \
 			-ffunction-sections -fdata-sections
