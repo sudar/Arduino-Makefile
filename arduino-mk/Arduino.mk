@@ -417,7 +417,7 @@ ifndef ISP_EXT_FUSE
 ISP_EXT_FUSE       = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.extended_fuses)
 endif
 
-# Everything gets built in here
+# Everything gets built in here (include BOARD_TAG now)
 ifndef OBJDIR
 OBJDIR  	  = build-$(BOARD_TAG)
 endif
