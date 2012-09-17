@@ -77,6 +77,18 @@
 #                          - Moved the reset target to Perl for
 #                            clarity and better error handling (ex
 #                            Daniele Vergini)
+#
+#          0.10 17.ix.12   M J Oldfield
+#            - Added installation notes for Fedora (ex Rickard Lindberg).
+#            - Changed size target so that it looks at the ELF object, 
+#              not the hexfile (ex Jared Szechy and Scott Howard).
+#            - Fixed ARDUNIO typo in README.md (ex Kalin Kozhuharov).
+#            - Tweaked OBJDIR handling (ex Matthias Urlichs and Scott Howard).
+#            - Changed the name of the Debian/Ubuntu package (ex
+#              Scott Howard).
+#            - Only set AVRDUDE_CONF if it's not set (ex Tom Hall).
+#            - Added support for USB_PID/VID used by the Leonardo (ex Dan
+#              Villiom Podlaski Christiansen and Marc Plano-Lesay).
 #                      
 ########################################################################
 #
