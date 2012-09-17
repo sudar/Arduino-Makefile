@@ -60,5 +60,5 @@ On other systems:
 
 In order to use Arduino libraries installed in the user's sketchbook folder (the
 standard location for custom libraries when using the Arduino IDE), you need to
-set the `ARDUNIO_SKETCHBOOK` variable to point to this directory. By default it
+set the `ARDUINO_SKETCHBOOK` variable to point to this directory. By default it
 is set to `$HOME/sketchbook`.
