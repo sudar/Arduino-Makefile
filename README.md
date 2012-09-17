@@ -43,6 +43,11 @@ Ubuntu do
 
        apt-get install libdevice-serial-perl
 
+On Fedora do
+
+       yum install perl-YAML
+       yum install perl-Device-SerialPort
+
 On other systems
 
        cpanm Device::SerialPort
