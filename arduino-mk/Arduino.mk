@@ -285,8 +285,10 @@ ifdef ARDUINO_DIR
 
 ifndef AVR_TOOLS_DIR
 AVR_TOOLS_DIR     = $(ARDUINO_DIR)/hardware/tools/avr
-# The avrdude bundled with Arduino can't find it's config
+# The avrdude bundled with Arduino can't find its config
+ifndef AVRDUDE_CONF
 AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
+endif
 endif
 
 ifndef AVR_TOOLS_PATH
