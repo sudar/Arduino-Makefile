@@ -536,6 +536,7 @@ DEP_FILE   = $(OBJDIR)/depends.mk
 # Names of executables
 CC      = $(AVR_TOOLS_PATH)/avr-gcc
 CXX     = $(AVR_TOOLS_PATH)/avr-g++
+AS      = $(AVR_TOOLS_PATH)/avr-as
 OBJCOPY = $(AVR_TOOLS_PATH)/avr-objcopy
 OBJDUMP = $(AVR_TOOLS_PATH)/avr-objdump
 AR      = $(AVR_TOOLS_PATH)/avr-ar
