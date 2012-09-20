@@ -709,7 +709,7 @@ $(OBJDIR)/%.lss: $(OBJDIR)/%.elf
 	$(OBJDUMP) -h --source --demangle --wide $< > $@
 
 $(OBJDIR)/%.sym: $(OBJDIR)/%.elf
-	$(NM) -n $< > $@
+	$(NM) --size-sort --demangle --reverse-sort --line-numbers $< > $@
 
 ########################################################################
 #
