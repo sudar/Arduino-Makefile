@@ -697,8 +697,8 @@ $(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp
 # various object conversions
 $(OBJDIR)/%.hex: $(OBJDIR)/%.elf
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
-	@echo
-	@echo
+	@$(ECHO)
+	@$(ECHO)
 	$(call avr_size,$<,$@)
 
 $(OBJDIR)/%.eep: $(OBJDIR)/%.elf
@@ -787,7 +787,7 @@ clean:
 		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEP_FILE) $(DEPS) $(USER_LIB_OBJS)
 
 depends:	$(DEPS)
-		cat $(DEPS) > $(DEP_FILE)
+		$(CAT) $(DEPS) > $(DEP_FILE)
 
 size:		$(OBJDIR) $(TARGET_HEX)
 		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
