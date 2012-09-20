@@ -687,6 +687,13 @@ $(OBJDIR)/%.o: $(OBJDIR)/%.cpp
 $(OBJDIR)/%.d: $(OBJDIR)/%.cpp
 	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
+# generated assembly
+$(OBJDIR)/%.s: $(OBJDIR)/%.cpp
+	$(CXX) -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+
+#$(OBJDIR)/%.lst: $(OBJDIR)/%.s
+#	$(AS) -mmcu=$(MCU) -alhnd $< > $@
+
 # core files
 $(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.c
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
@@ -801,6 +808,12 @@ monitor:
 disasm: $(OBJDIR)/$(TARGET).lss
 	@$(ECHO) The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss
 
-.PHONY:	all clean depends upload raw_upload reset reset_stty size show_boards monitor
+symbol_sizes: $(OBJDIR)/$(TARGET).sym
+	@$(ECHO) A symbol listing sorted by their size have been dumped to $(OBJDIR)/$(TARGET).sym
+
+generated_assembly: $(OBJDIR)/$(TARGET).s
+	@$(ECHO) Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s
+
+.PHONY:	all upload raw_upload reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly
 
 include $(DEP_FILE)
