@@ -798,7 +798,8 @@ show_boards:
 monitor:
 		$(MONITOR_CMD) $(ARD_PORT) $(MONITOR_BAUDRATE)
 
-disasm: all $(OBJDIR)/$(TARGET).lss
+disasm: $(OBJDIR)/$(TARGET).lss
+	@$(ECHO) The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss
 
 .PHONY:	all clean depends upload raw_upload reset reset_stty size show_boards monitor
 
