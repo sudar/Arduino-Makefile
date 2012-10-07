@@ -51,6 +51,13 @@ On Fedora:
        yum install perl-Device-SerialPort
        yum install perl-YAML
 
+On Mac using MacPorts:
+
+       sudo port install p5-device-serialport
+       sudo port install p5-YAML
+
+      and use /opt/local/bin/perl5 instead of /usr/bin/perl
+
 On other systems:
 
        cpanm Device::SerialPort
