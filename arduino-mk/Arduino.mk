@@ -401,6 +401,7 @@ ifndef F_CPU
 F_CPU = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.f_cpu)
 endif
 
+ifeq ($(VARIANT),leonardo) 
 # USB IDs for the Leonardo
 ifndef USB_VID
 USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid)
@@ -408,6 +409,7 @@ endif
 
 ifndef USB_PID
 USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid)
+endif
 endif
 
 # normal programming info
