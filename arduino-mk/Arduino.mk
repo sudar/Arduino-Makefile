@@ -599,6 +599,7 @@ $(OBJDIR)/%.cpp: %.pde
 # the ino -> cpp -> o file
 $(OBJDIR)/%.cpp: %.ino
 	$(ECHO) '#include <Arduino.h>' > $@
+	$(ECHO) '#line 1 "$<"' > $@
 	$(CAT)  $< >> $@
 
 $(OBJDIR)/%.o: $(OBJDIR)/%.cpp
