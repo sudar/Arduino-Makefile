@@ -124,6 +124,8 @@
 # instead copy them to e.g. /home/mjo/arduino.mk/bin then set
 #   ARDML_DIR = /home/mjo/arduino.mk
 #
+# If you'd rather not see the configuration output, define ARDUINO_QUIET.
+#
 ########################################################################
 #
 # DEPENDENCIES
@@ -254,19 +256,25 @@ dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
 # the number of bytes indicated by the second argument.
 space_pad_to = $(shell echo $(1) "                                                      " | head --bytes=$(2))
 
+ifndef ARDUINO_QUIET
+    arduino_output = $(info $(1))
+else
+    arduino_output =
+endif
+
 # Call with some text, and a prefix tag if desired (like [AUTODETECTED]),
-show_config_info = $(info - $(call space_pad_to,$(2),20) $(1))
+show_config_info = $(call arduino_output,- $(call space_pad_to,$(2),20) $(1))
 
 # Call with the name of the variable, a prefix tag if desired (like [AUTODETECTED]),
 # and an explanation if desired (like (found in $$PATH)
 show_config_variable = $(call show_config_info,$(1) = $($(1)) $(3),$(2))
 
 # Just a nice simple visual separator
-show_separator = $(info -------------------------)
+show_separator = $(call arduino_output,-------------------------)
 
 
 $(call show_separator)
-$(info Arduino.mk Configuration:)
+$(call arduino_output,Arduino.mk Configuration:)
 
 ifndef ARDUINO_DIR
     AUTO_ARDUINO_DIR := $(firstword \
@@ -598,7 +606,7 @@ endif
 
 
 ifneq (,$(strip $(ARDUINO_LIBS)))
-    $(info -)
+    $(call arduino_output,-)
     $(call show_config_info,ARDUINO_LIBS =)
 endif
 ifneq (,$(strip $(USER_LIB_NAMES)))
