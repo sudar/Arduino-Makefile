@@ -848,6 +848,8 @@ raw_upload:	$(TARGET_HEX)
 
 reset:
 		$(RESET_CMD) $(ARD_PORT)
+		sleep 1 # If avrdude is called to early after the reset, the upload may
+		        # hang.
 
 # stty on MacOS likes -F, but on Debian it likes -f redirecting
 # stdin/out appears to work but generates a spurious error on MacOS at
