@@ -649,81 +649,82 @@ $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c
 # normal local sources
 # .o rules are for objects, .d for dependency tracking
 # there seems to be an awful lot of duplication here!!!
-$(OBJDIR)/%.o: %.c
+COMMON_DEPS := Makefile
+$(OBJDIR)/%.o: %.c $(COMMON_DEPS)
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.cc
+$(OBJDIR)/%.o: %.cc $(COMMON_DEPS)
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.cpp
+$(OBJDIR)/%.o: %.cpp $(COMMON_DEPS)
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.S
+$(OBJDIR)/%.o: %.S $(COMMON_DEPS)
 	$(CC) -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.s
+$(OBJDIR)/%.o: %.s $(COMMON_DEPS)
 	$(CC) -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
-$(OBJDIR)/%.d: %.c
+$(OBJDIR)/%.d: %.c $(COMMON_DEPS)
 	$(CC) -MM $(CPPFLAGS) $(CFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
-$(OBJDIR)/%.d: %.cc
+$(OBJDIR)/%.d: %.cc $(COMMON_DEPS)
 	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
-$(OBJDIR)/%.d: %.cpp
+$(OBJDIR)/%.d: %.cpp $(COMMON_DEPS)
 	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
-$(OBJDIR)/%.d: %.S
+$(OBJDIR)/%.d: %.S $(COMMON_DEPS)
 	$(CC) -MM $(CPPFLAGS) $(ASFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
-$(OBJDIR)/%.d: %.s
+$(OBJDIR)/%.d: %.s $(COMMON_DEPS)
 	$(CC) -MM $(CPPFLAGS) $(ASFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
 # the pde -> cpp -> o file
-$(OBJDIR)/%.cpp: %.pde
+$(OBJDIR)/%.cpp: %.pde $(COMMON_DEPS)
 	$(ECHO) '#include "WProgram.h"' > $@
 	$(CAT)  $< >> $@
 
 # the ino -> cpp -> o file
-$(OBJDIR)/%.cpp: %.ino
+$(OBJDIR)/%.cpp: %.ino $(COMMON_DEPS)
 	$(ECHO) '#include <Arduino.h>' > $@
 	$(CAT)  $< >> $@
 
-$(OBJDIR)/%.o: $(OBJDIR)/%.cpp
+$(OBJDIR)/%.o: $(OBJDIR)/%.cpp $(COMMON_DEPS)
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.d: $(OBJDIR)/%.cpp
+$(OBJDIR)/%.d: $(OBJDIR)/%.cpp $(COMMON_DEPS)
 	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
 # generated assembly
-$(OBJDIR)/%.s: $(OBJDIR)/%.cpp
+$(OBJDIR)/%.s: $(OBJDIR)/%.cpp $(COMMON_DEPS)
 	$(CXX) -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 #$(OBJDIR)/%.lst: $(OBJDIR)/%.s
 #	$(AS) -mmcu=$(MCU) -alhnd $< > $@
 
 # core files
-$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.c
+$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS)
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp
+$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp $(COMMON_DEPS)
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # various object conversions
-$(OBJDIR)/%.hex: $(OBJDIR)/%.elf
+$(OBJDIR)/%.hex: $(OBJDIR)/%.elf $(COMMON_DEPS)
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
 	@$(ECHO)
 	@$(ECHO)
 	$(call avr_size,$<,$@)
 
-$(OBJDIR)/%.eep: $(OBJDIR)/%.elf
+$(OBJDIR)/%.eep: $(OBJDIR)/%.elf $(COMMON_DEPS)
 	-$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" \
 		--change-section-lma .eeprom=0 -O ihex $< $@
 
-$(OBJDIR)/%.lss: $(OBJDIR)/%.elf
+$(OBJDIR)/%.lss: $(OBJDIR)/%.elf $(COMMON_DEPS)
 	$(OBJDUMP) -h --source --demangle --wide $< > $@
 
-$(OBJDIR)/%.sym: $(OBJDIR)/%.elf
+$(OBJDIR)/%.sym: $(OBJDIR)/%.elf $(COMMON_DEPS)
 	$(NM) --size-sort --demangle --reverse-sort --line-numbers $< > $@
 
 ########################################################################
