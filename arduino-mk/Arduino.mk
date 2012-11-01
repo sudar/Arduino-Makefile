@@ -589,8 +589,8 @@ CXXFLAGS      = -fno-exceptions $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS)
 ASFLAGS       = -mmcu=$(MCU) -I. -x assembler-with-cpp
 LDFLAGS       = -mmcu=$(MCU) -Wl,--gc-sections -Os $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS)
 
-# Expand and pick the first port
-ARD_PORT      = $(firstword $(wildcard $(ARDUINO_PORT)))
+# Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
+get_arduino_port = $(if $(wildcard $(ARDUINO_PORT)),$(firstword $(wildcard $(ARDUINO_PORT))),$(error Arduino port $(ARDUINO_PORT) not found!))
 
 # Command for avr_size: do $(call avr_size,elffile,hexfile)
 ifneq (,$(findstring AVR,$(shell $(SIZE) --help)))
@@ -740,7 +740,7 @@ ifdef AVRDUDE_CONF
     AVRDUDE_COM_OPTS += -C $(AVRDUDE_CONF)
 endif
 
-AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P $(ARD_PORT)
+AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P $(call get_arduino_port)
 
 ifndef ISP_PROG
     ISP_PROG	   = -c stk500v2
@@ -775,7 +775,7 @@ raw_upload:	$(TARGET_HEX)
 			-U flash:w:$(TARGET_HEX):i
 
 reset:
-		$(RESET_CMD) $(ARD_PORT)
+		$(RESET_CMD) $(call get_arduino_port)
 
 # stty on MacOS likes -F, but on Debian it likes -f redirecting
 # stdin/out appears to work but generates a spurious error on MacOS at
@@ -784,9 +784,9 @@ reset_stty:
 		for STTYF in 'stty -F' 'stty --file' 'stty -f' 'stty <' ; \
 		  do $$STTYF /dev/tty >/dev/null 2>/dev/null && break ; \
 		done ;\
-		$$STTYF $(ARD_PORT)  hupcl ;\
+		$$STTYF $(call get_arduino_port)  hupcl ;\
 		(sleep 0.1 || sleep 1)     ;\
-		$$STTYF $(ARD_PORT) -hupcl
+		$$STTYF $(call get_arduino_port) -hupcl
 
 ispload:	$(TARGET_HEX)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e \
@@ -812,7 +812,7 @@ show_boards:
 		$(PARSE_BOARD_CMD) --boards
 
 monitor:
-		$(MONITOR_CMD) $(ARD_PORT) $(MONITOR_BAUDRATE)
+		$(MONITOR_CMD) $(call get_arduino_port) $(MONITOR_BAUDRATE)
 
 disasm: $(OBJDIR)/$(TARGET).lss
 	@$(ECHO) The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss
