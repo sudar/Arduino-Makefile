@@ -445,6 +445,10 @@ ifndef OBJDIR
 OBJDIR  	  = build-$(BOARD_TAG)
 endif
 
+ifndef HEX_MAXIMUM_SIZE
+HEX_MAXIMUM_SIZE  = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.maximum_size)
+endif
+
 ########################################################################
 # Local sources
 #
@@ -655,7 +659,7 @@ AVRDUDE_ISP_OPTS = -P $(ISP_PORT) $(ISP_PROG)
 # Explicit targets start here
 #
 
-all: 		$(OBJDIR) $(TARGET_HEX)
+all: 		$(OBJDIR) $(TARGET_HEX) verify_size
 
 $(OBJDIR):
 		mkdir $(OBJDIR)
@@ -671,7 +675,7 @@ $(DEP_FILE):	$(OBJDIR) $(DEPS)
 
 upload:		reset raw_upload
 
-raw_upload:	$(TARGET_HEX)
+raw_upload:	$(TARGET_HEX) verify_size
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			-U flash:w:$(TARGET_HEX):i
 
@@ -689,7 +693,7 @@ reset_stty:
 		(sleep 0.1 || sleep 1)     ;\
 		$$STTYF $(ARD_PORT) -hupcl 
 
-ispload:	$(TARGET_HEX)
+ispload:	$(TARGET_HEX) verify_size
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e \
 			-U lock:w:$(ISP_LOCK_FUSE_PRE):m \
 			-U hfuse:w:$(ISP_HIGH_FUSE):m \
@@ -715,6 +719,9 @@ show_boards:
 monitor:
 		$(MONITOR_CMD) $(ARD_PORT) $(MONITOR_BAUDRATE)
 
-.PHONY:	all clean depends upload raw_upload reset reset_stty size show_boards monitor
+verify_size:	$(TARGET_HEX)
+		$(ARDMK_PATH)/ard-verify-size $(TARGET_HEX) $(HEX_MAXIMUM_SIZE)
+
+.PHONY:	all clean depends upload raw_upload reset reset_stty size show_boards monitor verify_size
 
 include $(DEP_FILE)
