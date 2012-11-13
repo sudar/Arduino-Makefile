@@ -719,9 +719,12 @@ show_boards:
 monitor:
 		$(MONITOR_CMD) $(ARD_PORT) $(MONITOR_BAUDRATE)
 
-verify_size:	$(TARGET_HEX)
+$(TARGET_HEX).sizeok: $(TARGET_HEX)
 		$(ARDMK_PATH)/ard-verify-size $(TARGET_HEX) $(HEX_MAXIMUM_SIZE)
+		touch $@
 
-.PHONY:	all clean depends upload raw_upload reset reset_stty size show_boards monitor verify_size
+verify_size:	$(TARGET_HEX) $(TARGET_HEX).sizeok
+
+.PHONY:	all clean depends upload raw_upload reset reset_stty size show_boards monitorx verify_size
 
 include $(DEP_FILE)
