@@ -113,6 +113,10 @@
 #                          - Added support for utility directory
 #                            within SYS and USER libraries
 #
+#        ?.?.?.? 09.xi.2012 gaftech
+#                          - Add EEPROM upload support: eeprom and raw_eeprom targets
+#                            and ISP_EEPROM option.
+#
 ########################################################################
 #
 # PATHS YOU NEED TO SET UP
@@ -601,6 +605,7 @@ endif
 # The name of the main targets
 TARGET_HEX = $(OBJDIR)/$(TARGET).hex
 TARGET_ELF = $(OBJDIR)/$(TARGET).elf
+TARGET_EEP = $(OBJDIR)/$(TARGET).eep
 TARGETS    = $(OBJDIR)/$(TARGET).*
 CORE_LIB   = $(OBJDIR)/libcore.a
 
@@ -818,15 +823,28 @@ ifndef ISP_PROG
     ISP_PROG	   = -c stk500v2
 endif
 
+# usb seems to be a reasonable default, at least on linux
+ifndef ISP_PORT
+	ISP_PORT       = usb
+endif
+
 AVRDUDE_ISP_OPTS = -P $(ISP_PORT) $(ISP_PROG)
 
+ifndef ISP_EEPROM
+	ISP_EEPROM  = 0
+endif
+
+AVRDUDE_MEM_OPTS = -U flash:w:$(TARGET_HEX):i
+ifneq ($(ISP_EEPROM), 0)
+	AVRDUDE_MEM_OPTS += -U eeprom:w:$(TARGET_EEP):i
+endif
 
 ########################################################################
 #
 # Explicit targets start here
 #
 
-all: 		$(OBJDIR) $(TARGET_HEX)
+all: 		$(OBJDIR) $(TARGET_EEP) $(TARGET_HEX)
 
 $(OBJDIR):
 		mkdir $(OBJDIR)
@@ -846,6 +864,11 @@ raw_upload:	$(TARGET_HEX)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			-U flash:w:$(TARGET_HEX):i
 
+eeprom:		reset raw_eeprom
+
+raw_eeprom:	$(TARGET_EEP) $(TARGET_HEX)
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) $(AVRDUDE_MEM_OPTS)
+
 reset:
 		$(RESET_CMD) $(ARD_PORT)
 
@@ -860,14 +883,14 @@ reset_stty:
 		(sleep 0.1 || sleep 1)     ;\
 		$$STTYF $(ARD_PORT) -hupcl
 
-ispload:	$(TARGET_HEX)
+ispload:	$(TARGET_EEP) $(TARGET_HEX)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e \
 			-U lock:w:$(ISP_LOCK_FUSE_PRE):m \
 			-U hfuse:w:$(ISP_HIGH_FUSE):m \
 			-U lfuse:w:$(ISP_LOW_FUSE):m \
 			-U efuse:w:$(ISP_EXT_FUSE):m
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -D \
-			-U flash:w:$(TARGET_HEX):i
+			$(AVRDUDE_MEM_OPTS)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) \
 			-U lock:w:$(ISP_LOCK_FUSE_POST):m
 
