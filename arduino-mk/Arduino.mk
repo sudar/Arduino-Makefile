@@ -546,7 +546,7 @@ ifndef ISP_EXT_FUSE
 endif
 
 # Everything gets built in here
-OBJDIR  	  = build-cli
+OBJDIR  	  ?= build-cli
 
 ########################################################################
 # Local sources
