@@ -119,6 +119,7 @@ The following are the list of changes that I have made or merged in this fork. H
 ###   	0.10.2 15.xii.2012 Sudar
 - Added sketch size verification. (https://github.com/fornellas)
 - Show original line number for error messages (https://github.com/WizenedEE)
+- Removed -w from CPPFLAGS to show warnings (https://github.com/gaftech)
 
 ## Know Issues
 - Because of the way the makefile is structured, the configuration parameters gets printed twice. 

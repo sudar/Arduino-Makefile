@@ -144,6 +144,7 @@
 #   	0.10.2 15.xii.2012 Sudar
 #   		- Added sketch size verification. (https://github.com/fornellas)
 #   		- Show original line number for error messages (https://github.com/WizenedEE)
+#   		- Removed -w from CPPFLAGS to show warnings (https://github.com/gaftech)
 #
 ########################################################################
 #
@@ -708,7 +709,7 @@ USER_LIB_OBJS = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(USER_LIB_
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
 CPPFLAGS      += -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
 			-I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
-			$(SYS_INCLUDES) $(USER_INCLUDES) -g -Os -w -Wall \
+			$(SYS_INCLUDES) $(USER_INCLUDES) -g -Os -Wall \
 			-DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID) \
 			-ffunction-sections -fdata-sections
 CFLAGS        += -std=gnu99 $(EXTRA_FLAGS) $(EXTRA_CFLAGS)
