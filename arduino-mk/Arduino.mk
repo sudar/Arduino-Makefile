@@ -113,6 +113,18 @@
 #                          - Added support for utility directory
 #                            within SYS and USER libraries
 #
+#          0.10 17.ix.12   M J Oldfield
+#            - Added installation notes for Fedora (ex Rickard Lindberg).
+#            - Changed size target so that it looks at the ELF object, 
+#              not the hexfile (ex Jared Szechy and Scott Howard).
+#            - Fixed ARDUNIO typo in README.md (ex Kalin Kozhuharov).
+#            - Tweaked OBJDIR handling (ex Matthias Urlichs and Scott Howard).
+#            - Changed the name of the Debian/Ubuntu package (ex
+#              Scott Howard).
+#            - Only set AVRDUDE_CONF if it's not set (ex Tom Hall).
+#            - Added support for USB_PID/VID used by the Leonardo (ex Dan
+#              Villiom Podlaski Christiansen and Marc Plano-Lesay).
+#                      
 ########################################################################
 #
 # PATHS YOU NEED TO SET UP
@@ -511,6 +523,15 @@ ifndef F_CPU
     F_CPU = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.f_cpu)
 endif
 
+# USB IDs for the Leonardo
+ifndef USB_VID
+USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid)
+endif
+
+ifndef USB_PID
+USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid)
+endif
+
 # normal programming info
 ifndef AVRDUDE_ARD_PROGRAMMER
     AVRDUDE_ARD_PROGRAMMER = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.protocol)
@@ -541,8 +562,10 @@ ifndef ISP_EXT_FUSE
     ISP_EXT_FUSE       = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.extended_fuses)
 endif
 
-# Everything gets built in here
-OBJDIR  	  = build-cli
+# Everything gets built in here (include BOARD_TAG now)
+ifndef OBJDIR
+OBJDIR  	  = build-$(BOARD_TAG)
+endif
 
 ########################################################################
 # Local sources
@@ -651,6 +674,7 @@ USER_LIB_OBJS = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(USER_LIB_
 CPPFLAGS      += -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
 			-I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
 			$(SYS_INCLUDES) $(USER_INCLUDES) -g -Os -w -Wall \
+			-DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID) \
 			-ffunction-sections -fdata-sections
 CFLAGS        += -std=gnu99
 CXXFLAGS      += -fno-exceptions
