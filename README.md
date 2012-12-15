@@ -50,6 +50,13 @@ On Fedora:
        yum install perl-Device-SerialPort
        yum install perl-YAML
 
+On Mac using MacPorts:
+
+       sudo port install p5-device-serialport
+       sudo port install p5-YAML
+
+      and use /opt/local/bin/perl5 instead of /usr/bin/perl
+
 On other systems:
 
        cpanm Device::SerialPort
@@ -120,6 +127,8 @@ The following are the list of changes that I have made or merged in this fork. H
 - Added sketch size verification. (https://github.com/fornellas)
 - Show original line number for error messages (https://github.com/WizenedEE)
 - Removed -w from CPPFLAGS to show warnings (https://github.com/gaftech)
+- Changed shebang to use /usr/bin/env (https://github.com/anm)
+- set USB_VID and USB_PID only for leonardo boards(https://github.com/alohr)
 
 ## Know Issues
 - Because of the way the makefile is structured, the configuration parameters gets printed twice. 

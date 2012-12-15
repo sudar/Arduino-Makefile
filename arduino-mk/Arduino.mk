@@ -145,6 +145,8 @@
 #   		- Added sketch size verification. (https://github.com/fornellas)
 #   		- Show original line number for error messages (https://github.com/WizenedEE)
 #   		- Removed -w from CPPFLAGS to show warnings (https://github.com/gaftech)
+#   		- Changed shebang to use /usr/bin/env (https://github.com/anm)
+#   		- set USB_VID and USB_PID only for leonardo boards(https://github.com/alohr)
 #
 ########################################################################
 #
@@ -554,6 +556,7 @@ ifndef F_CPU
     F_CPU = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.f_cpu)
 endif
 
+ifeq ($(VARIANT),leonardo) 
 # USB IDs for the Leonardo
 ifndef USB_VID
 USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid)
@@ -561,6 +564,7 @@ endif
 
 ifndef USB_PID
 USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid)
+endif
 endif
 
 # normal programming info
