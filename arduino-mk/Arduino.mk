@@ -141,6 +141,9 @@
 #   		- Make everybody depend on the makefile, in case cflags are changed, etc. (https://github.com/rpavlik)
 #   		- Make the makefile error if the arduino port is not present. (https://github.com/rpavlik)
 #
+#   	0.10.2 15.xii.2012 Sudar
+#   		- Added sketch size verification. (https://github.com/fornellas)
+#
 ########################################################################
 #
 # PATHS YOU NEED TO SET UP
@@ -261,6 +264,8 @@
 #   make disasm      - generate a .lss file in build-cli that contains
 #                      disassembly of the compiled file interspersed
 #                      with your original source code.
+#   make verify_size - Verify that the size of the final file is less than
+#   				   the capacity of the micro controller.
 #
 ########################################################################
 #
@@ -591,6 +596,10 @@ ifndef OBJDIR
 OBJDIR  	  = build-$(BOARD_TAG)
 endif
 
+ifndef HEX_MAXIMUM_SIZE
+HEX_MAXIMUM_SIZE  = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.maximum_size)
+endif
+
 ########################################################################
 # Local sources
 #
@@ -883,7 +892,7 @@ AVRDUDE_ISP_OPTS = -P $(ISP_PORT) $(ISP_PROG)
 # Explicit targets start here
 #
 
-all: 		$(OBJDIR) $(TARGET_HEX)
+all: 		$(OBJDIR) $(TARGET_HEX) verify_size
 
 $(OBJDIR):
 		mkdir $(OBJDIR)
@@ -899,7 +908,7 @@ $(DEP_FILE):	$(OBJDIR) $(DEPS)
 
 upload:		raw_upload
 
-raw_upload:	reset $(TARGET_HEX)
+raw_upload:	reset $(TARGET_HEX) verify_size
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			-U flash:w:$(TARGET_HEX):i
 
@@ -917,7 +926,7 @@ reset_stty:
 		(sleep 0.1 || sleep 1)     ;\
 		$$STTYF $(call get_arduino_port) -hupcl
 
-ispload:	$(TARGET_HEX)
+ispload:	$(TARGET_HEX) verify_size
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e \
 			-U lock:w:$(ISP_LOCK_FUSE_PRE):m \
 			-U hfuse:w:$(ISP_HIGH_FUSE):m \
@@ -949,10 +958,16 @@ disasm: $(OBJDIR)/$(TARGET).lss
 symbol_sizes: $(OBJDIR)/$(TARGET).sym
 	@$(ECHO) A symbol listing sorted by their size have been dumped to $(OBJDIR)/$(TARGET).sym
 
+$(TARGET_HEX).sizeok: $(TARGET_HEX)
+		$(ARDMK_PATH)/ard-verify-size $(TARGET_HEX) $(HEX_MAXIMUM_SIZE)
+		touch $@
+
+verify_size:	$(TARGET_HEX) $(TARGET_HEX).sizeok
+
 generated_assembly: $(OBJDIR)/$(TARGET).s
 	@$(ECHO) Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s
 
-.PHONY:	all upload raw_upload reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly
+.PHONY:	all upload raw_upload reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly verify_size
 
 # added - in the beginning, so that we don't get an error if the file is not present
 ifneq ($(MAKECMDGOALS),clean)

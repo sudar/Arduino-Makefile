@@ -116,6 +116,9 @@ The following are the list of changes that I have made or merged in this fork. H
 - Make everybody depend on the makefile, in case cflags are changed, etc.
 - Make the makefile error if the arduino port is not present.
 
+###   	0.10.2 15.xii.2012 Sudar
+- Added sketch size verification. (https://github.com/fornellas)
+
 ## Know Issues
 - Because of the way the makefile is structured, the configuration parameters gets printed twice. 
 - Doesn't work with Leonardo yet.
