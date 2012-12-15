@@ -9,7 +9,7 @@ use YAML;
 
 my %Opt = 
   (
-   boards_txt => '/Applications/Arduino.app/Contents/Resources/Java/hardware/arduino/boards.txt',
+   boards_txt => "$ENV{'ARDUINO_DIR'}/hardware/arduino/boards.txt",
   );
 
 GetOptions(\%Opt,
