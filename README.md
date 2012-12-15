@@ -103,6 +103,19 @@ The following are the list of changes that I have made or merged in this fork. H
 ###   0.10 17.ix.12   M J Oldfield
 - Merged all changes from Upstream
 
+###  0.10.1 15.xii.2012 Sudar
+- Merged all changes from Upstream and the following changes from https://github.com/rpavlik
+- Allow passing extra flags
+- Make listing files more useful
+- Add knowledge of device-specific assembler
+- Use variables instead of hardcoded commands
+- Make disasm more helpful
+- Change .sym output
+- Provide symbol_sizes and generated_assembly targets.
+- Be able to silence configuration output
+- Make everybody depend on the makefile, in case cflags are changed, etc.
+- Make the makefile error if the arduino port is not present.
+
 ## Know Issues
 - Because of the way the makefile is structured, the configuration parameters gets printed twice. 
 - Doesn't work with Leonardo yet.
