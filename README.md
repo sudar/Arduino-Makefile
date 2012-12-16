@@ -37,14 +37,30 @@ On Linux, you might prefer:
     AVR_TOOLS_DIR = /usr
 
 The Makefile also delegates resetting the board to a short Perl program.
-You'll need to install Device::SerialPort to use it though. On Debian or 
-Ubuntu do
+You'll need to install `Device::SerialPort` to use it though. You'll also
+need the `YAML` library to run ard-parse-boards.
 
-       apt-get install libdevice-serialport-perl libconfig-yaml-perl
+On Debian or Ubuntu:
 
-On other systems
+       apt-get install libdevice-serial-perl
+       apt-get install libyaml-perl
+
+On Fedora:
+
+       yum install perl-Device-SerialPort
+       yum install perl-YAML
+
+On Mac using MacPorts:
+
+       sudo port install p5-device-serialport
+       sudo port install p5-YAML
+
+      and use /opt/local/bin/perl5 instead of /usr/bin/perl
+
+On other systems:
 
        cpanm Device::SerialPort
+       cpanm YAML
 
 ## User Libraries
 
@@ -90,6 +106,29 @@ The following are the list of changes that I have made or merged in this fork. H
 
 ###   0.9.3.2 10.ix.2012 Sudar
 - Fixed a typo in README. Issue reported at upstream (https://github.com/mjoldfield/Arduino-Makefile/issues/21)
+
+###   0.10 17.ix.12   M J Oldfield
+- Merged all changes from Upstream
+
+###  0.10.1 15.xii.2012 Sudar
+- Merged all changes from Upstream and the following changes from https://github.com/rpavlik
+- Allow passing extra flags
+- Make listing files more useful
+- Add knowledge of device-specific assembler
+- Use variables instead of hardcoded commands
+- Make disasm more helpful
+- Change .sym output
+- Provide symbol_sizes and generated_assembly targets.
+- Be able to silence configuration output
+- Make everybody depend on the makefile, in case cflags are changed, etc.
+- Make the makefile error if the arduino port is not present.
+
+###   	0.10.2 15.xii.2012 Sudar
+- Added sketch size verification. (https://github.com/fornellas)
+- Show original line number for error messages (https://github.com/WizenedEE)
+- Removed -w from CPPFLAGS to show warnings (https://github.com/gaftech)
+- Changed shebang to use /usr/bin/env (https://github.com/anm)
+- set USB_VID and USB_PID only for leonardo boards(https://github.com/alohr)
 
 ## Know Issues
 - Because of the way the makefile is structured, the configuration parameters gets printed twice. 

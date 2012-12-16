@@ -113,9 +113,46 @@
 #                          - Added support for utility directory
 #                            within SYS and USER libraries
 #
-#        ?.?.?.? 09.xi.2012 gaftech
-#                          - Add EEPROM upload support: eeprom and raw_eeprom targets
-#                            and ISP_EEPROM option.
+#   	0.9.3.2 10.ix.2012 Sudar
+# 						   - Fixed a typo in README. Issue reported at upstream (https://github.com/mjoldfield/Arduino-Makefile/issues/21)
+#
+#          0.10 17.ix.12   M J Oldfield
+#            - Added installation notes for Fedora (ex Rickard Lindberg).
+#            - Changed size target so that it looks at the ELF object, 
+#              not the hexfile (ex Jared Szechy and Scott Howard).
+#            - Fixed ARDUNIO typo in README.md (ex Kalin Kozhuharov).
+#            - Tweaked OBJDIR handling (ex Matthias Urlichs and Scott Howard).
+#            - Changed the name of the Debian/Ubuntu package (ex
+#              Scott Howard).
+#            - Only set AVRDUDE_CONF if it's not set (ex Tom Hall).
+#            - Added support for USB_PID/VID used by the Leonardo (ex Dan
+#              Villiom Podlaski Christiansen and Marc Plano-Lesay).
+#                      
+#   	0.10.1 15.xii.2012 Sudar
+#   		- Merged all changes from Upstream and from https://github.com/rpavlik
+#   		- Allow passing extra flags (https://github.com/rpavlik)
+#   		- Make listing files more useful (https://github.com/rpavlik)
+#   		- Add knowledge of device-specific assembler (https://github.com/rpavlik)
+#   		- Use variables instead of hardcoded commands (https://github.com/rpavlik)
+#   		- Make disasm more helpful (https://github.com/rpavlik)
+#   		- Change .sym output (https://github.com/rpavlik)
+#   		- Provide symbol_sizes and generated_assembly targets. (https://github.com/rpavlik)
+#   		- Be able to silence configuration output (https://github.com/rpavlik)
+#   		- Make everybody depend on the makefile, in case cflags are changed, etc. (https://github.com/rpavlik)
+#   		- Make the makefile error if the arduino port is not present. (https://github.com/rpavlik)
+#
+#   	0.10.2 15.xii.2012 Sudar
+#   		- Added sketch size verification. (https://github.com/fornellas)
+#   		- Show original line number for error messages (https://github.com/WizenedEE)
+#   		- Removed -w from CPPFLAGS to show warnings (https://github.com/gaftech)
+#   		- Changed shebang to use /usr/bin/env (https://github.com/anm)
+#   		- set USB_VID and USB_PID only for leonardo boards(https://github.com/alohr)
+#
+#		0.10.3 16.xii 2012 gaftech
+#           - Enabling creation of EEPROM file (.eep)
+#           - EEPROM upload: eeprom and raw_eeprom targets
+#           - Auto EEPROM upload with isp mode: ISP_EEPROM option.
+#           - Allow custom OBJDIR
 #
 ########################################################################
 #
@@ -162,6 +199,8 @@
 # If you don't install the ard-... binaries to /usr/local/bin, but
 # instead copy them to e.g. /home/mjo/arduino.mk/bin then set
 #   ARDML_DIR = /home/mjo/arduino.mk
+#
+# If you'd rather not see the configuration output, define ARDUINO_QUIET.
 #
 ########################################################################
 #
@@ -235,6 +274,10 @@
 #   make disasm      - generate a .lss file in build-cli that contains
 #                      disassembly of the compiled file interspersed
 #                      with your original source code.
+#   make verify_size - Verify that the size of the final file is less than
+#   				   the capacity of the micro controller.
+#   make eeprom      - upload the eep file
+#	make raw_eeprom  - upload the eep file without first resetting
 #
 ########################################################################
 #
@@ -274,6 +317,9 @@
 #     ISP_LOW_FUSE       = 0xff
 #     ISP_EXT_FUSE       = 0x01
 #
+# You can specify to also upload the EEPROM file:
+#     ISP_EEPROM   = 1
+#
 # I think the fuses here are fine for uploading to the ATmega168
 # without bootloader.
 #
@@ -294,19 +340,25 @@ dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
 # the number of bytes indicated by the second argument.
 space_pad_to = $(shell echo $(1) "                                                      " | head -c$(2))
 
+ifndef ARDUINO_QUIET
+    arduino_output = $(info $(1))
+else
+    arduino_output =
+endif
+
 # Call with some text, and a prefix tag if desired (like [AUTODETECTED]),
-show_config_info = $(info - $(call space_pad_to,$(2),20) $(1))
+show_config_info = $(call arduino_output,- $(call space_pad_to,$(2),20) $(1))
 
 # Call with the name of the variable, a prefix tag if desired (like [AUTODETECTED]),
 # and an explanation if desired (like (found in $$PATH)
 show_config_variable = $(call show_config_info,$(1) = $($(1)) $(3),$(2))
 
 # Just a nice simple visual separator
-show_separator = $(info -------------------------)
+show_separator = $(call arduino_output,-------------------------)
 
 
 $(call show_separator)
-$(info Arduino.mk Configuration:)
+$(call arduino_output,Arduino.mk Configuration:)
 
 ifndef ARDUINO_DIR
     AUTO_ARDUINO_DIR := $(firstword \
@@ -515,6 +567,17 @@ ifndef F_CPU
     F_CPU = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.f_cpu)
 endif
 
+ifeq ($(VARIANT),leonardo) 
+# USB IDs for the Leonardo
+ifndef USB_VID
+USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid)
+endif
+
+ifndef USB_PID
+USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid)
+endif
+endif
+
 # normal programming info
 ifndef AVRDUDE_ARD_PROGRAMMER
     AVRDUDE_ARD_PROGRAMMER = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.protocol)
@@ -545,8 +608,14 @@ ifndef ISP_EXT_FUSE
     ISP_EXT_FUSE       = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.extended_fuses)
 endif
 
-# Everything gets built in here
-OBJDIR  	  ?= build-cli
+# Everything gets built in here (include BOARD_TAG now)
+ifndef OBJDIR
+OBJDIR  	  = build-$(BOARD_TAG)
+endif
+
+ifndef HEX_MAXIMUM_SIZE
+HEX_MAXIMUM_SIZE  = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.maximum_size)
+endif
 
 ########################################################################
 # Local sources
@@ -615,6 +684,7 @@ DEP_FILE   = $(OBJDIR)/depends.mk
 # Names of executables
 CC      = $(AVR_TOOLS_PATH)/avr-gcc
 CXX     = $(AVR_TOOLS_PATH)/avr-g++
+AS      = $(AVR_TOOLS_PATH)/avr-as
 OBJCOPY = $(AVR_TOOLS_PATH)/avr-objcopy
 OBJDUMP = $(AVR_TOOLS_PATH)/avr-objdump
 AR      = $(AVR_TOOLS_PATH)/avr-ar
@@ -656,15 +726,16 @@ USER_LIB_OBJS = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(USER_LIB_
 CPPFLAGS      += -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
 			-I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
 			$(SYS_INCLUDES) $(USER_INCLUDES) -g -Os -Wall \
+			-DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID) \
 			-ffunction-sections -fdata-sections
-CFLAGS        += -std=gnu99
-CXXFLAGS      += -fno-exceptions
+CFLAGS        += -std=gnu99 $(EXTRA_FLAGS) $(EXTRA_CFLAGS)
+CXXFLAGS      += -fno-exceptions $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS)
 ASFLAGS       += -mmcu=$(MCU) -I. -x assembler-with-cpp
-LDFLAGS       += -mmcu=$(MCU) -Wl,--gc-sections -Os
+LDFLAGS       += -mmcu=$(MCU) -Wl,--gc-sections -Os $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS)
 SIZEFLAGS     ?= --mcu=$(MCU) -C
 
-# Expand and pick the first port
-ARD_PORT      = $(firstword $(wildcard $(ARDUINO_PORT)))
+# Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
+get_arduino_port = $(if $(wildcard $(ARDUINO_PORT)),$(firstword $(wildcard $(ARDUINO_PORT))),$(error Arduino port $(ARDUINO_PORT) not found!))
 
 # Command for avr_size: do $(call avr_size,elffile,hexfile)
 ifneq (,$(findstring AVR,$(shell $(SIZE) --help)))
@@ -681,7 +752,7 @@ endif
 
 
 ifneq (,$(strip $(ARDUINO_LIBS)))
-    $(info -)
+    $(call arduino_output,-)
     $(call show_config_info,ARDUINO_LIBS =)
 endif
 ifneq (,$(strip $(USER_LIB_NAMES)))
@@ -724,77 +795,85 @@ $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c
 # normal local sources
 # .o rules are for objects, .d for dependency tracking
 # there seems to be an awful lot of duplication here!!!
-$(OBJDIR)/%.o: %.c
+COMMON_DEPS := Makefile
+$(OBJDIR)/%.o: %.c $(COMMON_DEPS)
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.cc
+$(OBJDIR)/%.o: %.cc $(COMMON_DEPS)
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.cpp
+$(OBJDIR)/%.o: %.cpp $(COMMON_DEPS)
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.S
+$(OBJDIR)/%.o: %.S $(COMMON_DEPS)
 	$(CC) -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.s
+$(OBJDIR)/%.o: %.s $(COMMON_DEPS)
 	$(CC) -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
-$(OBJDIR)/%.d: %.c
+$(OBJDIR)/%.d: %.c $(COMMON_DEPS)
 	$(CC) -MM $(CPPFLAGS) $(CFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
-$(OBJDIR)/%.d: %.cc
+$(OBJDIR)/%.d: %.cc $(COMMON_DEPS)
 	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
-$(OBJDIR)/%.d: %.cpp
+$(OBJDIR)/%.d: %.cpp $(COMMON_DEPS)
 	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
-$(OBJDIR)/%.d: %.S
+$(OBJDIR)/%.d: %.S $(COMMON_DEPS)
 	$(CC) -MM $(CPPFLAGS) $(ASFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
-$(OBJDIR)/%.d: %.s
+$(OBJDIR)/%.d: %.s $(COMMON_DEPS)
 	$(CC) -MM $(CPPFLAGS) $(ASFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
 #backward compatibility for .pde files
 # We should check for Arduino version, if the file is .pde because a .pde file might be used in Arduino 1.0
 # the pde -> cpp -> o file
-$(OBJDIR)/%.cpp: %.pde
-	$(ECHO) '#if ARDUINO >= 100\n    #include "Arduino.h"\n#else\n    #include "WProgram.h"\n#endif' > $@
+$(OBJDIR)/%.cpp: %.pde $(COMMON_DEPS)
+	$(ECHO) '#if ARDUINO >= 100\n    #include "Arduino.h"\n#else\n    #include "WProgram.h"\n#endif\n#line 1' > $@
 	$(CAT)  $< >> $@
 
 # the ino -> cpp -> o file
-$(OBJDIR)/%.cpp: %.ino
-	$(ECHO) '#include <Arduino.h>' > $@
+$(OBJDIR)/%.cpp: %.ino $(COMMON_DEPS)
+	$(ECHO) '#include <Arduino.h>\n#line 1' > $@
 	$(CAT)  $< >> $@
 
-$(OBJDIR)/%.o: $(OBJDIR)/%.cpp
+$(OBJDIR)/%.o: $(OBJDIR)/%.cpp $(COMMON_DEPS)
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.d: $(OBJDIR)/%.cpp
+$(OBJDIR)/%.d: $(OBJDIR)/%.cpp $(COMMON_DEPS)
 	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
+# generated assembly
+$(OBJDIR)/%.s: $(OBJDIR)/%.cpp $(COMMON_DEPS)
+	$(CXX) -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+
+#$(OBJDIR)/%.lst: $(OBJDIR)/%.s
+#	$(AS) -mmcu=$(MCU) -alhnd $< > $@
+
 # core files
-$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.c
+$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS)
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp
+$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp $(COMMON_DEPS)
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # various object conversions
-$(OBJDIR)/%.hex: $(OBJDIR)/%.elf
+$(OBJDIR)/%.hex: $(OBJDIR)/%.elf $(COMMON_DEPS)
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
-	@echo
-	@echo
+	@$(ECHO)
+	@$(ECHO)
 	$(call avr_size,$<,$@)
 
-$(OBJDIR)/%.eep: $(OBJDIR)/%.elf
+$(OBJDIR)/%.eep: $(OBJDIR)/%.elf $(COMMON_DEPS)
 	-$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" \
 		--change-section-lma .eeprom=0 -O ihex $< $@
 
-$(OBJDIR)/%.lss: $(OBJDIR)/%.elf
-	$(OBJDUMP) -h -S $< > $@
+$(OBJDIR)/%.lss: $(OBJDIR)/%.elf $(COMMON_DEPS)
+	$(OBJDUMP) -h --source --demangle --wide $< > $@
 
-$(OBJDIR)/%.sym: $(OBJDIR)/%.elf
-	$(NM) -n $< > $@
+$(OBJDIR)/%.sym: $(OBJDIR)/%.elf $(COMMON_DEPS)
+	$(NM) --size-sort --demangle --reverse-sort --line-numbers $< > $@
 
 ########################################################################
 #
@@ -817,7 +896,7 @@ ifdef AVRDUDE_CONF
     AVRDUDE_COM_OPTS += -C $(AVRDUDE_CONF)
 endif
 
-AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P $(ARD_PORT)
+AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P $(call get_arduino_port)
 
 ifndef ISP_PROG
     ISP_PROG	   = -c stk500v2
@@ -834,9 +913,11 @@ ifndef ISP_EEPROM
 	ISP_EEPROM  = 0
 endif
 
-AVRDUDE_MEM_OPTS = -U flash:w:$(TARGET_HEX):i
+AVRDUDE_UPLOAD_HEX = -U flash:w:$(TARGET_HEX):i
+AVRDUDE_UPLOAD_EEP = -U eeprom:w:$(TARGET_EEP):i
+AVRDUDE_ISPLOAD_OPTS = $(AVRDUDE_UPLOAD_HEX)
 ifneq ($(ISP_EEPROM), 0)
-	AVRDUDE_MEM_OPTS += -U eeprom:w:$(TARGET_EEP):i
+	AVRDUDE_ISPLOAD_OPTS += $(AVRDUDE_UPLOAD_EEP)
 endif
 
 ########################################################################
@@ -844,7 +925,7 @@ endif
 # Explicit targets start here
 #
 
-all: 		$(OBJDIR) $(TARGET_EEP) $(TARGET_HEX)
+all: 		$(OBJDIR) $(TARGET_EEP) $(TARGET_HEX) verify_size
 
 $(OBJDIR):
 		mkdir $(OBJDIR)
@@ -858,19 +939,20 @@ $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 $(DEP_FILE):	$(OBJDIR) $(DEPS)
 		cat $(DEPS) > $(DEP_FILE)
 
-upload:		reset raw_upload
+upload:		raw_upload
 
-raw_upload:	$(TARGET_HEX)
+raw_upload:	reset $(TARGET_HEX) verify_size
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
-			-U flash:w:$(TARGET_HEX):i
+			$(AVRDUDE_UPLOAD_HEX)
 
 eeprom:		reset raw_eeprom
 
 raw_eeprom:	$(TARGET_EEP) $(TARGET_HEX)
-		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) $(AVRDUDE_MEM_OPTS)
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
+			$(AVRDUDE_UPLOAD_EEP)
 
 reset:
-		$(RESET_CMD) $(ARD_PORT)
+		$(RESET_CMD) $(call get_arduino_port)
 
 # stty on MacOS likes -F, but on Debian it likes -f redirecting
 # stdin/out appears to work but generates a spurious error on MacOS at
@@ -879,18 +961,18 @@ reset_stty:
 		for STTYF in 'stty -F' 'stty --file' 'stty -f' 'stty <' ; \
 		  do $$STTYF /dev/tty >/dev/null 2>/dev/null && break ; \
 		done ;\
-		$$STTYF $(ARD_PORT)  hupcl ;\
+		$$STTYF $(call get_arduino_port)  hupcl ;\
 		(sleep 0.1 || sleep 1)     ;\
-		$$STTYF $(ARD_PORT) -hupcl
+		$$STTYF $(call get_arduino_port) -hupcl
 
-ispload:	$(TARGET_EEP) $(TARGET_HEX)
+ispload:	$(TARGET_EEP) $(TARGET_HEX) verify_size
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e \
 			-U lock:w:$(ISP_LOCK_FUSE_PRE):m \
 			-U hfuse:w:$(ISP_HIGH_FUSE):m \
 			-U lfuse:w:$(ISP_LOW_FUSE):m \
 			-U efuse:w:$(ISP_EXT_FUSE):m
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -D \
-			$(AVRDUDE_MEM_OPTS)
+			$(AVRDUDE_ISPLOAD_OPTS)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) \
 			-U lock:w:$(ISP_LOCK_FUSE_POST):m
 
@@ -898,7 +980,7 @@ clean:
 		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEP_FILE) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR}
 
 depends:	$(DEPS)
-		cat $(DEPS) > $(DEP_FILE)
+		$(CAT) $(DEPS) > $(DEP_FILE)
 
 size:		$(OBJDIR) $(TARGET_HEX)
 		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
@@ -907,11 +989,24 @@ show_boards:
 		$(PARSE_BOARD_CMD) --boards
 
 monitor:
-		$(MONITOR_CMD) $(ARD_PORT) $(MONITOR_BAUDRATE)
+		$(MONITOR_CMD) $(call get_arduino_port) $(MONITOR_BAUDRATE)
 
-disasm: all $(OBJDIR)/$(TARGET).lss
+disasm: $(OBJDIR)/$(TARGET).lss
+	@$(ECHO) The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss
 
-.PHONY:	all clean depends upload raw_upload reset reset_stty size show_boards monitor
+symbol_sizes: $(OBJDIR)/$(TARGET).sym
+	@$(ECHO) A symbol listing sorted by their size have been dumped to $(OBJDIR)/$(TARGET).sym
+
+$(TARGET_HEX).sizeok: $(TARGET_HEX)
+		$(ARDMK_PATH)/ard-verify-size $(TARGET_HEX) $(HEX_MAXIMUM_SIZE)
+		touch $@
+
+verify_size:	$(TARGET_HEX) $(TARGET_HEX).sizeok
+
+generated_assembly: $(OBJDIR)/$(TARGET).s
+	@$(ECHO) Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s
+
+.PHONY:	all upload raw_upload reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly verify_size
 
 # added - in the beginning, so that we don't get an error if the file is not present
 ifneq ($(MAKECMDGOALS),clean)
