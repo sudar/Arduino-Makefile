@@ -8,9 +8,14 @@ use Pod::Usage;
 use YAML;
 
 my %Opt = 
-  (
-   boards_txt => "$ENV{'ARDUINO_DIR'}/hardware/arduino/boards.txt",
-  );
+   (
+    boards_txt => '/Applications/Arduino.app/Contents/Resources/Java/hardware/arduino/boards.txt',
+   );
+
+# if the ARDUINO_DIR is defined, then use it
+if (defined $ENV{'ARDUINO_DIR'}) {
+    $Opt{boards_txt} = "$ENV{'ARDUINO_DIR'}/hardware/arduino/boards.txt";
+}
 
 GetOptions(\%Opt,
 	   "boards_txt=s", # filename of the boards.txt file
