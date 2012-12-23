@@ -478,6 +478,14 @@ ifndef ARDUINO_SKETCHBOOK
                                           $(HOME)/.arduino/preferences.txt | \
                                      sed -e 's/sketchbook.path=//' )
     endif
+
+	# on mac
+    ifneq ($(wildcard $(HOME)/Library/Arduino/preferences.txt),)
+	ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
+                                          $(HOME)/Library/Arduino/preferences.txt | \
+                                     sed -e 's/sketchbook.path=//' )
+    endif
+
     ifneq ($(ARDUINO_SKETCHBOOK),)
         $(call show_config_variable,ARDUINO_SKETCHBOOK,[AUTODETECTED],(in arduino preferences file))
     else
