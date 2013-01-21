@@ -42,7 +42,7 @@ need the `YAML` library to run ard-parse-boards.
 
 On Debian or Ubuntu:
 
-       apt-get install libdevice-serial-perl
+       apt-get install libdevice-serialport-perl
        apt-get install libyaml-perl
 
 On Fedora:
