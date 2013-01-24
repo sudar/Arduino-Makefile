@@ -42,7 +42,7 @@ need the `YAML` library to run ard-parse-boards.
 
 On Debian or Ubuntu:
 
-       apt-get install libdevice-serial-perl
+       apt-get install libdevice-serialport-perl
        apt-get install libyaml-perl
 
 On Fedora:
@@ -129,6 +129,7 @@ The following are the list of changes that I have made or merged in this fork. H
 - Removed -w from CPPFLAGS to show warnings (https://github.com/gaftech)
 - Changed shebang to use /usr/bin/env (https://github.com/anm)
 - set USB_VID and USB_PID only for leonardo boards(https://github.com/alohr)
+- Updated Readme (https://github.com/fr0sty1/)
 
 ## Know Issues
 - Because of the way the makefile is structured, the configuration parameters gets printed twice. 
