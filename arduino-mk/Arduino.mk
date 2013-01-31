@@ -148,11 +148,14 @@
 #   		- Changed shebang to use /usr/bin/env (https://github.com/anm)
 #   		- set USB_VID and USB_PID only for leonardo boards(https://github.com/alohr)
 #
-#		0.10.3 16.xii 2012 gaftech
+#       0.10.3 16.xii 2012 gaftech
 #           - Enabling creation of EEPROM file (.eep)
 #           - EEPROM upload: eeprom and raw_eeprom targets
 #           - Auto EEPROM upload with isp mode: ISP_EEPROM option.
 #           - Allow custom OBJDIR
+#
+#       0.10.4 24.i.2013 gaftech
+#           - Allow adding extra common dependencies (COMMON_DEPS)
 #
 ########################################################################
 #
@@ -803,7 +806,11 @@ $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c
 # normal local sources
 # .o rules are for objects, .d for dependency tracking
 # there seems to be an awful lot of duplication here!!!
+ifdef COMMON_DEPS
+COMMON_DEPS := $(COMMON_DEPS) Makefile
+else
 COMMON_DEPS := Makefile
+endif
 $(OBJDIR)/%.o: %.c $(COMMON_DEPS)
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
