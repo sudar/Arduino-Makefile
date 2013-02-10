@@ -309,7 +309,10 @@ endif
 
 ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
 ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/arduino/cores/arduino
+
+ifndef ARDUINO_VAR_PATH
 ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
+endif
 
 else
 
