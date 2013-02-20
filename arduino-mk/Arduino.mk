@@ -623,9 +623,6 @@ LOCAL_OBJ_FILES = $(LOCAL_C_SRCS:.c=.o)   $(LOCAL_CPP_SRCS:.cpp=.o) \
 		$(LOCAL_INO_SRCS:.ino=.o) $(LOCAL_AS_SRCS:.S=.o)
 LOCAL_OBJS      = $(patsubst %,$(OBJDIR)/%,$(LOCAL_OBJ_FILES))
 
-# Dependency files
-DEPS            = $(LOCAL_OBJS:.o=.d)
-
 ifneq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 1)
     $(error Need exactly one .pde or .ino file)
 endif
@@ -751,6 +748,9 @@ LIB_OBJS      = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(LIB_C_SR
 USER_LIB_OBJS = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(USER_LIB_CPP_SRCS)) \
 		$(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(USER_LIB_C_SRCS))
 
+# Dependency files
+DEPS            = $(LOCAL_OBJS:.o=.d) $(LIB_OBJS:.o=.d) $(USER_LIB_OBJS:.o=.d) $(CORE_OBJS:.o=.d)
+
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
 CPPFLAGS      += -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
 			-I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
@@ -806,16 +806,16 @@ $(call show_separator)
 
 # library sources
 $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c | $(OBJDIR)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp | $(OBJDIR)
-	$(CC) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.cpp | $(OBJDIR)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c | $(OBJDIR)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 # normal local sources
 COMMON_DEPS := Makefile
@@ -851,10 +851,10 @@ $(OBJDIR)/%.s: $(OBJDIR)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
 
 # core files
 $(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS) | $(OBJDIR)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # various object conversions
 $(OBJDIR)/%.hex: $(OBJDIR)/%.elf $(COMMON_DEPS)
