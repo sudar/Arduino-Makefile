@@ -89,6 +89,12 @@
 #            - Only set AVRDUDE_CONF if it's not set (ex Tom Hall).
 #            - Added support for USB_PID/VID used by the Leonardo (ex Dan
 #              Villiom Podlaski Christiansen and Marc Plano-Lesay).
+#
+#         0.11  3.x.2013    Ben Hildred
+#			   - Fixed off by one problem on line numbers
+#			     in error messages.
+#			   - Basic autodetection of libraries.
+#
 #                      
 ########################################################################
 #
@@ -490,7 +496,12 @@ TARGETS    = $(OBJDIR)/$(TARGET).*
 CORE_LIB   = $(OBJDIR)/libcore.a
 
 # A list of dependencies
-DEP_FILE   = $(OBJDIR)/depends.mk
+DEP_FILE     = $(OBJDIR)/depends.mk
+LIB_DEP_FILE = $(OBJDIR)/libdep.mk
+
+ifndef ARDUINO_LIBS
+include $(LIB_DEP_FILE)
+endif
 
 # Names of executables
 CC      = $(AVR_TOOLS_PATH)/avr-gcc
@@ -594,11 +605,13 @@ $(OBJDIR)/%.d: %.s
 # the pde -> cpp -> o file
 $(OBJDIR)/%.cpp: %.pde
 	$(ECHO) '#include "WProgram.h"' > $@
+	$(ECHO) '#line 1' \"$<\" >> $@
 	$(CAT)  $< >> $@
 
 # the ino -> cpp -> o file
 $(OBJDIR)/%.cpp: %.ino
 	$(ECHO) '#include <Arduino.h>' > $@
+	$(ECHO) '#line 1' \"$<\" >> $@
 	$(CAT)  $< >> $@
 
 $(OBJDIR)/%.o: $(OBJDIR)/%.cpp
@@ -665,6 +678,10 @@ $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 
 $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 		$(AR) rcs $@ $(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
+
+$(LIB_DEP_FILE):	$(OBJDIR) *.ino *.cpp *.c *.h *.pde
+		grep -h '^[ 	]*#[ 	]*include[ 	]*<' -- *.ino *.cpp *.c *.h *.pde|sed 's!^.*<\(.*\)\.h>.*!\1!'|sort -u|xargs -d '\n' echo 'ARDUINO_LIBS =' > $(LIB_DEP_FILE)
+		echo >> $(LIB_DEP_FILE)
 
 $(DEP_FILE):	$(OBJDIR) $(DEPS)
 		cat $(DEPS) > $(DEP_FILE)
