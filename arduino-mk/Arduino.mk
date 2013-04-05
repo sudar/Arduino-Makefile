@@ -297,10 +297,10 @@ ifdef ARDUINO_DIR
 
 ifndef AVR_TOOLS_DIR
 AVR_TOOLS_DIR     = $(ARDUINO_DIR)/hardware/tools/avr
+endif
 # The avrdude bundled with Arduino can't find its config
 ifndef AVRDUDE_CONF
-AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
-endif
+AVRDUDE_CONF	  = $(ARDUINO_DIR)/hardware/tools/avrdude.conf
 endif
 
 ifndef AVR_TOOLS_PATH
@@ -356,12 +356,6 @@ endif
 
 ifndef MONITOR_CMD
 MONITOR_CMD = screen
-endif
-
-########################################################################
-# Reset
-ifndef RESET_CMD
-RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino $(ARD_RESET_OPTS)
 endif
 
 ########################################################################
@@ -443,6 +437,17 @@ endif
 # Everything gets built in here (include BOARD_TAG now)
 ifndef OBJDIR
 OBJDIR  	  = build-$(BOARD_TAG)
+endif
+
+
+########################################################################
+# Reset
+ifndef RESET_CMD
+ifeq ($(BOARD_TAG),leonardo)
+RESET_CMD = $(ARDMK_PATH)/ard-reset-leonardo $(ARD_RESET_OPTS)
+else
+RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino $(ARD_RESET_OPTS)
+endif
 endif
 
 ########################################################################
@@ -672,10 +677,16 @@ $(DEP_FILE):	$(OBJDIR) $(DEPS)
 upload:		reset raw_upload
 
 raw_upload:	$(TARGET_HEX)
+		while [ ! -e $(ARDUINO_PORT) ] ;\
+		do \
+			echo "Waiting for arduino at $(ARD_PORT)";\
+			sleep 0.3 ;\
+		done
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			-U flash:w:$(TARGET_HEX):i
 
 reset:		
+		$(ECHO) "Resetting Arduino..."
 		$(RESET_CMD) $(ARD_PORT)
 
 # stty on MacOS likes -F, but on Debian it likes -f redirecting
