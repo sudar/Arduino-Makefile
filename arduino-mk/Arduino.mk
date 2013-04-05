@@ -677,7 +677,7 @@ $(DEP_FILE):	$(OBJDIR) $(DEPS)
 upload:		reset raw_upload
 
 raw_upload:	$(TARGET_HEX)
-		while [ ! -e $(ARDUINO_PORT) ] ;\
+		while [ ! -e $(ARD_PORT) ] ;\
 		do \
 			echo "Waiting for arduino at $(ARD_PORT)";\
 			sleep 0.3 ;\
