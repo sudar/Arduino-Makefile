@@ -1,0 +1,9 @@
+#!/bin/bash
+TARGET_HEX="$1"
+MAX_SIZE="$2"
+HEX_SIZE="$(cut -c12- < $TARGET_HEX | tr -d \\n | tr -d \\r | wc -c | awk '{print $1/2}')"
+if [ $HEX_SIZE -gt $MAX_SIZE ]
+then
+  echo "Sketch size is ${HEX_SIZE} bytes and maximum allowed is ${MAX_SIZE} bytes; see http://www.arduino.cc/en/Guide/Troubleshooting#size for tips on reducing it." 1>&2
+  exit 1
+fi
