@@ -549,6 +549,13 @@ ifndef WAIT_CONNECTION_CMD
     endif
 endif
 
+ifeq ($(BOARD_TAG),leonardo)
+  ERROR_ON_LEONARDO = $(error On leonardo, raw_*** operation is not supported)
+else
+  ERROR_ON_LEONARDO = 
+endif
+
+
 ########################################################################
 # boards.txt parsing
 #
@@ -961,15 +968,17 @@ $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 $(DEP_FILE):	$(OBJDIR) $(DEPS)
 		cat $(DEPS) > $(DEP_FILE)
 
-upload:		raw_upload
+upload:		reset raw_upload
 
-raw_upload:	reset $(TARGET_HEX) verify_size
+raw_upload:	$(TARGET_HEX) verify_size
+		$(ERROR_ON_LEONARDO)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_HEX)
 
-eeprom:		raw_eeprom
+eeprom:		reset raw_eeprom
 
-raw_eeprom:	reset $(TARGET_EEP) $(TARGET_HEX)
+raw_eeprom:	$(TARGET_EEP) $(TARGET_HEX)
+		$(ERROR_ON_LEONARDO)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_EEP)
 
