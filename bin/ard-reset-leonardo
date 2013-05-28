@@ -4,8 +4,9 @@ import sys
 import serial
 
 ser = serial.Serial(sys.argv[1], 57600)
-s.open()
-s.close()
-s.setBaudrate(1200)
+ser.close()
+ser.open()
+ser.close()
+ser.setBaudrate(1200)
 ser.open()
 ser.close()

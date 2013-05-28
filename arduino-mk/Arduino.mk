@@ -531,10 +531,22 @@ endif
 # Reset
 #
 ifndef RESET_CMD
-ifeq ($(BOARD_TAG),leonardo)
-RESET_CMD = $(ARDMK_PATH)/ard-reset-leonardo $(ARD_RESET_OPTS)
-else
-RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino $(ARD_RESET_OPTS)
+    ifeq ($(BOARD_TAG),leonardo)
+       RESET_CMD = $(ARDMK_PATH)/ard-reset-leonardo \
+          $(ARD_RESET_OPTS) $(call get_arduino_port)
+    else
+       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino \
+          $(ARD_RESET_OPTS) $(call get_arduino_port)
+    endif
+endif
+
+ifndef WAIT_CONNECTION_CMD
+    ifeq ($(BOARD_TAG),leonardo)
+       WAIT_CONNECTION_CMD = \
+         $(ARDMK_PATH)/wait-connection-leonardo $(call get_arduino_port)
+    else
+       WAIT_CONNECTION_CMD = 
+    endif
 endif
 
 ########################################################################
@@ -964,13 +976,9 @@ raw_eeprom:	reset $(TARGET_EEP) $(TARGET_HEX)
 # the last part is for leonardo.
 # wait until leonardo reboots and establish a new connection.
 reset:
-		$(ECHO) "Resetting Arduino..."
-		$(RESET_CMD) $(call get_arduino_port)
-		while [ ! -e $(ARD_PORT) ] ;\
-		do \
-			echo "Waiting for arduino at $(ARD_PORT)";\
-			sleep 0.3 ;\
-		done
+		$(call arduino_output,Resetting Arduino...)
+		$(RESET_CMD)
+		$(WAIT_CONNECTION_CMD)
 
 # stty on MacOS likes -F, but on Debian it likes -f redirecting
 # stdin/out appears to work but generates a spurious error on MacOS at
