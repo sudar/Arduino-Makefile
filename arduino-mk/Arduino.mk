@@ -550,7 +550,7 @@ ifndef WAIT_CONNECTION_CMD
 endif
 
 ifeq ($(BOARD_TAG),leonardo)
-  ERROR_ON_LEONARDO = $(error On leonardo, raw_*** operation is not supported)
+  ERROR_ON_LEONARDO = $(error On leonardo, raw_xxx operation is not supported)
 else
   ERROR_ON_LEONARDO = 
 endif
@@ -968,19 +968,22 @@ $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 $(DEP_FILE):	$(OBJDIR) $(DEPS)
 		cat $(DEPS) > $(DEP_FILE)
 
-upload:		reset raw_upload
-
-raw_upload:	$(TARGET_HEX) verify_size
+error_on_leonardo:
 		$(ERROR_ON_LEONARDO)
+
+%upload:	$(TARGET_HEX) verify_size
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_HEX)
 
-eeprom:		reset raw_eeprom
+upload:		reset %upload
+raw_upload:	error_on_leonardo %upload
 
-raw_eeprom:	$(TARGET_EEP) $(TARGET_HEX)
-		$(ERROR_ON_LEONARDO)
+%eeprom:	$(TARGET_EEP) $(TARGET_HEX)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_EEP)
+
+eeprom:		reset %eeprom
+raw_eeprom:	error_on_leonardo %eeprom
 
 # the last part is for leonardo.
 # wait until leonardo reboots and establish a new connection.
