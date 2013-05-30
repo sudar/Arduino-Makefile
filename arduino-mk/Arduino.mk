@@ -805,59 +805,55 @@ $(call show_separator)
 # easy to change the build options in future
 
 # library sources
-$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c
-	mkdir -p $(dir $@)
+$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c | $(OBJDIR)
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp
-	mkdir -p $(dir $@)
+$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp | $(OBJDIR)
 	$(CC) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.cpp
-	mkdir -p $(dir $@)
+$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.cpp | $(OBJDIR)
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c
-	mkdir -p $(dir $@)
+$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c | $(OBJDIR)
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 # normal local sources
 COMMON_DEPS := Makefile
-$(OBJDIR)/%.o: %.c $(COMMON_DEPS)
+$(OBJDIR)/%.o: %.c $(COMMON_DEPS) | $(OBJDIR)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.cc $(COMMON_DEPS)
+$(OBJDIR)/%.o: %.cc $(COMMON_DEPS) | $(OBJDIR)
 	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.cpp $(COMMON_DEPS)
+$(OBJDIR)/%.o: %.cpp $(COMMON_DEPS) | $(OBJDIR)
 	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.S $(COMMON_DEPS)
+$(OBJDIR)/%.o: %.S $(COMMON_DEPS) | $(OBJDIR)
 	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.s $(COMMON_DEPS)
+$(OBJDIR)/%.o: %.s $(COMMON_DEPS) | $(OBJDIR)
 	$(CC) -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
 # the pde -> o file
-$(OBJDIR)/%.o: %.pde
+$(OBJDIR)/%.o: %.pde | $(OBJDIR)
 	$(CXX) -x c++ -include $(PDE_INCLUDE) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # the ino -> o file
-$(OBJDIR)/%.o: %.ino
+$(OBJDIR)/%.o: %.ino | $(OBJDIR)
 	$(CXX) -x c++ -include Arduino.h -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # generated assembly
-$(OBJDIR)/%.s: $(OBJDIR)/%.cpp $(COMMON_DEPS)
+$(OBJDIR)/%.s: $(OBJDIR)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
 	$(CXX) -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 #$(OBJDIR)/%.lst: $(OBJDIR)/%.s
 #	$(AS) -mmcu=$(MCU) -alhnd $< > $@
 
 # core files
-$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS)
+$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS) | $(OBJDIR)
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp $(COMMON_DEPS)
+$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # various object conversions
@@ -927,8 +923,14 @@ endif
 # Explicit targets start here
 #
 
-all: 		$(OBJDIR) $(TARGET_EEP) $(TARGET_HEX) verify_size
+all: 		$(TARGET_EEP) $(TARGET_HEX) verify_size
 
+# Rule to create $(OBJDIR) automaticallly. All rules with recipes that
+# create a file within it, but do not already depend on a file within it
+# should depend on this rule. They should use a "order-only
+# prerequisite" (e.g., put "| $(OBJDIR)" at the end of the prequisite
+# list) to prevent remaking the target when any file in th directory
+# changes.
 $(OBJDIR):
 		mkdir $(OBJDIR)
 
@@ -985,7 +987,7 @@ ispload:	$(TARGET_EEP) $(TARGET_HEX) verify_size
 clean:
 		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR}
 
-size:		$(OBJDIR) $(TARGET_HEX)
+size:		$(TARGET_HEX)
 		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
 
 show_boards:
