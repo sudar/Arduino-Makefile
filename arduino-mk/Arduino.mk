@@ -658,7 +658,7 @@ endif
 #
 ifndef MONITOR_BAUDRATE
 	#This works only in linux. TODO: Port it to MAC OS also
-	SPEED = $(shell grep --max-count=1 --regexp="Serial.begin" $(LOCAL_INO_SRCS) | sed -e 's/\t//g' -e 's/\/\/.*$$//g' -e 's/(/\t/' -e 's/)/\t/' | awk -F '\t' '{print $$2}' )
+	SPEED = $(shell grep --max-count=1 --regexp="Serial.begin" $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS) | sed -e 's/\t//g' -e 's/\/\/.*$$//g' -e 's/(/\t/' -e 's/)/\t/' | awk -F '\t' '{print $$2}' )
 	MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
 
 	ifeq ($(MONITOR_BAUDRATE),)
