@@ -504,32 +504,6 @@ else
 endif
 
 ########################################################################
-# Serial monitor (just a screen wrapper)
-#
-# Quite how to construct the monitor command seems intimately tied
-# to the command we're using (here screen). So, read the screen docs
-# for more information (search for 'character special device').
-#
-ifndef MONITOR_BAUDRATE
-	#This works only in linux. TODO: Port it to MAC OS also
-	SPEED = $(shell grep --max-count=1 --regexp="Serial.begin" $$(ls -1 *.ino) | sed -e 's/\t//g' -e 's/\/\/.*$$//g' -e 's/(/\t/' -e 's/)/\t/' | awk -F '\t' '{print $$2}' )
-	MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
-
-	ifeq ($(MONITOR_BAUDRATE),)
-		MONITOR_BAUDRATE = 9600
-       $(call show_config_variable,MONITOR_BAUDRATE,[ASSUMED])
-	else
-       $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
-	endif
-else
-    $(call show_config_variable,MONITOR_BAUDRATE, [SPECIFIED])
-endif
-
-ifndef MONITOR_CMD
-    MONITOR_CMD = screen
-endif
-
-########################################################################
 # Reset
 ifndef RESET_CMD
     RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino $(ARD_RESET_OPTS)
@@ -673,6 +647,32 @@ ifndef ARDUINO_LIBS
         $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
     ARDUINO_LIBS += $(filter $(notdir $(wildcard $(ARDUINO_SKETCHBOOK)/libraries/*)), \
         $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
+endif
+
+########################################################################
+# Serial monitor (just a screen wrapper)
+#
+# Quite how to construct the monitor command seems intimately tied
+# to the command we're using (here screen). So, read the screen docs
+# for more information (search for 'character special device').
+#
+ifndef MONITOR_BAUDRATE
+	#This works only in linux. TODO: Port it to MAC OS also
+	SPEED = $(shell grep --max-count=1 --regexp="Serial.begin" $$(ls -1 *.ino) | sed -e 's/\t//g' -e 's/\/\/.*$$//g' -e 's/(/\t/' -e 's/)/\t/' | awk -F '\t' '{print $$2}' )
+	MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
+
+	ifeq ($(MONITOR_BAUDRATE),)
+		MONITOR_BAUDRATE = 9600
+       $(call show_config_variable,MONITOR_BAUDRATE,[ASSUMED])
+	else
+       $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
+	endif
+else
+    $(call show_config_variable,MONITOR_BAUDRATE, [SPECIFIED])
+endif
+
+ifndef MONITOR_CMD
+    MONITOR_CMD = screen
 endif
 
 ########################################################################
