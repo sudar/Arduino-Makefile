@@ -340,10 +340,16 @@ dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
 # the number of bytes indicated by the second argument.
 space_pad_to = $(shell echo $(1) "                                                      " | head -c$(2))
 
+arduino_output =
+# When output is not suppressed and we're in the top-level makefile,
+# running for the first time (i.e., not after a restart after
+# regenerating the dependency file), then output the configuration.
 ifndef ARDUINO_QUIET
-    arduino_output = $(info $(1))
-else
-    arduino_output =
+    ifeq ($(MAKE_RESTARTS),)
+        ifeq ($(MAKELEVEL),0)
+            arduino_output = $(info $(1))
+        endif
+    endif
 endif
 
 # Call with some text, and a prefix tag if desired (like [AUTODETECTED]),
@@ -386,7 +392,8 @@ ifndef ARDUINO_VERSION
 
     # Remove all the decimals, and right-pad with zeros, and finally grab the first 3 bytes.
     # Works for 1.0 and 1.0.1
-    AUTO_ARDUINO_VERSION := $(shell cat $(ARDUINO_DIR)/lib/version.txt | sed -e 's/[.]//g' -e 's/$$/0000/' | head -c3)
+    VERSION_FILE := $(ARDUINO_DIR)/lib/version.txt
+    AUTO_ARDUINO_VERSION := $(shell [ -e $(VERSION_FILE) ] && cat $(VERSION_FILE) | sed -e 's/[.]//g' -e 's/$$/0000/' | head -c3)
     ifdef AUTO_ARDUINO_VERSION
         ARDUINO_VERSION = $(AUTO_ARDUINO_VERSION)
         $(call show_config_variable,ARDUINO_VERSION,[AUTODETECTED])
@@ -504,32 +511,6 @@ else
 endif
 
 ########################################################################
-# Serial monitor (just a screen wrapper)
-#
-# Quite how to construct the monitor command seems intimately tied
-# to the command we're using (here screen). So, read the screen docs
-# for more information (search for 'character special device').
-#
-ifndef MONITOR_BAUDRATE
-	#This works only in linux. TODO: Port it to MAC OS also
-	SPEED = $(shell grep --max-count=1 --regexp="Serial.begin" $$(ls -1 *.ino) | sed -e 's/\t//g' -e 's/\/\/.*$$//g' -e 's/(/\t/' -e 's/)/\t/' | awk -F '\t' '{print $$2}' )
-	MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
-
-	ifeq ($(MONITOR_BAUDRATE),)
-		MONITOR_BAUDRATE = 9600
-       $(call show_config_variable,MONITOR_BAUDRATE,[ASSUMED])
-	else
-       $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
-	endif
-else
-    $(call show_config_variable,MONITOR_BAUDRATE, [SPECIFIED])
-endif
-
-ifndef MONITOR_CMD
-    MONITOR_CMD = screen
-endif
-
-########################################################################
 # Reset
 ifndef RESET_CMD
     RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino $(ARD_RESET_OPTS)
@@ -642,8 +623,9 @@ LOCAL_OBJ_FILES = $(LOCAL_C_SRCS:.c=.o)   $(LOCAL_CPP_SRCS:.cpp=.o) \
 		$(LOCAL_INO_SRCS:.ino=.o) $(LOCAL_AS_SRCS:.S=.o)
 LOCAL_OBJS      = $(patsubst %,$(OBJDIR)/%,$(LOCAL_OBJ_FILES))
 
-# Dependency files
-DEPS            = $(LOCAL_OBJS:.o=.d)
+ifneq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 1)
+    $(error Need exactly one .pde or .ino file)
+endif
 
 # core sources
 ifeq ($(strip $(NO_CORE)),)
@@ -676,6 +658,45 @@ ifndef ARDUINO_LIBS
 endif
 
 ########################################################################
+# Serial monitor (just a screen wrapper)
+#
+# Quite how to construct the monitor command seems intimately tied
+# to the command we're using (here screen). So, read the screen docs
+# for more information (search for 'character special device').
+#
+ifndef MONITOR_BAUDRATE
+	#This works only in linux. TODO: Port it to MAC OS also
+	SPEED = $(shell grep --max-count=1 --regexp="Serial.begin" $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS) | sed -e 's/\t//g' -e 's/\/\/.*$$//g' -e 's/(/\t/' -e 's/)/\t/' | awk -F '\t' '{print $$2}' )
+	MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
+
+	ifeq ($(MONITOR_BAUDRATE),)
+		MONITOR_BAUDRATE = 9600
+       $(call show_config_variable,MONITOR_BAUDRATE,[ASSUMED])
+	else
+       $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
+	endif
+else
+    $(call show_config_variable,MONITOR_BAUDRATE, [SPECIFIED])
+endif
+
+ifndef MONITOR_CMD
+    MONITOR_CMD = screen
+endif
+
+########################################################################
+# Include file to use for old .pde files
+#
+ifndef PDE_INCLUDE
+  # We should check for Arduino version, if the file is .pde because a
+  # .pde file might be used in Arduino 1.0
+  ifeq ($(shell expr $(ARDUINO_VERSION) '<' 100), 1)
+    PDE_INCLUDE=WProgram.h
+  else
+    PDE_INCLUDE=Arduino.h
+  endif
+endif
+
+########################################################################
 # Rules for making stuff
 #
 
@@ -685,9 +706,6 @@ TARGET_ELF = $(OBJDIR)/$(TARGET).elf
 TARGET_EEP = $(OBJDIR)/$(TARGET).eep
 TARGETS    = $(OBJDIR)/$(TARGET).*
 CORE_LIB   = $(OBJDIR)/libcore.a
-
-# A list of dependencies
-DEP_FILE   = $(OBJDIR)/depends.mk
 
 # Names of executables
 CC      = $(AVR_TOOLS_PATH)/avr-gcc
@@ -729,6 +747,9 @@ LIB_OBJS      = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(LIB_C_SR
 		$(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS))
 USER_LIB_OBJS = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(USER_LIB_CPP_SRCS)) \
 		$(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(USER_LIB_C_SRCS))
+
+# Dependency files
+DEPS            = $(LOCAL_OBJS:.o=.d) $(LIB_OBJS:.o=.d) $(USER_LIB_OBJS:.o=.d) $(CORE_OBJS:.o=.d)
 
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
 CPPFLAGS      += -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
@@ -784,87 +805,56 @@ $(call show_separator)
 # easy to change the build options in future
 
 # library sources
-$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c
-	mkdir -p $(dir $@)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c | $(OBJDIR)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp
-	mkdir -p $(dir $@)
-	$(CC) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp | $(OBJDIR)
+	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.cpp
-	mkdir -p $(dir $@)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.cpp | $(OBJDIR)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c
-	mkdir -p $(dir $@)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c | $(OBJDIR)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 # normal local sources
-# .o rules are for objects, .d for dependency tracking
-# there seems to be an awful lot of duplication here!!!
 COMMON_DEPS := Makefile
-$(OBJDIR)/%.o: %.c $(COMMON_DEPS)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+$(OBJDIR)/%.o: %.c $(COMMON_DEPS) | $(OBJDIR)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.cc $(COMMON_DEPS)
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+$(OBJDIR)/%.o: %.cc $(COMMON_DEPS) | $(OBJDIR)
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.cpp $(COMMON_DEPS)
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+$(OBJDIR)/%.o: %.cpp $(COMMON_DEPS) | $(OBJDIR)
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.S $(COMMON_DEPS)
+$(OBJDIR)/%.o: %.S $(COMMON_DEPS) | $(OBJDIR)
+	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+
+$(OBJDIR)/%.o: %.s $(COMMON_DEPS) | $(OBJDIR)
 	$(CC) -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.s $(COMMON_DEPS)
-	$(CC) -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+# the pde -> o file
+$(OBJDIR)/%.o: %.pde | $(OBJDIR)
+	$(CXX) -x c++ -include $(PDE_INCLUDE) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.d: %.c $(COMMON_DEPS)
-	$(CC) -MM $(CPPFLAGS) $(CFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
-$(OBJDIR)/%.d: %.cc $(COMMON_DEPS)
-	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
-$(OBJDIR)/%.d: %.cpp $(COMMON_DEPS)
-	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
-$(OBJDIR)/%.d: %.S $(COMMON_DEPS)
-	$(CC) -MM $(CPPFLAGS) $(ASFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
-$(OBJDIR)/%.d: %.s $(COMMON_DEPS)
-	$(CC) -MM $(CPPFLAGS) $(ASFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
-#backward compatibility for .pde files
-# We should check for Arduino version, if the file is .pde because a .pde file might be used in Arduino 1.0
-# the pde -> cpp -> o file
-$(OBJDIR)/%.cpp: %.pde $(COMMON_DEPS)
-	$(ECHO) '#if ARDUINO >= 100\n    #include "Arduino.h"\n#else\n    #include "WProgram.h"\n#endif\n#line 1' > $@
-	$(CAT)  $< >> $@
-
-# the ino -> cpp -> o file
-$(OBJDIR)/%.cpp: %.ino $(COMMON_DEPS)
-	$(ECHO) '#include <Arduino.h>\n#line 1' > $@
-	$(CAT)  $< >> $@
-
-$(OBJDIR)/%.o: $(OBJDIR)/%.cpp $(COMMON_DEPS)
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
-
-$(OBJDIR)/%.d: $(OBJDIR)/%.cpp $(COMMON_DEPS)
-	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
+# the ino -> o file
+$(OBJDIR)/%.o: %.ino | $(OBJDIR)
+	$(CXX) -x c++ -include Arduino.h -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # generated assembly
-$(OBJDIR)/%.s: $(OBJDIR)/%.cpp $(COMMON_DEPS)
+$(OBJDIR)/%.s: $(OBJDIR)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
 	$(CXX) -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 #$(OBJDIR)/%.lst: $(OBJDIR)/%.s
 #	$(AS) -mmcu=$(MCU) -alhnd $< > $@
 
 # core files
-$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS) | $(OBJDIR)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp $(COMMON_DEPS)
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # various object conversions
 $(OBJDIR)/%.hex: $(OBJDIR)/%.elf $(COMMON_DEPS)
@@ -933,8 +923,14 @@ endif
 # Explicit targets start here
 #
 
-all: 		$(OBJDIR) $(TARGET_EEP) $(TARGET_HEX) verify_size
+all: 		$(TARGET_EEP) $(TARGET_HEX) verify_size
 
+# Rule to create $(OBJDIR) automaticallly. All rules with recipes that
+# create a file within it, but do not already depend on a file within it
+# should depend on this rule. They should use a "order-only
+# prerequisite" (e.g., put "| $(OBJDIR)" at the end of the prequisite
+# list) to prevent remaking the target when any file in th directory
+# changes.
 $(OBJDIR):
 		mkdir $(OBJDIR)
 
@@ -944,12 +940,16 @@ $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 		$(AR) rcs $@ $(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 
-$(DEP_FILE):	$(OBJDIR) $(DEPS)
-		cat $(DEPS) > $(DEP_FILE)
+upload:		$(TARGET_HEX) verify_size
+		# Use submake so we can guarantee the reset happens
+		# before the upload, even with make -j
+		$(MAKE) reset
+		$(MAKE) do_upload
 
-upload:		raw_upload
+raw_upload:	$(TARGET_HEX) verify_size
+		$(MAKE) do_upload
 
-raw_upload:	reset $(TARGET_HEX) verify_size
+do_upload:
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_HEX)
 
@@ -985,12 +985,9 @@ ispload:	$(TARGET_EEP) $(TARGET_HEX) verify_size
 			-U lock:w:$(ISP_LOCK_FUSE_POST):m
 
 clean:
-		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEP_FILE) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR}
+		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR}
 
-depends:	$(DEPS)
-		$(CAT) $(DEPS) > $(DEP_FILE)
-
-size:		$(OBJDIR) $(TARGET_HEX)
+size:		$(TARGET_HEX)
 		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
 
 show_boards:
@@ -1017,6 +1014,4 @@ generated_assembly: $(OBJDIR)/$(TARGET).s
 .PHONY:	all upload raw_upload reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly verify_size
 
 # added - in the beginning, so that we don't get an error if the file is not present
-ifneq ($(MAKECMDGOALS),clean)
--include $(DEP_FILE)
-endif
+-include $(DEPS)
