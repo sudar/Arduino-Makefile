@@ -340,10 +340,16 @@ dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
 # the number of bytes indicated by the second argument.
 space_pad_to = $(shell echo $(1) "                                                      " | head -c$(2))
 
+arduino_output =
+# When output is not suppressed and we're in the top-level makefile,
+# running for the first time (i.e., not after a restart after
+# regenerating the dependency file), then output the configuration.
 ifndef ARDUINO_QUIET
-    arduino_output = $(info $(1))
-else
-    arduino_output =
+    ifeq ($(MAKE_RESTARTS),)
+        ifeq ($(MAKELEVEL),0)
+            arduino_output = $(info $(1))
+        endif
+    endif
 endif
 
 # Call with some text, and a prefix tag if desired (like [AUTODETECTED]),
