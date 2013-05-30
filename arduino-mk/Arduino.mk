@@ -392,7 +392,8 @@ ifndef ARDUINO_VERSION
 
     # Remove all the decimals, and right-pad with zeros, and finally grab the first 3 bytes.
     # Works for 1.0 and 1.0.1
-    AUTO_ARDUINO_VERSION := $(shell cat $(ARDUINO_DIR)/lib/version.txt | sed -e 's/[.]//g' -e 's/$$/0000/' | head -c3)
+    VERSION_FILE := $(ARDUINO_DIR)/lib/version.txt
+    AUTO_ARDUINO_VERSION := $(shell [ -e $(VERSION_FILE) ] && cat $(VERSION_FILE) | sed -e 's/[.]//g' -e 's/$$/0000/' | head -c3)
     ifdef AUTO_ARDUINO_VERSION
         ARDUINO_VERSION = $(AUTO_ARDUINO_VERSION)
         $(call show_config_variable,ARDUINO_VERSION,[AUTODETECTED])
