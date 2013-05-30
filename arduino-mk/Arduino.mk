@@ -687,6 +687,19 @@ ifndef MONITOR_CMD
 endif
 
 ########################################################################
+# Include file to use for old .pde files
+#
+ifndef PDE_INCLUDE
+  # We should check for Arduino version, if the file is .pde because a
+  # .pde file might be used in Arduino 1.0
+  ifeq ($(shell expr $(ARDUINO_VERSION) '<' 100), 1)
+    PDE_INCLUDE=WProgram.h
+  else
+    PDE_INCLUDE=Arduino.h
+  endif
+endif
+
+########################################################################
 # Rules for making stuff
 #
 
@@ -845,11 +858,9 @@ $(OBJDIR)/%.d: %.S $(COMMON_DEPS)
 $(OBJDIR)/%.d: %.s $(COMMON_DEPS)
 	$(CC) -MM $(CPPFLAGS) $(ASFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
-#backward compatibility for .pde files
-# We should check for Arduino version, if the file is .pde because a .pde file might be used in Arduino 1.0
 # the pde -> cpp -> o file
 $(OBJDIR)/%.cpp: %.pde $(COMMON_DEPS)
-	$(ECHO) '#if ARDUINO >= 100\n    #include "Arduino.h"\n#else\n    #include "WProgram.h"\n#endif\n#line 1' > $@
+	$(ECHO) '#include "$(PDE_INCLUDE)"\n#line 1' > $@
 	$(CAT)  $< >> $@
 
 # the ino -> cpp -> o file
