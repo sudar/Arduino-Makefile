@@ -951,9 +951,16 @@ $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 $(DEP_FILE):	$(OBJDIR) $(DEPS)
 		cat $(DEPS) > $(DEP_FILE)
 
-upload:		raw_upload
+upload:		$(TARGET_HEX) verify_size
+		# Use submake so we can guarantee the reset happens
+		# before the upload, even with make -j
+		$(MAKE) reset
+		$(MAKE) do_upload
 
-raw_upload:	reset $(TARGET_HEX) verify_size
+raw_upload:	$(TARGET_HEX) verify_size
+		$(MAKE) do_upload
+
+do_upload:
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_HEX)
 
