@@ -619,6 +619,10 @@ LOCAL_OBJS      = $(patsubst %,$(OBJDIR)/%,$(LOCAL_OBJ_FILES))
 # Dependency files
 DEPS            = $(LOCAL_OBJS:.o=.d)
 
+ifneq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 1)
+    $(error Need exactly one .pde or .ino file)
+endif
+
 # core sources
 ifeq ($(strip $(NO_CORE)),)
     ifdef ARDUINO_CORE_PATH
