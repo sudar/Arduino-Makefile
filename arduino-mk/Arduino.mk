@@ -858,21 +858,21 @@ $(OBJDIR)/%.d: %.S $(COMMON_DEPS)
 $(OBJDIR)/%.d: %.s $(COMMON_DEPS)
 	$(CC) -MM $(CPPFLAGS) $(ASFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
-# the pde -> cpp -> o file
-$(OBJDIR)/%.cpp: %.pde $(COMMON_DEPS)
-	$(ECHO) '#include "$(PDE_INCLUDE)"\n#line 1' > $@
-	$(CAT)  $< >> $@
+# the pde -> o file
+$(OBJDIR)/%.o: %.pde
+	$(CXX) -x c++ -include $(PDE_INCLUDE) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-# the ino -> cpp -> o file
-$(OBJDIR)/%.cpp: %.ino $(COMMON_DEPS)
-	$(ECHO) '#include <Arduino.h>\n#line 1' > $@
-	$(CAT)  $< >> $@
+# the pde -> d file
+$(OBJDIR)/%.d: %.pde
+	$(CXX) -x c++ -include $(PDE_INCLUDE) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
-$(OBJDIR)/%.o: $(OBJDIR)/%.cpp $(COMMON_DEPS)
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+# the ino -> o file
+$(OBJDIR)/%.o: %.ino
+	$(CXX) -x c++ -include Arduino.h -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.d: $(OBJDIR)/%.cpp $(COMMON_DEPS)
-	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
+# the ino -> d file
+$(OBJDIR)/%.d: %.ino
+	$(CXX) -x c++ -include Arduino.h -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
 
 # generated assembly
 $(OBJDIR)/%.s: $(OBJDIR)/%.cpp $(COMMON_DEPS)
