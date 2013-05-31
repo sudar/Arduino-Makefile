@@ -231,7 +231,6 @@ show_config_variable = $(call show_config_info,$(1) = $($(1)) $(3),$(2))
 # Just a nice simple visual separator
 show_separator = $(call arduino_output,-------------------------)
 
-
 $(call show_separator)
 $(call arduino_output,Arduino.mk Configuration:)
 
@@ -258,7 +257,6 @@ endif
 ########################################################################
 # Arduino version number
 ifndef ARDUINO_VERSION
-
     # Remove all the decimals, and right-pad with zeros, and finally grab the first 3 bytes.
     # Works for 1.0 and 1.0.1
     VERSION_FILE := $(ARDUINO_DIR)/lib/version.txt
@@ -299,7 +297,6 @@ ifdef ARDUINO_DIR
         endif # BUNDLED_AVR_TOOLS_DIR
 
     else
-
         $(call show_config_variable,AVR_TOOLS_DIR)
     endif #ndef AVR_TOOLS_DIR
 
@@ -315,11 +312,9 @@ else
 endif
 
 ifdef AVR_TOOLS_DIR
-
     ifndef AVR_TOOLS_PATH
         AVR_TOOLS_PATH    = $(AVR_TOOLS_DIR)/bin
     endif
-
 endif
 
 ########################################################################
@@ -346,7 +341,7 @@ endif
 
 
 ########################################################################
-# Miscellanea
+# Miscellaneous
 #
 ifndef ARDUINO_SKETCHBOOK
     ifneq ($(wildcard $(HOME)/.arduino/preferences.txt),)
@@ -381,6 +376,7 @@ endif
 
 ########################################################################
 # Reset
+#
 ifndef RESET_CMD
     RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino $(ARD_RESET_OPTS)
 endif
@@ -426,14 +422,14 @@ ifndef F_CPU
 endif
 
 ifeq ($(VARIANT),leonardo) 
-# USB IDs for the Leonardo
-ifndef USB_VID
-USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid 2>/dev/null)
-endif
+	# USB IDs for the Leonardo
+	ifndef USB_VID
+		USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid 2>/dev/null)
+	endif
 
-ifndef USB_PID
-USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid 2>/dev/null)
-endif
+	ifndef USB_PID
+		USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid 2>/dev/null)
+	endif
 endif
 
 # normal programming info
@@ -468,11 +464,11 @@ endif
 
 # Everything gets built in here (include BOARD_TAG now)
 ifndef OBJDIR
-OBJDIR  	  = build-$(BOARD_TAG)
+	OBJDIR  	  = build-$(BOARD_TAG)
 endif
 
 ifndef HEX_MAXIMUM_SIZE
-HEX_MAXIMUM_SIZE  = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.maximum_size)
+	HEX_MAXIMUM_SIZE  = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.maximum_size)
 endif
 
 ########################################################################
@@ -493,6 +489,7 @@ LOCAL_OBJ_FILES = $(LOCAL_C_SRCS:.c=.o)   $(LOCAL_CPP_SRCS:.cpp=.o) \
 LOCAL_OBJS      = $(patsubst %,$(OBJDIR)/%,$(LOCAL_OBJ_FILES))
 
 ifneq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 1)
+	#TODO: Support more than one file. https://github.com/sudar/Arduino-Makefile/issues/49
     $(error Need exactly one .pde or .ino file)
 endif
 
@@ -534,7 +531,8 @@ endif
 # for more information (search for 'character special device').
 #
 ifndef MONITOR_BAUDRATE
-	#This works only in linux. TODO: Port it to MAC OS also
+	# This works only in linux. TODO: Port it to MAC OS also
+	# https://github.com/sudar/Arduino-Makefile/issues/52
 	SPEED = $(shell grep --max-count=1 --regexp="Serial.begin" $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS) | sed -e 's/\t//g' -e 's/\/\/.*$$//g' -e 's/(/\t/' -e 's/)/\t/' | awk -F '\t' '{print $$2}' )
 	MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
 
@@ -555,14 +553,14 @@ endif
 ########################################################################
 # Include file to use for old .pde files
 #
-ifndef PDE_INCLUDE
-  # We should check for Arduino version, if the file is .pde because a
-  # .pde file might be used in Arduino 1.0
-  ifeq ($(shell expr $(ARDUINO_VERSION) '<' 100), 1)
-    PDE_INCLUDE=WProgram.h
-  else
-    PDE_INCLUDE=Arduino.h
-  endif
+ifndef ARDUINO_HEADER
+	# We should check for Arduino version, if the file is .pde because a
+	# .pde file might be used in Arduino 1.0
+	ifeq ($(shell expr $(ARDUINO_VERSION) '<' 100), 1)
+		ARDUINO_HEADER=WProgram.h
+	else
+		ARDUINO_HEADER=Arduino.h
+	endif
 endif
 
 ########################################################################
@@ -658,6 +656,7 @@ ifneq (,$(strip $(ARDUINO_LIBS)))
     $(call arduino_output,-)
     $(call show_config_info,ARDUINO_LIBS =)
 endif
+
 ifneq (,$(strip $(USER_LIB_NAMES)))
     $(foreach lib,$(USER_LIB_NAMES),$(call show_config_info,  $(lib),[USER]))
 endif
@@ -668,7 +667,6 @@ endif
 
 # end of config output
 $(call show_separator)
-
 
 # Implicit rules for building everything (needed to get everything in
 # the right directory)
@@ -710,7 +708,7 @@ $(OBJDIR)/%.o: %.s $(COMMON_DEPS) | $(OBJDIR)
 
 # the pde -> o file
 $(OBJDIR)/%.o: %.pde | $(OBJDIR)
-	$(CXX) -x c++ -include $(PDE_INCLUDE) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # the ino -> o file
 $(OBJDIR)/%.o: %.ino | $(OBJDIR)
@@ -756,11 +754,11 @@ ifndef AVRDUDE
 endif
 
 ifndef AVRDUDE_CONF
-ifndef AVR_TOOLS_DIR
-# The avrdude bundled with Arduino can't find its config
-AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
-endif
-# If avrdude is installed separately, it can find its own config flie
+	ifndef AVR_TOOLS_DIR
+		# The avrdude bundled with Arduino can't find its config
+		AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
+	endif
+	# If avrdude is installed separately, it can find its own config flie
 endif
 
 AVRDUDE_COM_OPTS = -q -V -p $(MCU)
