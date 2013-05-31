@@ -303,7 +303,13 @@ ifdef ARDUINO_DIR
     ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
     $(call show_config_variable,ARDUINO_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
     ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/arduino/cores/arduino
-    ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
+
+	ifndef ARDUINO_VAR_PATH
+		ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
+		$(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ARDUINO_DIR))
+	else
+		$(call show_config_variable,ARDUINO_VAR_PATH,[USER])
+	endif
 
 else
 
