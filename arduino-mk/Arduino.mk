@@ -428,11 +428,11 @@ endif
 ifeq ($(VARIANT),leonardo) 
 # USB IDs for the Leonardo
 ifndef USB_VID
-USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid)
+USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid 2>/dev/null)
 endif
 
 ifndef USB_PID
-USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid)
+USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid 2>/dev/null)
 endif
 endif
 
@@ -624,8 +624,13 @@ DEPS            = $(LOCAL_OBJS:.o=.d) $(LIB_OBJS:.o=.d) $(USER_LIB_OBJS:.o=.d) $
 CPPFLAGS      += -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
 			-I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
 			$(SYS_INCLUDES) $(USER_INCLUDES) -g -Os -Wall \
-			-DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID) \
 			-ffunction-sections -fdata-sections
+
+# USB IDs for the Leonardo
+ifeq ($(VARIANT),leonardo) 
+	CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
+endif
+
 CFLAGS        += -std=gnu99 $(EXTRA_FLAGS) $(EXTRA_CFLAGS)
 CXXFLAGS      += -fno-exceptions $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS)
 ASFLAGS       += -mmcu=$(MCU) -I. -x assembler-with-cpp

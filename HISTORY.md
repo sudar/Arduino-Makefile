@@ -3,6 +3,9 @@ A Makefile for Arduino Sketches
 
 The following is the rough list of changes that went into different versions. I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
+### 0.10.5 (in development)
+- Add USB_VID and USB_PID to CPPFLAGS only if the board is Leonardo.
+
 ### 0.10.4 (2013-05-31) @matthijskooijman
 - Improved BAUD_RATE detection logic
 - Added logic to check if there is only .ino or .pde file
