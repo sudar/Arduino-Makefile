@@ -689,8 +689,13 @@ $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.cpp | $(OBJDIR)
 $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c | $(OBJDIR)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
+ifdef COMMON_DEPS
+	COMMON_DEPS := $(COMMON_DEPS) Makefile
+else
+	COMMON_DEPS := Makefile
+endif
+
 # normal local sources
-COMMON_DEPS := Makefile
 $(OBJDIR)/%.o: %.c $(COMMON_DEPS) | $(OBJDIR)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 

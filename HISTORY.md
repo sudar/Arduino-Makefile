@@ -5,6 +5,7 @@ The following is the rough list of changes that went into different versions. I 
 
 ### 0.10.5 (in development)
 - Add USB_VID and USB_PID to CPPFLAGS only if the board is Leonardo.
+- Allow adding extra common dependencies (COMMON_DEPS) (https://github.com/gaftech)
 
 ### 0.10.4 (2013-05-31) @matthijskooijman
 - Improved BAUD_RATE detection logic
