@@ -1,6 +1,6 @@
 ########################################################################
 #
-# Arduino command line tools Makefile
+# Makefile for compiling Arduino sketches from command line
 # System part (i.e. project independent)
 #
 # Copyright (C) 2012 Sudar <http://sudarmuthu.com>, based on
@@ -19,7 +19,7 @@
 #
 # Original Arduino adaptation by mellis, eighthave, oli.keller
 #
-# Current version: 0.10.3
+# Current version: 0.10.4
 #
 # Refer to HISTORY.md file for complete history of changes
 #

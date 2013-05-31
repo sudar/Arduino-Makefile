@@ -3,6 +3,14 @@ A Makefile for Arduino Sketches
 
 The following is the rough list of changes that went into different versions. I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
+### 0.10.4 (2013-05-31) @matthijskooijman
+- Improved BAUD_RATE detection logic
+- Added logic to check if there is only .ino or .pde file
+- Compile .ino/.pde files directly
+- Output configuration only once
+- Try to read Version.txt file only if it is present
+- Refactored dependency code
+
 ###	0.10.3 16.xii 2012 gaftech
 - Enabling creation of EEPROM file (.eep)
 - EEPROM upload: eeprom and raw_eeprom targets

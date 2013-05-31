@@ -59,14 +59,22 @@ is set to `$HOME/sketchbook`.
 
 ## Versioning
 
-The current version of the makefile is `0.10.3`. You can find the full history in the [HISTORY.md](HISTORY.md) file
+The current version of the makefile is `0.10.4`. You can find the full history in the [HISTORY.md](HISTORY.md) file
 
 This project adheres to Semantic [Versioning 2.0](http://semver.org/).
 
+## Contribution
+
+All contributions (even documentation) are welcome :) Open a pull request and I would be happy to merge them.
+
+If you are looking for ideas to work on, then check out the following TODO items.
+
 ## Know Issues / TODO's
-- Doesn't work with Leonardo yet.
-- More todo's at https://github.com/sudar/Arduino-Makefile/issues/
-- Because of the way the makefile is structured, the configuration parameters gets printed twice. 
+
+- Doesn't work with Leonardo yet. There are various fixes (#43, #37, #30) but need to verify them #44.
+- Doesn't work with Arduino 1.5.x yet.
+
+If you find an issue or have an idea for a feature then log them at https://github.com/sudar/Arduino-Makefile/issues/
 
 ## Similar works
 - It's not a derivative of this, but Alan Burlison has written a [similar thing](http://bleaklow.com/2010/06/04/a_makefile_for_arduino_sketches.html).
