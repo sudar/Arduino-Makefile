@@ -304,12 +304,12 @@ ifdef ARDUINO_DIR
     $(call show_config_variable,ARDUINO_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
     ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/arduino/cores/arduino
 
-	ifndef ARDUINO_VAR_PATH
-		ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
-		$(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ARDUINO_DIR))
-	else
-		$(call show_config_variable,ARDUINO_VAR_PATH,[USER])
-	endif
+    ifndef ARDUINO_VAR_PATH
+        ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
+        $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ARDUINO_DIR))
+    else
+        $(call show_config_variable,ARDUINO_VAR_PATH,[USER])
+    endif
 
 else
 
@@ -428,14 +428,14 @@ ifndef F_CPU
 endif
 
 ifeq ($(VARIANT),leonardo) 
-	# USB IDs for the Leonardo
-	ifndef USB_VID
-		USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid 2>/dev/null)
-	endif
+    # USB IDs for the Leonardo
+    ifndef USB_VID
+        USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid 2>/dev/null)
+    endif
 
-	ifndef USB_PID
-		USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid 2>/dev/null)
-	endif
+    ifndef USB_PID
+        USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid 2>/dev/null)
+    endif
 endif
 
 # normal programming info
@@ -512,7 +512,7 @@ ifeq ($(strip $(NO_CORE)),)
 
         CORE_OBJ_FILES  = $(CORE_C_SRCS:.c=.o) $(CORE_CPP_SRCS:.cpp=.o)
         CORE_OBJS       = $(patsubst $(ARDUINO_CORE_PATH)/%,  \
-			        $(OBJDIR)/%,$(CORE_OBJ_FILES))
+                $(OBJDIR)/%,$(CORE_OBJ_FILES))
     endif
 else
     $(call show_config_info,NO_CORE set so core library will not be built,[MANUAL])
@@ -537,17 +537,17 @@ endif
 # for more information (search for 'character special device').
 #
 ifndef MONITOR_BAUDRATE
-	# This works only in linux. TODO: Port it to MAC OS also
-	# https://github.com/sudar/Arduino-Makefile/issues/52
-	SPEED = $(shell grep --max-count=1 --regexp="Serial.begin" $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS) | sed -e 's/\t//g' -e 's/\/\/.*$$//g' -e 's/(/\t/' -e 's/)/\t/' | awk -F '\t' '{print $$2}' )
-	MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
+    # This works only in linux. TODO: Port it to MAC OS also
+    # https://github.com/sudar/Arduino-Makefile/issues/52
+    SPEED = $(shell grep --max-count=1 --regexp="Serial.begin" $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS) | sed -e 's/\t//g' -e 's/\/\/.*$$//g' -e 's/(/\t/' -e 's/)/\t/' | awk -F '\t' '{print $$2}' )
+    MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
 
-	ifeq ($(MONITOR_BAUDRATE),)
-		MONITOR_BAUDRATE = 9600
-       $(call show_config_variable,MONITOR_BAUDRATE,[ASSUMED])
-	else
-       $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
-	endif
+    ifeq ($(MONITOR_BAUDRATE),)
+        MONITOR_BAUDRATE = 9600
+        $(call show_config_variable,MONITOR_BAUDRATE,[ASSUMED])
+    else
+        $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
+    endif
 else
     $(call show_config_variable,MONITOR_BAUDRATE, [SPECIFIED])
 endif
@@ -560,13 +560,13 @@ endif
 # Include file to use for old .pde files
 #
 ifndef ARDUINO_HEADER
-	# We should check for Arduino version, if the file is .pde because a
-	# .pde file might be used in Arduino 1.0
-	ifeq ($(shell expr $(ARDUINO_VERSION) '<' 100), 1)
-		ARDUINO_HEADER=WProgram.h
-	else
-		ARDUINO_HEADER=Arduino.h
-	endif
+    # We should check for Arduino version, if the file is .pde because a
+    # .pde file might be used in Arduino 1.0
+    ifeq ($(shell expr $(ARDUINO_VERSION) '<' 100), 1)
+        ARDUINO_HEADER=WProgram.h
+    else
+        ARDUINO_HEADER=Arduino.h
+    endif
 endif
 
 ########################################################################
@@ -617,22 +617,22 @@ LIB_CPP_SRCS  = $(wildcard $(patsubst %,%/*.cpp,$(SYS_LIBS)))
 USER_LIB_CPP_SRCS   = $(wildcard $(patsubst %,%/*.cpp,$(USER_LIBS)))
 USER_LIB_C_SRCS     = $(wildcard $(patsubst %,%/*.c,$(USER_LIBS)))
 LIB_OBJS      = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(LIB_C_SRCS)) \
-		$(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS))
+        $(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS))
 USER_LIB_OBJS = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(USER_LIB_CPP_SRCS)) \
-		$(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(USER_LIB_C_SRCS))
+        $(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(USER_LIB_C_SRCS))
 
 # Dependency files
 DEPS            = $(LOCAL_OBJS:.o=.d) $(LIB_OBJS:.o=.d) $(USER_LIB_OBJS:.o=.d) $(CORE_OBJS:.o=.d)
 
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
 CPPFLAGS      += -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
-			-I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
-			$(SYS_INCLUDES) $(USER_INCLUDES) -g -Os -Wall \
-			-ffunction-sections -fdata-sections
+        -I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
+        $(SYS_INCLUDES) $(USER_INCLUDES) -g -Os -Wall \
+        -ffunction-sections -fdata-sections
 
 # USB IDs for the Leonardo
 ifeq ($(VARIANT),leonardo) 
-	CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
+    CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
 endif
 
 CFLAGS        += -std=gnu99 $(EXTRA_FLAGS) $(EXTRA_CFLAGS)
@@ -656,7 +656,6 @@ else
     avr_size = $(SIZE) $(2)
     $(call show_config_info,Size utility: Basic (not AVR-aware),[AUTODETECTED])
 endif
-
 
 ifneq (,$(strip $(ARDUINO_LIBS)))
     $(call arduino_output,-)
@@ -765,11 +764,11 @@ ifndef AVRDUDE
 endif
 
 ifndef AVRDUDE_CONF
-	ifndef AVR_TOOLS_DIR
-		# The avrdude bundled with Arduino can't find its config
-		AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
-	endif
-	# If avrdude is installed separately, it can find its own config flie
+    ifndef AVR_TOOLS_DIR
+        # The avrdude bundled with Arduino can't find its config
+        AVRDUDE_CONF  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
+    endif
+    # If avrdude is installed separately, it can find its own config file
 endif
 
 AVRDUDE_COM_OPTS = -q -V -p $(MCU)
@@ -780,25 +779,26 @@ endif
 AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P $(call get_arduino_port)
 
 ifndef ISP_PROG
-    ISP_PROG	   = -c stk500v2
+    ISP_PROG   = -c stk500v2
 endif
 
 # usb seems to be a reasonable default, at least on linux
 ifndef ISP_PORT
-	ISP_PORT       = usb
+    ISP_PORT       = usb
 endif
 
 AVRDUDE_ISP_OPTS = -P $(ISP_PORT) $(ISP_PROG)
 
 ifndef ISP_EEPROM
-	ISP_EEPROM  = 0
+    ISP_EEPROM  = 0
 endif
 
 AVRDUDE_UPLOAD_HEX = -U flash:w:$(TARGET_HEX):i
 AVRDUDE_UPLOAD_EEP = -U eeprom:w:$(TARGET_EEP):i
 AVRDUDE_ISPLOAD_OPTS = $(AVRDUDE_UPLOAD_HEX)
+
 ifneq ($(ISP_EEPROM), 0)
-	AVRDUDE_ISPLOAD_OPTS += $(AVRDUDE_UPLOAD_EEP)
+    AVRDUDE_ISPLOAD_OPTS += $(AVRDUDE_UPLOAD_EEP)
 endif
 
 ########################################################################
