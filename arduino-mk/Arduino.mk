@@ -1,6 +1,6 @@
 ########################################################################
 #
-# Arduino command line tools Makefile
+# Makefile for compiling Arduino sketches from command line
 # System part (i.e. project independent)
 #
 # Copyright (C) 2012 Sudar <http://sudarmuthu.com>, based on
@@ -19,140 +19,9 @@
 #
 # Original Arduino adaptation by mellis, eighthave, oli.keller
 #
-# Version 0.1  17.ii.2009  M J Oldfield
+# Current version: 0.10.4
 #
-#         0.2  22.ii.2009  M J Oldfield
-#                          - fixes so that the Makefile actually works!
-#                          - support for uploading via ISP
-#                          - orthogonal choices of using the Arduino for
-#                            tools, libraries and uploading
-#
-#         0.3  21.v.2010   M J Oldfield
-#                          - added proper license statement
-#                          - added code from Philip Hands to reset
-#                            Arduino prior to upload
-#
-#         0.4  25.v.2010   M J Oldfield
-#                          - tweaked reset target on Philip Hands' advice
-#
-#         0.5  23.iii.2011 Stefan Tomanek
-#                          - added ad-hoc library building
-#              17.v.2011   M J Oldfield
-#                          - grabbed said version from Ubuntu
-#
-#         0.6  22.vi.2011  M J Oldfield
-#                          - added ard-parse-boards supports
-#                          - added -lc to linker opts,
-#                            on Fabien Le Lez's advice
-#
-#         0.7  12.vii.2011 M J Oldfield
-#                          - moved -lm to the end of linker opts,
-#	                     to solve Frank Knopf's problem;
-#                          - added -F to stty opts: Craig Hollabaugh
-#	                     reckons it's good for Ubuntu
-#
-#         0.8  12.ii.2012  M J Oldfield
-#                          - Patches for Arduino 1.0 IDE:
-#                              support .ino files;
-#                              handle board 'variants';
-#                              tweaked compile flags.
-#                          - Build a library from all the system
-#                            supplied code rather than linking the .o
-#                            files directly.
-#                          - Let TARGET default to current directory
-#			     as per Daniele Vergini's patch.
-#                          - Add support for .c files in system
-#                            libraries: Dirk-Willem van Gulik and Evan
-#                            Goldenberg both reported this and
-#                            provided patches in the same spirit.
-#
-#          0.9 26.iv.2012  M J Oldfield
-#                          - Allow the punter to specify boards.txt
-#                            file and parser independently (after
-#                            Peplin and Brotchie on github)
-#			   - Support user libraries (Peplin's patch)
-#                          - Remove main.cpp if NO_CORE_MAIN_CPP is
-#                            defined (ex Peplin)
-#                          - Added a monitor target which talks to the
-#                            Arduino serial port (Peplin's suggestion)
-#                          - Rejigged PATH calculations for general
-#                            tidiness (ex Peplin)
-#                          - Moved the reset target to Perl for
-#                            clarity and better error handling (ex
-#                            Daniele Vergini)
-#
-#         0.9.1 06.vi.2012 Sudar
-#                          - Corrected the ubuntu package names
-#                          - Prevent the *file-not-found* error if the depends.mk file is not needed
-#                          - Delete the build-cli folder as well while doing make clean
-#                          - Added support for compiling .pde files in Arduino 1.0 environment
-#                          - Replaced = with += in CPPFLAGS assignment so that we can set CPPFLAGS per sketch if needed
-#                          - Changed AVRDUDE_CONF so it can be defined in per-project makefile (https://github.com/WizenedEE)
-#                          - Cleaner way to delete the build-cli directory when make clean is invoked
-#                          - The package name in Debian and Ubuntu is arduino-mk (https://github.com/maqifrnswa)
-#
-#
-#         0.9.2 06.vi.2012 Sudar
-#                          - Allow user to choose source files (LOCAL_*_SRCS flags) (https://github.com/Gaftech)
-#                          - Modified 'make size' behavior: using --mcu option and targeting .elf file instead of .hex file.(https://github.com/Gaftech)
-#
-#         0.9.3 13.vi.2012 Sudar
-#                          - Autodetect ARDUINO_DIR, Arduino version (https://github.com/rpavlik/)
-#                          - Categorize libs into user and system (https://github.com/rpavlik/)
-#                          - Dump size at the end of the build (https://github.com/rpavlik/)
-#                          - Lots and lots of improvements (https://github.com/rpavlik/)
-#                          - Changed bytes option for the head shell command, so that it works in Mac as well
-#                          - Auto detect Serial Baud rate from sketch if possible
-#
-#         0.9.3.1 18.viii.2012 jeffkowalski
-#                          - Autodetect ARDUINO_LIBS from includes in LOCAL_SRCS
-#                          - Autodetect ARDUINO_SKETCHBOOK from file
-#                            set by Arduino IDE
-#                          - Autodetect ARDMK_DIR based on location of
-#                            this file
-#                          - Added support for utility directory
-#                            within SYS and USER libraries
-#
-#   	0.9.3.2 10.ix.2012 Sudar
-# 						   - Fixed a typo in README. Issue reported at upstream (https://github.com/mjoldfield/Arduino-Makefile/issues/21)
-#
-#          0.10 17.ix.12   M J Oldfield
-#            - Added installation notes for Fedora (ex Rickard Lindberg).
-#            - Changed size target so that it looks at the ELF object, 
-#              not the hexfile (ex Jared Szechy and Scott Howard).
-#            - Fixed ARDUNIO typo in README.md (ex Kalin Kozhuharov).
-#            - Tweaked OBJDIR handling (ex Matthias Urlichs and Scott Howard).
-#            - Changed the name of the Debian/Ubuntu package (ex
-#              Scott Howard).
-#            - Only set AVRDUDE_CONF if it's not set (ex Tom Hall).
-#            - Added support for USB_PID/VID used by the Leonardo (ex Dan
-#              Villiom Podlaski Christiansen and Marc Plano-Lesay).
-#                      
-#   	0.10.1 15.xii.2012 Sudar
-#   		- Merged all changes from Upstream and from https://github.com/rpavlik
-#   		- Allow passing extra flags (https://github.com/rpavlik)
-#   		- Make listing files more useful (https://github.com/rpavlik)
-#   		- Add knowledge of device-specific assembler (https://github.com/rpavlik)
-#   		- Use variables instead of hardcoded commands (https://github.com/rpavlik)
-#   		- Make disasm more helpful (https://github.com/rpavlik)
-#   		- Change .sym output (https://github.com/rpavlik)
-#   		- Provide symbol_sizes and generated_assembly targets. (https://github.com/rpavlik)
-#   		- Be able to silence configuration output (https://github.com/rpavlik)
-#   		- Make everybody depend on the makefile, in case cflags are changed, etc. (https://github.com/rpavlik)
-#   		- Make the makefile error if the arduino port is not present. (https://github.com/rpavlik)
-#
-#   	0.10.2 15.xii.2012 Sudar
-#   		- Added sketch size verification. (https://github.com/fornellas)
-#   		- Show original line number for error messages (https://github.com/WizenedEE)
-#   		- Removed -w from CPPFLAGS to show warnings (https://github.com/gaftech)
-#   		- Changed shebang to use /usr/bin/env (https://github.com/anm)
-#   		- set USB_VID and USB_PID only for leonardo boards(https://github.com/alohr)
-#
-#		0.10.3 16.xii 2012 gaftech
-#           - Enabling creation of EEPROM file (.eep)
-#           - EEPROM upload: eeprom and raw_eeprom targets
-#           - Auto EEPROM upload with isp mode: ISP_EEPROM option.
-#           - Allow custom OBJDIR
+# Refer to HISTORY.md file for complete history of changes
 #
 ########################################################################
 #
@@ -340,10 +209,16 @@ dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
 # the number of bytes indicated by the second argument.
 space_pad_to = $(shell echo $(1) "                                                      " | head -c$(2))
 
+arduino_output =
+# When output is not suppressed and we're in the top-level makefile,
+# running for the first time (i.e., not after a restart after
+# regenerating the dependency file), then output the configuration.
 ifndef ARDUINO_QUIET
-    arduino_output = $(info $(1))
-else
-    arduino_output =
+    ifeq ($(MAKE_RESTARTS),)
+        ifeq ($(MAKELEVEL),0)
+            arduino_output = $(info $(1))
+        endif
+    endif
 endif
 
 # Call with some text, and a prefix tag if desired (like [AUTODETECTED]),
@@ -355,7 +230,6 @@ show_config_variable = $(call show_config_info,$(1) = $($(1)) $(3),$(2))
 
 # Just a nice simple visual separator
 show_separator = $(call arduino_output,-------------------------)
-
 
 $(call show_separator)
 $(call arduino_output,Arduino.mk Configuration:)
@@ -375,7 +249,7 @@ endif
 
 ########################################################################
 #
-# Default TARGET to cwd (ex Daniele Vergini)
+# Default TARGET to pwd (ex Daniele Vergini)
 ifndef TARGET
     TARGET  = $(notdir $(CURDIR))
 endif
@@ -383,10 +257,10 @@ endif
 ########################################################################
 # Arduino version number
 ifndef ARDUINO_VERSION
-
     # Remove all the decimals, and right-pad with zeros, and finally grab the first 3 bytes.
     # Works for 1.0 and 1.0.1
-    AUTO_ARDUINO_VERSION := $(shell cat $(ARDUINO_DIR)/lib/version.txt | sed -e 's/[.]//g' -e 's/$$/0000/' | head -c3)
+    VERSION_FILE := $(ARDUINO_DIR)/lib/version.txt
+    AUTO_ARDUINO_VERSION := $(shell [ -e $(VERSION_FILE) ] && cat $(VERSION_FILE) | sed -e 's/[.]//g' -e 's/$$/0000/' | head -c3)
     ifdef AUTO_ARDUINO_VERSION
         ARDUINO_VERSION = $(AUTO_ARDUINO_VERSION)
         $(call show_config_variable,ARDUINO_VERSION,[AUTODETECTED])
@@ -420,14 +294,19 @@ ifdef ARDUINO_DIR
         endif # BUNDLED_AVR_TOOLS_DIR
 
     else
-
         $(call show_config_variable,AVR_TOOLS_DIR)
     endif #ndef AVR_TOOLS_DIR
 
     ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
     $(call show_config_variable,ARDUINO_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
     ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/arduino/cores/arduino
-    ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
+
+    ifndef ARDUINO_VAR_PATH
+        ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
+        $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ARDUINO_DIR))
+    else
+        $(call show_config_variable,ARDUINO_VAR_PATH,[USER])
+    endif
 
 else
 
@@ -436,11 +315,9 @@ else
 endif
 
 ifdef AVR_TOOLS_DIR
-
     ifndef AVR_TOOLS_PATH
         AVR_TOOLS_PATH    = $(AVR_TOOLS_DIR)/bin
     endif
-
 endif
 
 ########################################################################
@@ -467,7 +344,7 @@ endif
 
 
 ########################################################################
-# Miscellanea
+# Miscellaneous
 #
 ifndef ARDUINO_SKETCHBOOK
     ifneq ($(wildcard $(HOME)/.arduino/preferences.txt),)
@@ -498,32 +375,6 @@ ifndef USER_LIB_PATH
     $(call show_config_variable,USER_LIB_PATH,[DEFAULT],(in user sketchbook))
 else
     $(call show_config_variable,USER_LIB_PATH)
-endif
-
-########################################################################
-# Serial monitor (just a screen wrapper)
-#
-# Quite how to construct the monitor command seems intimately tied
-# to the command we're using (here screen). So, read the screen docs
-# for more information (search for 'character special device').
-#
-ifndef MONITOR_BAUDRATE
-	#This works only in linux. TODO: Port it to MAC OS also
-	SPEED = $(shell grep --max-count=1 --regexp="Serial.begin" $$(ls -1 *.ino) | sed -e 's/\t//g' -e 's/\/\/.*$$//g' -e 's/(/\t/' -e 's/)/\t/' | awk -F '\t' '{print $$2}' )
-	MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
-
-	ifeq ($(MONITOR_BAUDRATE),)
-		MONITOR_BAUDRATE = 9600
-       $(call show_config_variable,MONITOR_BAUDRATE,[ASSUMED])
-	else
-       $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
-	endif
-else
-    $(call show_config_variable,MONITOR_BAUDRATE, [SPECIFIED])
-endif
-
-ifndef MONITOR_CMD
-    MONITOR_CMD = screen
 endif
 
 ########################################################################
@@ -596,14 +447,14 @@ ifndef F_CPU
 endif
 
 ifeq ($(VARIANT),leonardo) 
-# USB IDs for the Leonardo
-ifndef USB_VID
-USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid)
-endif
+    # USB IDs for the Leonardo
+    ifndef USB_VID
+        USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid 2>/dev/null)
+    endif
 
-ifndef USB_PID
-USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid)
-endif
+    ifndef USB_PID
+        USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid 2>/dev/null)
+    endif
 endif
 
 # normal programming info
@@ -638,11 +489,11 @@ endif
 
 # Everything gets built in here (include BOARD_TAG now)
 ifndef OBJDIR
-OBJDIR  	  = build-$(BOARD_TAG)
+	OBJDIR  	  = build-$(BOARD_TAG)
 endif
 
 ifndef HEX_MAXIMUM_SIZE
-HEX_MAXIMUM_SIZE  = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.maximum_size)
+	HEX_MAXIMUM_SIZE  = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.maximum_size)
 endif
 
 ########################################################################
@@ -662,8 +513,10 @@ LOCAL_OBJ_FILES = $(LOCAL_C_SRCS:.c=.o)   $(LOCAL_CPP_SRCS:.cpp=.o) \
 		$(LOCAL_INO_SRCS:.ino=.o) $(LOCAL_AS_SRCS:.S=.o)
 LOCAL_OBJS      = $(patsubst %,$(OBJDIR)/%,$(LOCAL_OBJ_FILES))
 
-# Dependency files
-DEPS            = $(LOCAL_OBJS:.o=.d)
+ifneq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 1)
+	#TODO: Support more than one file. https://github.com/sudar/Arduino-Makefile/issues/49
+    $(error Need exactly one .pde or .ino file)
+endif
 
 # core sources
 ifeq ($(strip $(NO_CORE)),)
@@ -678,7 +531,7 @@ ifeq ($(strip $(NO_CORE)),)
 
         CORE_OBJ_FILES  = $(CORE_C_SRCS:.c=.o) $(CORE_CPP_SRCS:.cpp=.o)
         CORE_OBJS       = $(patsubst $(ARDUINO_CORE_PATH)/%,  \
-			        $(OBJDIR)/%,$(CORE_OBJ_FILES))
+                $(OBJDIR)/%,$(CORE_OBJ_FILES))
     endif
 else
     $(call show_config_info,NO_CORE set so core library will not be built,[MANUAL])
@@ -696,6 +549,46 @@ ifndef ARDUINO_LIBS
 endif
 
 ########################################################################
+# Serial monitor (just a screen wrapper)
+#
+# Quite how to construct the monitor command seems intimately tied
+# to the command we're using (here screen). So, read the screen docs
+# for more information (search for 'character special device').
+#
+ifndef MONITOR_BAUDRATE
+    # This works only in linux. TODO: Port it to MAC OS also
+    # https://github.com/sudar/Arduino-Makefile/issues/52
+    SPEED = $(shell grep --max-count=1 --regexp="Serial.begin" $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS) | sed -e 's/\t//g' -e 's/\/\/.*$$//g' -e 's/(/\t/' -e 's/)/\t/' | awk -F '\t' '{print $$2}' )
+    MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
+
+    ifeq ($(MONITOR_BAUDRATE),)
+        MONITOR_BAUDRATE = 9600
+        $(call show_config_variable,MONITOR_BAUDRATE,[ASSUMED])
+    else
+        $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
+    endif
+else
+    $(call show_config_variable,MONITOR_BAUDRATE, [SPECIFIED])
+endif
+
+ifndef MONITOR_CMD
+    MONITOR_CMD = screen
+endif
+
+########################################################################
+# Include file to use for old .pde files
+#
+ifndef ARDUINO_HEADER
+    # We should check for Arduino version, if the file is .pde because a
+    # .pde file might be used in Arduino 1.0
+    ifeq ($(shell expr $(ARDUINO_VERSION) '<' 100), 1)
+        ARDUINO_HEADER=WProgram.h
+    else
+        ARDUINO_HEADER=Arduino.h
+    endif
+endif
+
+########################################################################
 # Rules for making stuff
 #
 
@@ -705,9 +598,6 @@ TARGET_ELF = $(OBJDIR)/$(TARGET).elf
 TARGET_EEP = $(OBJDIR)/$(TARGET).eep
 TARGETS    = $(OBJDIR)/$(TARGET).*
 CORE_LIB   = $(OBJDIR)/libcore.a
-
-# A list of dependencies
-DEP_FILE   = $(OBJDIR)/depends.mk
 
 # Names of executables
 CC      = $(AVR_TOOLS_PATH)/avr-gcc
@@ -746,16 +636,24 @@ LIB_CPP_SRCS  = $(wildcard $(patsubst %,%/*.cpp,$(SYS_LIBS)))
 USER_LIB_CPP_SRCS   = $(wildcard $(patsubst %,%/*.cpp,$(USER_LIBS)))
 USER_LIB_C_SRCS     = $(wildcard $(patsubst %,%/*.c,$(USER_LIBS)))
 LIB_OBJS      = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(LIB_C_SRCS)) \
-		$(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS))
+        $(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS))
 USER_LIB_OBJS = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(USER_LIB_CPP_SRCS)) \
-		$(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(USER_LIB_C_SRCS))
+        $(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(USER_LIB_C_SRCS))
+
+# Dependency files
+DEPS            = $(LOCAL_OBJS:.o=.d) $(LIB_OBJS:.o=.d) $(USER_LIB_OBJS:.o=.d) $(CORE_OBJS:.o=.d)
 
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
 CPPFLAGS      += -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
-			-I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
-			$(SYS_INCLUDES) $(USER_INCLUDES) -g -Os -Wall \
-			-DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID) \
-			-ffunction-sections -fdata-sections
+        -I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
+        $(SYS_INCLUDES) $(USER_INCLUDES) -g -Os -Wall \
+        -ffunction-sections -fdata-sections
+
+# USB IDs for the Leonardo
+ifeq ($(VARIANT),leonardo) 
+    CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
+endif
+
 CFLAGS        += -std=gnu99 $(EXTRA_FLAGS) $(EXTRA_CFLAGS)
 CXXFLAGS      += -fno-exceptions $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS)
 ASFLAGS       += -mmcu=$(MCU) -I. -x assembler-with-cpp
@@ -778,11 +676,11 @@ else
     $(call show_config_info,Size utility: Basic (not AVR-aware),[AUTODETECTED])
 endif
 
-
 ifneq (,$(strip $(ARDUINO_LIBS)))
     $(call arduino_output,-)
     $(call show_config_info,ARDUINO_LIBS =)
 endif
+
 ifneq (,$(strip $(USER_LIB_NAMES)))
     $(foreach lib,$(USER_LIB_NAMES),$(call show_config_info,  $(lib),[USER]))
 endif
@@ -794,7 +692,6 @@ endif
 # end of config output
 $(call show_separator)
 
-
 # Implicit rules for building everything (needed to get everything in
 # the right directory)
 #
@@ -804,87 +701,61 @@ $(call show_separator)
 # easy to change the build options in future
 
 # library sources
-$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c
-	mkdir -p $(dir $@)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c | $(OBJDIR)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp
-	mkdir -p $(dir $@)
-	$(CC) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp | $(OBJDIR)
+	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.cpp
-	mkdir -p $(dir $@)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.cpp | $(OBJDIR)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c
-	mkdir -p $(dir $@)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c | $(OBJDIR)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+
+ifdef COMMON_DEPS
+	COMMON_DEPS := $(COMMON_DEPS) Makefile
+else
+	COMMON_DEPS := Makefile
+endif
 
 # normal local sources
-# .o rules are for objects, .d for dependency tracking
-# there seems to be an awful lot of duplication here!!!
-COMMON_DEPS := Makefile
-$(OBJDIR)/%.o: %.c $(COMMON_DEPS)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+$(OBJDIR)/%.o: %.c $(COMMON_DEPS) | $(OBJDIR)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.cc $(COMMON_DEPS)
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+$(OBJDIR)/%.o: %.cc $(COMMON_DEPS) | $(OBJDIR)
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.cpp $(COMMON_DEPS)
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+$(OBJDIR)/%.o: %.cpp $(COMMON_DEPS) | $(OBJDIR)
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.S $(COMMON_DEPS)
+$(OBJDIR)/%.o: %.S $(COMMON_DEPS) | $(OBJDIR)
+	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+
+$(OBJDIR)/%.o: %.s $(COMMON_DEPS) | $(OBJDIR)
 	$(CC) -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.s $(COMMON_DEPS)
-	$(CC) -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+# the pde -> o file
+$(OBJDIR)/%.o: %.pde | $(OBJDIR)
+	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.d: %.c $(COMMON_DEPS)
-	$(CC) -MM $(CPPFLAGS) $(CFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
-$(OBJDIR)/%.d: %.cc $(COMMON_DEPS)
-	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
-$(OBJDIR)/%.d: %.cpp $(COMMON_DEPS)
-	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
-$(OBJDIR)/%.d: %.S $(COMMON_DEPS)
-	$(CC) -MM $(CPPFLAGS) $(ASFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
-$(OBJDIR)/%.d: %.s $(COMMON_DEPS)
-	$(CC) -MM $(CPPFLAGS) $(ASFLAGS) $< -MF $@ -MT $(@:.d=.o)
-
-#backward compatibility for .pde files
-# We should check for Arduino version, if the file is .pde because a .pde file might be used in Arduino 1.0
-# the pde -> cpp -> o file
-$(OBJDIR)/%.cpp: %.pde $(COMMON_DEPS)
-	$(ECHO) '#if ARDUINO >= 100\n    #include "Arduino.h"\n#else\n    #include "WProgram.h"\n#endif\n#line 1' > $@
-	$(CAT)  $< >> $@
-
-# the ino -> cpp -> o file
-$(OBJDIR)/%.cpp: %.ino $(COMMON_DEPS)
-	$(ECHO) '#include <Arduino.h>\n#line 1' > $@
-	$(CAT)  $< >> $@
-
-$(OBJDIR)/%.o: $(OBJDIR)/%.cpp $(COMMON_DEPS)
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
-
-$(OBJDIR)/%.d: $(OBJDIR)/%.cpp $(COMMON_DEPS)
-	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@ -MT $(@:.d=.o)
+# the ino -> o file
+$(OBJDIR)/%.o: %.ino | $(OBJDIR)
+	$(CXX) -x c++ -include Arduino.h -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # generated assembly
-$(OBJDIR)/%.s: $(OBJDIR)/%.cpp $(COMMON_DEPS)
+$(OBJDIR)/%.s: $(OBJDIR)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
 	$(CXX) -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 #$(OBJDIR)/%.lst: $(OBJDIR)/%.s
 #	$(AS) -mmcu=$(MCU) -alhnd $< > $@
 
 # core files
-$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS)
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS) | $(OBJDIR)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp $(COMMON_DEPS)
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+$(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # various object conversions
 $(OBJDIR)/%.hex: $(OBJDIR)/%.elf $(COMMON_DEPS)
@@ -912,11 +783,14 @@ ifndef AVRDUDE
 endif
 
 ifndef AVRDUDE_CONF
-ifndef AVR_TOOLS_DIR
-# The avrdude bundled with Arduino can't find its config
-AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/../avrdude.conf
-endif
-# If avrdude is installed separately, it can find its own config flie
+    ifndef AVR_TOOLS_DIR
+        # The avrdude bundled with Arduino can't find its config
+        AVRDUDE_CONF  = $(AVR_TOOLS_DIR)/../avrdude.conf
+        # in the recent arduino distribution (I don't know when),
+        # the conf file is no longer put in 
+        # AVRDUDE_CONF  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
+    endif
+    # If avrdude is installed separately, it can find its own config file
 endif
 
 AVRDUDE_COM_OPTS = -q -V -p $(MCU)
@@ -927,25 +801,26 @@ endif
 AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P $(call get_arduino_port)
 
 ifndef ISP_PROG
-    ISP_PROG	   = -c stk500v2
+    ISP_PROG   = -c stk500v2
 endif
 
 # usb seems to be a reasonable default, at least on linux
 ifndef ISP_PORT
-	ISP_PORT       = usb
+    ISP_PORT       = usb
 endif
 
 AVRDUDE_ISP_OPTS = -P $(ISP_PORT) $(ISP_PROG)
 
 ifndef ISP_EEPROM
-	ISP_EEPROM  = 0
+    ISP_EEPROM  = 0
 endif
 
 AVRDUDE_UPLOAD_HEX = -U flash:w:$(TARGET_HEX):i
 AVRDUDE_UPLOAD_EEP = -U eeprom:w:$(TARGET_EEP):i
 AVRDUDE_ISPLOAD_OPTS = $(AVRDUDE_UPLOAD_HEX)
+
 ifneq ($(ISP_EEPROM), 0)
-	AVRDUDE_ISPLOAD_OPTS += $(AVRDUDE_UPLOAD_EEP)
+    AVRDUDE_ISPLOAD_OPTS += $(AVRDUDE_UPLOAD_EEP)
 endif
 
 ########################################################################
@@ -953,8 +828,14 @@ endif
 # Explicit targets start here
 #
 
-all: 		$(OBJDIR) $(TARGET_EEP) $(TARGET_HEX) verify_size
+all: 		$(TARGET_EEP) $(TARGET_HEX) verify_size
 
+# Rule to create $(OBJDIR) automatically. All rules with recipes that
+# create a file within it, but do not already depend on a file within it
+# should depend on this rule. They should use a "order-only
+# prerequisite" (e.g., put "| $(OBJDIR)" at the end of the prerequisite
+# list) to prevent remaking the target when any file in the directory
+# changes.
 $(OBJDIR):
 		mkdir $(OBJDIR)
 
@@ -964,41 +845,64 @@ $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 		$(AR) rcs $@ $(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 
-$(DEP_FILE):	$(OBJDIR) $(DEPS)
-		cat $(DEPS) > $(DEP_FILE)
-
 error_on_leonardo:
 		$(ERROR_ON_LEONARDO)
 
-%supload:	$(TARGET_HEX) verify_size
-		sudo $(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
-			$(AVRDUDE_UPLOAD_HEX)
+upload:		$(TARGET_HEX) verify_size
+		# Use submake so we can guarantee the reset happens
+		# before the upload, even with make -j
+		$(MAKE) reset
+		$(MAKE) do_upload
 
-%upload:	$(TARGET_HEX) verify_size
+raw_upload:	$(TARGET_HEX) verify_size
+		$(MAKE) error_on_leonardo
+		$(MAKE) do_upload
+
+sudo_upload:	$(TARGET_HEX) verify_size
+		$(MAKE) reset
+		$(MAKE) do_sudo_upload
+
+raw_sudo_upload: $(TARGET_HEX) verify_size
+		$(MAKE) error_on_leonardo
+		$(MAKE) do_sudo_upload
+
+do_upload:
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_HEX)
 
+# for people who failed to give the permission
+# even if he set udev correctly. Obviously the dirty mean,
+# but some people do wan't this feature.
+# I DO build on my desktop, however not on my laptop (TP-X61), 
+# with the same udev config and the same Arduino-Makefile.
+# So I gave up and decided to introduce this target.
+do_sudo_upload:
+		sudo $(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
+			$(AVRDUDE_UPLOAD_HEX)
 
-upload:		reset %upload
-raw_upload:	error_on_leonardo %upload
-sudo_upload:		reset %supload
-raw_sudo_upload:	error_on_leonardo %supload
-
-%eeprom:	$(TARGET_EEP) $(TARGET_HEX)
+do_eeprom:	$(TARGET_EEP) $(TARGET_HEX)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_EEP)
 
-%seeprom:	$(TARGET_EEP) $(TARGET_HEX)
+do_sudo_eeprom:	$(TARGET_EEP) $(TARGET_HEX)
 		sudo $(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_EEP)
 
-eeprom:		reset %eeprom
+eeprom:		$(TARGET_HEX) verify_size
+		$(MAKE) reset
+		$(MAKE) do_eeprom
 
-raw_eeprom:	error_on_leonardo %eeprom
+raw_eeprom:	$(TARGET_HEX) verify_size
+		$(MAKE) error_on_leonardo
+		$(MAKE) do_eeprom
 
-sudo_eeprom:		reset %seeprom
+sudo_eeprom:	$(TARGET_HEX) verify_size
+		$(MAKE) reset
+		$(MAKE) do_sudo_eeprom
 
-raw_sudo_eeprom:	error_on_leonardo %seeprom
+raw_sudo_eeprom: $(TARGET_HEX) verify_size
+		$(MAKE) error_on_leonardo
+		$(MAKE) do_sudo_eeprom
 
 # the last part is for leonardo.
 # wait until leonardo reboots and establish a new connection.
@@ -1030,12 +934,9 @@ ispload:	$(TARGET_EEP) $(TARGET_HEX) verify_size
 			-U lock:w:$(ISP_LOCK_FUSE_POST):m
 
 clean:
-		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEP_FILE) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR}
+		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR}
 
-depends:	$(DEPS)
-		$(CAT) $(DEPS) > $(DEP_FILE)
-
-size:		$(OBJDIR) $(TARGET_HEX)
+size:		$(TARGET_HEX)
 		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
 
 show_boards:
@@ -1062,6 +963,4 @@ generated_assembly: $(OBJDIR)/$(TARGET).s
 .PHONY:	all upload raw_upload sudo_upload raw_sudo_upload raw_eeprom sudo_eeprom raw_sudo_eeprom error_on_leonardo reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly verify_size
 
 # added - in the beginning, so that we don't get an error if the file is not present
-ifneq ($(MAKECMDGOALS),clean)
--include $(DEP_FILE)
-endif
+-include $(DEPS)
