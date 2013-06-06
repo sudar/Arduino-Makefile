@@ -249,7 +249,7 @@ endif
 
 ########################################################################
 #
-# Default TARGET to cwd (ex Daniele Vergini)
+# Default TARGET to pwd (ex Daniele Vergini)
 ifndef TARGET
     TARGET  = $(notdir $(CURDIR))
 endif
@@ -808,11 +808,11 @@ endif
 
 all: 		$(TARGET_EEP) $(TARGET_HEX) verify_size
 
-# Rule to create $(OBJDIR) automaticallly. All rules with recipes that
+# Rule to create $(OBJDIR) automatically. All rules with recipes that
 # create a file within it, but do not already depend on a file within it
 # should depend on this rule. They should use a "order-only
-# prerequisite" (e.g., put "| $(OBJDIR)" at the end of the prequisite
-# list) to prevent remaking the target when any file in th directory
+# prerequisite" (e.g., put "| $(OBJDIR)" at the end of the prerequisite
+# list) to prevent remaking the target when any file in the directory
 # changes.
 $(OBJDIR):
 		mkdir $(OBJDIR)
