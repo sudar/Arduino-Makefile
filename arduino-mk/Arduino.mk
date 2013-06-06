@@ -405,7 +405,8 @@ ifdef ARDUINO_DIR
     ifndef AVR_TOOLS_DIR
         BUNDLED_AVR_TOOLS_DIR := $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/avr)
         ifdef BUNDLED_AVR_TOOLS_DIR
-            AVR_TOOLS_DIR     = $(BUNDLED_AVR_TOOLS_DIR)
+            AVR_TOOLS_DIR  = $(BUNDLED_AVR_TOOLS_DIR)
+            AVRDUDE_CONF   = $(AVR_TOOLS_DIR)/../avrdude.conf
             $(call show_config_variable,AVR_TOOLS_DIR,[BUNDLED],(in Arduino distribution))
 
         else
@@ -969,19 +970,35 @@ $(DEP_FILE):	$(OBJDIR) $(DEPS)
 error_on_leonardo:
 		$(ERROR_ON_LEONARDO)
 
+%supload:	$(TARGET_HEX) verify_size
+		sudo $(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
+			$(AVRDUDE_UPLOAD_HEX)
+
 %upload:	$(TARGET_HEX) verify_size
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_HEX)
 
+
 upload:		reset %upload
 raw_upload:	error_on_leonardo %upload
+sudo_upload:		reset %supload
+raw_sudo_upload:	error_on_leonardo %supload
 
 %eeprom:	$(TARGET_EEP) $(TARGET_HEX)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_EEP)
 
+%seeprom:	$(TARGET_EEP) $(TARGET_HEX)
+		sudo $(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
+			$(AVRDUDE_UPLOAD_EEP)
+
 eeprom:		reset %eeprom
+
 raw_eeprom:	error_on_leonardo %eeprom
+
+sudo_eeprom:		reset %seeprom
+
+raw_sudo_eeprom:	error_on_leonardo %seeprom
 
 # the last part is for leonardo.
 # wait until leonardo reboots and establish a new connection.
@@ -1042,7 +1059,7 @@ verify_size:	$(TARGET_HEX) $(TARGET_HEX).sizeok
 generated_assembly: $(OBJDIR)/$(TARGET).s
 	@$(ECHO) Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s
 
-.PHONY:	all upload raw_upload reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly verify_size
+.PHONY:	all upload raw_upload sudo_upload raw_sudo_upload raw_eeprom sudo_eeprom raw_sudo_eeprom error_on_leonardo reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly verify_size
 
 # added - in the beginning, so that we don't get an error if the file is not present
 ifneq ($(MAKECMDGOALS),clean)
