@@ -823,9 +823,9 @@ $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 		$(AR) rcs $@ $(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 
+# Use submake so we can guarantee the reset happens
+# before the upload, even with make -j
 upload:		$(TARGET_HEX) verify_size
-		# Use submake so we can guarantee the reset happens
-		# before the upload, even with make -j
 		$(MAKE) reset
 		$(MAKE) do_upload
 
