@@ -384,8 +384,30 @@ endif
 # Reset
 #
 ifndef RESET_CMD
-    RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino $(ARD_RESET_OPTS)
+    ifeq ($(BOARD_TAG),leonardo)
+       RESET_CMD = $(ARDMK_PATH)/ard-reset-leonardo \
+          $(ARD_RESET_OPTS) $(call get_arduino_port)
+    else
+       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino \
+          $(ARD_RESET_OPTS) $(call get_arduino_port)
+    endif
 endif
+
+ifndef WAIT_CONNECTION_CMD
+    ifeq ($(BOARD_TAG),leonardo)
+       WAIT_CONNECTION_CMD = \
+         $(ARDMK_PATH)/wait-connection-leonardo $(call get_arduino_port)
+    else
+       WAIT_CONNECTION_CMD = 
+    endif
+endif
+
+ifeq ($(BOARD_TAG),leonardo)
+    ERROR_ON_LEONARDO = $(error On leonardo, raw_xxx operation is not supported)
+else
+    ERROR_ON_LEONARDO = 
+endif
+
 
 ########################################################################
 # boards.txt parsing
@@ -823,6 +845,9 @@ $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 		$(AR) rcs $@ $(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 
+error_on_leonardo:
+		$(ERROR_ON_LEONARDO)
+
 # Use submake so we can guarantee the reset happens
 # before the upload, even with make -j
 upload:		$(TARGET_HEX) verify_size
@@ -830,20 +855,31 @@ upload:		$(TARGET_HEX) verify_size
 		$(MAKE) do_upload
 
 raw_upload:	$(TARGET_HEX) verify_size
+		$(MAKE) error_on_leonardo
 		$(MAKE) do_upload
 
 do_upload:
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_HEX)
 
-eeprom:		reset raw_eeprom
-
-raw_eeprom:	$(TARGET_EEP) $(TARGET_HEX)
+do_eeprom:	$(TARGET_EEP) $(TARGET_HEX)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_EEP)
 
+eeprom:		$(TARGET_HEX) verify_size
+		$(MAKE) reset
+		$(MAKE) do_eeprom
+
+raw_eeprom:	$(TARGET_HEX) verify_size
+		$(MAKE) error_on_leonardo
+		$(MAKE) do_eeprom
+
+# the last part is for leonardo.
+# wait until leonardo reboots and establish a new connection.
 reset:
-		$(RESET_CMD) $(call get_arduino_port)
+		$(call arduino_output,Resetting Arduino...)
+		$(RESET_CMD)
+		$(WAIT_CONNECTION_CMD)
 
 # stty on MacOS likes -F, but on Debian it likes -f redirecting
 # stdin/out appears to work but generates a spurious error on MacOS at
@@ -894,7 +930,7 @@ verify_size:	$(TARGET_HEX) $(TARGET_HEX).sizeok
 generated_assembly: $(OBJDIR)/$(TARGET).s
 	@$(ECHO) Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s
 
-.PHONY:	all upload raw_upload reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly verify_size
+.PHONY:	all upload raw_upload raw_eeprom error_on_leonardo reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly verify_size
 
 # added - in the beginning, so that we don't get an error if the file is not present
 -include $(DEPS)
