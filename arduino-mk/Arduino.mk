@@ -244,7 +244,7 @@ ifndef ARDUINO_DIR
     endif
 
 else
-    $(call show_config_variable,ARDUINO_DIR)
+    $(call show_config_variable,ARDUINO_DIR,[USER])
 endif
 
 ########################################################################
@@ -269,7 +269,7 @@ ifndef ARDUINO_VERSION
         $(call show_config_variable,ARDUINO_VERSION,[DEFAULT])
     endif
 else
-    $(call show_config_variable,ARDUINO_VERSION)
+    $(call show_config_variable,ARDUINO_VERSION,[USER])
 endif
 
 ########################################################################
@@ -297,7 +297,7 @@ ifdef ARDUINO_DIR
         endif # BUNDLED_AVR_TOOLS_DIR
 
     else
-        $(call show_config_variable,AVR_TOOLS_DIR)
+        $(call show_config_variable,AVR_TOOLS_DIR,[USER])
     endif #ndef AVR_TOOLS_DIR
 
     ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
@@ -339,7 +339,7 @@ ifdef ARDMK_DIR
         ARDMK_PATH = $(ARDMK_DIR)/bin
         $(call show_config_variable,ARDMK_PATH,[COMPUTED],(relative to ARDMK_DIR))
     else
-        $(call show_config_variable,ARDMK_PATH)
+        $(call show_config_variable,ARDMK_PATH,[USER])
     endif
 else
     echo $(error "ARDMK_DIR is not defined")
@@ -377,7 +377,7 @@ ifndef USER_LIB_PATH
     USER_LIB_PATH = $(ARDUINO_SKETCHBOOK)/libraries
     $(call show_config_variable,USER_LIB_PATH,[DEFAULT],(in user sketchbook))
 else
-    $(call show_config_variable,USER_LIB_PATH)
+    $(call show_config_variable,USER_LIB_PATH,[USER])
 endif
 
 ########################################################################
@@ -397,7 +397,7 @@ else
 	# Strip the board tag of any extra whitespace, since it was causing the makefile to fail
 	# https://github.com/sudar/Arduino-Makefile/issues/57
 	BOARD_TAG := $(strip $(BOARD_TAG))
-    $(call show_config_variable,BOARD_TAG)
+    $(call show_config_variable,BOARD_TAG,[USER])
 endif
 
 ifndef BOARDS_TXT
@@ -552,7 +552,7 @@ ifndef MONITOR_BAUDRATE
         $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
     endif
 else
-    $(call show_config_variable,MONITOR_BAUDRATE, [SPECIFIED])
+    $(call show_config_variable,MONITOR_BAUDRATE, [USER])
 endif
 
 ifndef MONITOR_CMD
@@ -651,7 +651,6 @@ get_arduino_port = $(if $(wildcard $(ARDUINO_PORT)),$(firstword $(wildcard $(ARD
 ifneq (,$(findstring AVR,$(shell $(SIZE) --help)))
     # We have a patched version of binutils that mentions AVR - pass the MCU
     # and the elf to get nice output.
-    #avr_size = $(SIZE) --mcu=$(MCU) --format=avr $(1)
     avr_size = $(SIZE) $(SIZEFLAGS) --format=avr $(1)
     $(call show_config_info,Size utility: AVR-aware for enhanced output,[AUTODETECTED])
 else
