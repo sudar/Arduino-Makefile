@@ -394,6 +394,9 @@ ifndef BOARD_TAG
     BOARD_TAG   = uno
     $(call show_config_variable,BOARD_TAG,[DEFAULT])
 else
+	# Strip the board tag of any extra whitespace, since it was causing the makefile to fail
+	# https://github.com/sudar/Arduino-Makefile/issues/57
+	BOARD_TAG := $(strip $(BOARD_TAG))
     $(call show_config_variable,BOARD_TAG)
 endif
 
