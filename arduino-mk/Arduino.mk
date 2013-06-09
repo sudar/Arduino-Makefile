@@ -647,6 +647,9 @@ SIZEFLAGS     ?= --mcu=$(MCU) -C
 # Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
 get_arduino_port = $(if $(wildcard $(ARDUINO_PORT)),$(firstword $(wildcard $(ARDUINO_PORT))),$(error Arduino port $(ARDUINO_PORT) not found!))
 
+# Returns the ISP port (first wildcard expansion) if it exists, otherwise it errors.
+get_isp_port = $(if $(wildcard $(ISP_PORT)),$(firstword $(wildcard $(ISP_PORT))),$(error ISP port $(ISP_PORT) not found!))
+
 # Command for avr_size: do $(call avr_size,elffile,hexfile)
 ifneq (,$(findstring AVR,$(shell $(SIZE) --help)))
     # We have a patched version of binutils that mentions AVR - pass the MCU
@@ -781,15 +784,14 @@ endif
 AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P $(call get_arduino_port)
 
 ifndef ISP_PROG
-    ISP_PROG   = -c stk500v2
+    ISP_PROG   = stk500v1
 endif
 
-# usb seems to be a reasonable default, at least on linux
-ifndef ISP_PORT
-    ISP_PORT       = usb
+ifndef AVRDUDE_ISP_BAUDRATE
+    AVRDUDE_ISP_BAUDRATE = 19200
 endif
 
-AVRDUDE_ISP_OPTS = -P $(ISP_PORT) $(ISP_PROG)
+AVRDUDE_ISP_OPTS = -c $(ISP_PROG) -b $(AVRDUDE_ISP_BAUDRATE) -P $(call get_isp_port)
 
 ifndef ISP_EEPROM
     ISP_EEPROM  = 0
