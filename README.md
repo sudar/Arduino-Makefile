@@ -71,7 +71,6 @@ If you are looking for ideas to work on, then check out the following TODO items
 
 ## Know Issues / TODO's
 
-- Doesn't work with Leonardo yet. There are various fixes (#43, #37, #30) but need to verify them #44.
 - Doesn't work with Arduino 1.5.x yet.
 
 If you find an issue or have an idea for a feature then log them at https://github.com/sudar/Arduino-Makefile/issues/

@@ -10,6 +10,7 @@ The following is the rough list of changes that went into different versions. I 
 - Strip extra whitespace from the `BOARD_TAG` variable
 - Enhanced support for programming using Arduino as ISP
 - Added example to show how to program using Arduino as ISP
+- Add support for Leonardo boards. Took code from (https://github.com/guicho271828)
 
 ### 0.10.4 (2013-05-31) @matthijskooijman
 - Improved BAUD_RATE detection logic
