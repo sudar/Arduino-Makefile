@@ -27,9 +27,6 @@
 #
 # PATHS YOU NEED TO SET UP
 #
-# I've reworked the way paths to executables are constructed in this
-# version (0.9) of the Makefile.
-#
 # We need to worry about three different sorts of file:
 #
 # 1. Things which are included in this distribution e.g. ard-parse-boards
@@ -122,13 +119,13 @@
 #
 #   $ make upload
 #
-# All of the object files are created in the build-cli subdirectory
+# All of the object files are created in the build-{BOARD_TAG} subdirectory
 # All sources should be in the current directory and can include:
 #  - at most one .pde or .ino file which will be treated as C++ after
 #    the standard Arduino header and footer have been affixed.
 #  - any number of .c, .cpp, .s and .h files
 #
-# Included libraries are built in the build-cli/libs subdirectory.
+# Included libraries are built in the build-{BOARD_TAG}/libs subdirectory.
 #
 # Besides make upload you can also
 #   make             - no upload
@@ -174,7 +171,7 @@
 # You need to specify some details of your ISP programmer and might
 # also need to specify the fuse values:
 #
-#     ISP_PROG	   = -c stk500v2
+#     ISP_PROG	   = stk500v2
 #     ISP_PORT     = /dev/ttyACM0
 #
 # You might also need to set the fuse bits, but typically they'll be
@@ -520,7 +517,7 @@ LOCAL_OBJ_FILES = $(LOCAL_C_SRCS:.c=.o)   $(LOCAL_CPP_SRCS:.cpp=.o) \
 LOCAL_OBJS      = $(patsubst %,$(OBJDIR)/%,$(LOCAL_OBJ_FILES))
 
 ifneq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 1)
-	#TODO: Support more than one file. https://github.com/sudar/Arduino-Makefile/issues/49
+    #TODO: Support more than one file. https://github.com/sudar/Arduino-Makefile/issues/49
     $(error Need exactly one .pde or .ino file)
 endif
 
