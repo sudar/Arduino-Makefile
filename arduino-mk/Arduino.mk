@@ -704,16 +704,20 @@ $(call show_separator)
 # easy to change the build options in future
 
 # library sources
-$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c | $(OBJDIR)
+$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c
+	mkdir -p $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp | $(OBJDIR)
+$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp
+	mkdir -p $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.cpp | $(OBJDIR)
+$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.cpp
+	mkdir -p $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c | $(OBJDIR)
+$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c
+	mkdir -p $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 ifdef COMMON_DEPS
