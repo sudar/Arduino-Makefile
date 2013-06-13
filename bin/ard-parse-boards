@@ -7,10 +7,10 @@ use Getopt::Long;
 use Pod::Usage;
 use YAML;
 
-# TODO: If you writing an installation script or a package for the makefile, 
+# TODO: If you writing an installation script or a package for the makefile,
 # then you might want to replace the below path based on the environment.
 # More discussion at https://github.com/sudar/Arduino-Makefile/issues/50
-my %Opt = 
+my %Opt =
    (
     boards_txt => '/Applications/Arduino.app/Contents/Resources/Java/hardware/arduino/boards.txt',
    );
@@ -25,7 +25,7 @@ GetOptions(\%Opt,
 	   "find!",        # search for data
 	   "dump!",        # dump the whole database
 	   "boards!",      # dump a list of boards
-	   "help!",  
+	   "help!",
 	   "info!",
 	  );
 
@@ -36,8 +36,8 @@ if ($Opt{help} || $Opt{info})
 
 my $db = parse_boards($Opt{boards_txt});
 
-if ($Opt{dump}) 
-  { 
+if ($Opt{dump})
+  {
     dump_data("$Opt{boards_txt} contains:", $db);
   }
 elsif ($Opt{find})
@@ -52,7 +52,7 @@ elsif ($Opt{boards})
 else
   {
     my $tag = shift @ARGV or usage();
-    
+
     if (my $key = shift @ARGV)
       {
 	die "$key isn't defined for the $tag board, "
@@ -71,7 +71,7 @@ else
 
 ## here endeth the main
 
-sub usage 
+sub usage
   {
     pod2usage(-verbose => 2);
   }
@@ -83,7 +83,7 @@ sub parse_boards
 
     my %b;
 
-    open(my $fh, '<', $filename) 
+    open(my $fh, '<', $filename)
       or die "Can't open $filename, ";
 
     while(<$fh>)
@@ -152,11 +152,11 @@ sub dump_data
 __END__
 
 =head1 NAME
- 
+
 ard-parse-boards - Read data from the Arduino boards.txt file
-  
+
 =head1 USAGE
- 
+
     Dump all the data in the file:
     $ ard-parse-boards --dump
 
@@ -174,7 +174,7 @@ ard-parse-boards - Read data from the Arduino boards.txt file
 
     Extract a particular field:
     $ ard-parse-boards atmega328 build.f_cpu
- 
+
 =head1 DESCRIPTION
 
 The Arduino software package ships with a boards.txt file which tells
@@ -201,12 +201,12 @@ names with the C<--boards> option.
 Specify the full path to the boards.txt file.
 
 =back
- 
+
 The following options all disable the normal 'lookup' operation.
 
 =over
 
-=item --dump 
+=item --dump
 
 Dump the complete database in YAML format.
 
@@ -238,7 +238,7 @@ List data containing both 328 and due.
 =back
 
 =back
- 
+
 =head1 BUGS AND LIMITATIONS
 
 There are no known bugs in this application.
@@ -246,17 +246,17 @@ There are no known bugs in this application.
 Please report problems to the author.
 
 Patches are welcome.
- 
+
 =head1 AUTHOR
 
 Martin Oldfield, ex-atelier@mjo.tc
 
 Thanks to Mark Sproul who suggested doing something like this to me ages ago.
- 
+
 =head1 LICENCE AND COPYRIGHT
- 
+
 Copyright (c) 2011, Martin Oldfield. All rights reserved.
- 
+
 This file is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published
 by the Free Software Foundation; either version 2.1 of the License, or
@@ -264,6 +264,6 @@ by the Free Software Foundation; either version 2.1 of the License, or
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
