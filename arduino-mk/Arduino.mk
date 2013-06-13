@@ -53,7 +53,7 @@
 # On Linux, you might prefer:
 #
 #   ARDUINO_DIR   = /usr/share/arduino
-#   ARDMK_DIR     = /usr
+#   ARDMK_DIR     = /usr/local
 #   AVR_TOOLS_DIR = /usr
 #
 # You can either set these up in the Makefile, or put them in your
@@ -89,7 +89,7 @@
 #       BOARD_TAG    = uno
 #       ARDUINO_PORT = /dev/cu.usb*
 #
-#       include /usr/share/arduino/Arduino.mk
+#       include /usr/local/share/Arduino.mk
 #
 # Hopefully these will be self-explanatory but in case they're not:
 #
