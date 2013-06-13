@@ -6,6 +6,7 @@ The following is the rough list of changes that went into different versions. I 
 ### 0.10.6 (in development)
 - Fix whitespace and add /dev/null redirection (https://github.com/sej7278)
 - Change the way AUTO_ARDUINO_VERSION is computed (https://github.com/sej7278)
+- Make serial monitor baudrate detection work in Mac as well(https://github.com/sej7278)
 
 ### 0.10.5 (2013-06-11)
 - Add USB_VID and USB_PID to CPPFLAGS only if the board is Leonardo.
