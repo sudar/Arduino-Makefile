@@ -3,7 +3,10 @@ A Makefile for Arduino Sketches
 
 The following is the rough list of changes that went into different versions. I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
-### 0.10.5
+### 0.10.6 (in development)
+- fix whitespace and add /dev/null redirection (https://github.com/sej7278)
+
+### 0.10.5 (2013-06-11)
 - Add USB_VID and USB_PID to CPPFLAGS only if the board is Leonardo.
 - Allow adding extra common dependencies (COMMON_DEPS) (https://github.com/gaftech)
 - Added ifndef ARDUINO_VAR_PATH for compiling for the attiny (https://github.com/danielesteban)
