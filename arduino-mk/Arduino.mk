@@ -395,14 +395,14 @@ ifndef WAIT_CONNECTION_CMD
        WAIT_CONNECTION_CMD = \
          $(ARDMK_PATH)/wait-connection-leonardo $(call get_arduino_port)
     else
-       WAIT_CONNECTION_CMD = 
+       WAIT_CONNECTION_CMD =
     endif
 endif
 
 ifeq ($(BOARD_TAG),leonardo)
     ERROR_ON_LEONARDO = $(error On leonardo, raw_xxx operation is not supported)
 else
-    ERROR_ON_LEONARDO = 
+    ERROR_ON_LEONARDO =
 endif
 
 
@@ -449,7 +449,7 @@ ifndef F_CPU
     F_CPU = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.f_cpu)
 endif
 
-ifeq ($(VARIANT),leonardo) 
+ifeq ($(VARIANT),leonardo)
     # USB IDs for the Leonardo
     ifndef USB_VID
         USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid 2>/dev/null)
@@ -653,7 +653,7 @@ CPPFLAGS      += -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
         -ffunction-sections -fdata-sections
 
 # USB IDs for the Leonardo
-ifeq ($(VARIANT),leonardo) 
+ifeq ($(VARIANT),leonardo)
     CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
 endif
 
@@ -887,10 +887,10 @@ reset:
 # least. Perhaps it would be better to just do it in perl ?
 reset_stty:
 		for STTYF in 'stty -F' 'stty --file' 'stty -f' 'stty <' ; \
-		  do $$STTYF /dev/tty >/dev/null 2>/dev/null && break ; \
-		done ;\
-		$$STTYF $(call get_arduino_port)  hupcl ;\
-		(sleep 0.1 || sleep 1)     ;\
+		  do $$STTYF /dev/tty >/dev/null 2>&1 && break ; \
+		done ; \
+		$$STTYF $(call get_arduino_port)  hupcl ; \
+		(sleep 0.1 2>/dev/null || sleep 1) ; \
 		$$STTYF $(call get_arduino_port) -hupcl
 
 ispload:	$(TARGET_EEP) $(TARGET_HEX) verify_size
