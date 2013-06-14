@@ -19,7 +19,7 @@
 #
 # Original Arduino adaptation by mellis, eighthave, oli.keller
 #
-# Current version: 0.10.5
+# Current version: 0.10.6
 #
 # Refer to HISTORY.md file for complete history of changes
 #
@@ -721,9 +721,9 @@ $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 ifdef COMMON_DEPS
-	COMMON_DEPS := $(COMMON_DEPS) Makefile
+    COMMON_DEPS := $(COMMON_DEPS) Makefile
 else
-	COMMON_DEPS := Makefile
+    COMMON_DEPS := Makefile
 endif
 
 # normal local sources
