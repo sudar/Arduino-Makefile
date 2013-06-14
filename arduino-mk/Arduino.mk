@@ -382,7 +382,7 @@ endif
 #
 ifndef RESET_CMD
     ifeq ($(BOARD_TAG),leonardo)
-       RESET_CMD = $(ARDMK_PATH)/ard-reset-leonardo \
+       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --leonardo \
           $(ARD_RESET_OPTS) $(call get_arduino_port)
     else
        RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino \

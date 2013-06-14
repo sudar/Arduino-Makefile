@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 while [ ! -e $1 ]
 do
