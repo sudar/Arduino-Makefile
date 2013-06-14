@@ -3,7 +3,7 @@ A Makefile for Arduino Sketches
 
 The following is the rough list of changes that went into different versions. I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
-### 0.10.6 (3013-06-14)
+### 0.10.6 (2013-06-14)
 - Fix whitespace and add /dev/null redirection (https://github.com/sej7278)
 - Change the way AUTO_ARDUINO_VERSION is computed (https://github.com/sej7278)
 - Make serial monitor baudrate detection work in Mac as well(https://github.com/sej7278)
