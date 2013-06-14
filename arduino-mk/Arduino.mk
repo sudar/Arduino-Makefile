@@ -19,7 +19,7 @@
 #
 # Original Arduino adaptation by mellis, eighthave, oli.keller
 #
-# Current version: 0.10.5
+# Current version: 0.10.6
 #
 # Refer to HISTORY.md file for complete history of changes
 #
@@ -382,7 +382,7 @@ endif
 #
 ifndef RESET_CMD
     ifeq ($(BOARD_TAG),leonardo)
-       RESET_CMD = $(ARDMK_PATH)/ard-reset-leonardo \
+       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --leonardo \
           $(ARD_RESET_OPTS) $(call get_arduino_port)
     else
        RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino \

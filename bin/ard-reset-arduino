@@ -7,16 +7,17 @@ use Device::SerialPort;
 use Getopt::Long;
 use Pod::Usage;
 
-my %Opt = 
-  ( 
+my %Opt =
+  (
    period => 0.1,
   );
 
-GetOptions(\%Opt, 
+GetOptions(\%Opt,
 	   "period=f",   # width of reset pulse in seconds
 	   "verbose!",
-	   "help!",  
+	   "help!",
 	   "info!",
+	   "leonardo!",
 	  );
 
 if ($Opt{help} || $Opt{info})
@@ -31,21 +32,33 @@ foreach my $dev (@ARGV)
   {
     my $p = Device::SerialPort->new($dev)
       or die "Unable to open $dev: $!\n";
-    
+
+    if ($Opt{leonardo})
+    {
+        $p->baudrate(1200);
+        $p->write_settings;
+        $p->close;
+
+        print STDERR "Switching to 1200 baud on $dev\n"
+            if $Opt{verbose};
+    }
+    else
+    {
     my $dt = $Opt{period};
 
     print STDERR "Setting DTR high for ${dt}s on $dev\n"
       if $Opt{verbose};
-    
+
     die "Invalid pulse width ($dt), "
       unless $dt > 0.0;
-    
+
     $p->pulse_dtr_on($dt * 1000.0);
+    }
   }
-    
+
 ## here endeth the main
 
-sub usage 
+sub usage
   {
     pod2usage(-verbose => 2);
   }
@@ -53,20 +66,22 @@ sub usage
 __END__
 
 =head1 NAME
- 
+
 ard-reset-arduino - Reset an Arduino
-  
+
 =head1 USAGE
- 
+
     $ ard-reset-arduino /dev/cu.usb*
 
     $ ard-reset-arduino --verbose --period=0.1 /dev/cu.usb*
- 
+
+    $ ard-reset-arduino --verbose --leonardo /dev/ttyUSB0
+
 =head1 DESCRIPTION
 
 To reset (most) Arduinos, it's enough to just pulse the DTR line.
 
-You can do that from the shell with stty, but there's an interesting 
+You can do that from the shell with stty, but there's an interesting
 diversity of command flags. This little program gives a uniform interface
 at the cost of requiring C<Device::SerialPort>.
 
@@ -82,8 +97,12 @@ Watch what's going on on STDERR.
 
 Specify the DTR pulse width in seconds.
 
+=item --leonardo
+
+Reset a Leonardo.
+
 =back
- 
+
 =head1 BUGS AND LIMITATIONS
 
 There are no known bugs in this application.
@@ -91,18 +110,18 @@ There are no known bugs in this application.
 Please report problems to the author.
 
 Patches are welcome.
- 
+
 =head1 AUTHOR
 
 Martin Oldfield, ex-atelier@mjo.tc
 
 Thanks to Daniele Vergini who suggested this to me, and supplied
 a command line version.
- 
+
 =head1 LICENCE AND COPYRIGHT
- 
+
 Copyright (c) 2012, Martin Oldfield. All rights reserved.
- 
+
 This file is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published
 by the Free Software Foundation; either version 2.1 of the License, or
@@ -110,6 +129,6 @@ by the Free Software Foundation; either version 2.1 of the License, or
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
