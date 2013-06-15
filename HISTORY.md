@@ -3,7 +3,7 @@ A Makefile for Arduino Sketches
 
 The following is the rough list of changes that went into different versions. I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
-### 0.11.0 (in development)
+### 0.11.0 (2013-06-15)
 - Replace hardcoded executables with variable
 - Fix whitespace issues
 - Add a warning when HEX_MAXIMUM_SIZE is not specified

@@ -59,7 +59,7 @@ is set to `$HOME/sketchbook`.
 
 ## Versioning
 
-The current version of the makefile is `0.10.6`. You can find the full history in the [HISTORY.md](HISTORY.md) file
+The current version of the makefile is `0.11.0`. You can find the full history in the [HISTORY.md](HISTORY.md) file
 
 This project adheres to Semantic [Versioning 2.0](http://semver.org/).
 
@@ -69,11 +69,12 @@ All contributions (even documentation) are welcome :) Open a pull request and I 
 
 If you are looking for ideas to work on, then check out the following TODO items or the [issue tracker](https://github.com/sudar/Arduino-Makefile/issues/).
 
-## Know Issues / TODO's
+## Limitations / Know Issues / TODO's
 
-- Doesn't work with Arduino 1.5.x yet.
+- Doesn't work with Arduino 1.5.x yet. Follow [issue #45](https://github.com/sudar/Arduino-Makefile/issues/45) for progress.
 - Since it doesn't do any pre processing like Arduino IDE, you have to declare all methods before you use them ([issue #59](https://github.com/sudar/Arduino-Makefile/issues/59))
 - More than one .ino or .pde file is not supported yet ([issue #49](https://github.com/sudar/Arduino-Makefile/issues/49))
+- When you compile for the first time, it builds all libs inside Arduino directory even if it is not needed. But while linking only the relevant files are linked. ([issue #29](https://github.com/sudar/Arduino-Makefile/issues/29)). Even Arduino IDE does the same thing though.
 
 If you find an issue or have an idea for a feature then log them in the [issue tracker](https://github.com/sudar/Arduino-Makefile/issues/)
 
