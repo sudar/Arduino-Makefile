@@ -926,8 +926,12 @@ symbol_sizes: $(OBJDIR)/$(TARGET).sym
 	@$(ECHO) A symbol listing sorted by their size have been dumped to $(OBJDIR)/$(TARGET).sym
 
 $(TARGET_HEX).sizeok: $(TARGET_HEX)
-		$(ARDMK_PATH)/ard-verify-size $(TARGET_HEX) $(HEX_MAXIMUM_SIZE)
-		touch $@
+ifneq ($(strip $(HEX_MAXIMUM_SIZE)),)
+	$(ARDMK_PATH)/ard-verify-size $(TARGET_HEX) $(HEX_MAXIMUM_SIZE)
+	touch $@
+else
+	@$(ECHO) Maximum Hex size is not specified. Make sure the hex file that you are going to upload is less than microcontrollers flash memory
+endif
 
 verify_size:	$(TARGET_HEX) $(TARGET_HEX).sizeok
 

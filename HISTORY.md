@@ -6,6 +6,7 @@ The following is the rough list of changes that went into different versions. I 
 ### 0.11.0 (in development)
 - Replace hardcoded executables with variable
 - Fix whitespace issues
+- Add a warning when HEX_MAXIMUM_SIZE is not specified
 
 ### 0.10.6 (2013-06-14)
 - Fix whitespace and add /dev/null redirection (https://github.com/sej7278)
