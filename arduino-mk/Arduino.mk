@@ -798,7 +798,12 @@ ifndef AVRDUDE_CONF
     # If avrdude is installed separately, it can find its own config file
 endif
 
-AVRDUDE_COM_OPTS = -q -V -p $(MCU)
+# Default avrdude options. -V Do not verify, -q - suppress progress output
+ifndef AVRDUDE_OPTS
+    AVRDUDE_OPTS = -q -V
+endif
+
+AVRDUDE_COM_OPTS = $(AVRDUDE_OPTS) -p $(MCU)
 ifdef AVRDUDE_CONF
     AVRDUDE_COM_OPTS += -C $(AVRDUDE_CONF)
 endif
