@@ -431,72 +431,78 @@ ifndef PARSE_BOARD_OPTS
     PARSE_BOARD_OPTS = --boards_txt=$(BOARDS_TXT)
 endif
 
-ifndef PARSE_BOARD_CMD
-    PARSE_BOARD_CMD = $(PARSE_BOARD) $(PARSE_BOARD_OPTS)
-endif
+# If NO_CORE is set, then we don't have to parse boards.txt file
+# But the user might have to define MCU, F_CPU etc
+ifeq ($(strip $(NO_CORE)),)
 
-# Which variant ? This affects the include path
-ifndef VARIANT
-    VARIANT = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.variant)
-endif
-
-# processor stuff
-ifndef MCU
-    MCU   = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.mcu)
-endif
-
-ifndef F_CPU
-    F_CPU = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.f_cpu)
-endif
-
-ifeq ($(VARIANT),leonardo)
-    # USB IDs for the Leonardo
-    ifndef USB_VID
-        USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid 2>/dev/null)
+    ifndef PARSE_BOARD_CMD
+        PARSE_BOARD_CMD = $(PARSE_BOARD) $(PARSE_BOARD_OPTS)
     endif
 
-    ifndef USB_PID
-        USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid 2>/dev/null)
+    # Which variant ? This affects the include path
+    ifndef VARIANT
+        VARIANT = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.variant)
     endif
-endif
 
-# normal programming info
-ifndef AVRDUDE_ARD_PROGRAMMER
-    AVRDUDE_ARD_PROGRAMMER = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.protocol)
-endif
+    # processor stuff
+    ifndef MCU
+        MCU   = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.mcu)
+    endif
 
-ifndef AVRDUDE_ARD_BAUDRATE
-    AVRDUDE_ARD_BAUDRATE   = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.speed)
-endif
+    ifndef F_CPU
+        F_CPU = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.f_cpu)
+    endif
 
-# fuses if you're using e.g. ISP
-ifndef ISP_LOCK_FUSE_PRE
-    ISP_LOCK_FUSE_PRE  = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.unlock_bits)
-endif
+    ifeq ($(VARIANT),leonardo)
+        # USB IDs for the Leonardo
+        ifndef USB_VID
+            USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid 2>/dev/null)
+        endif
 
-ifndef ISP_LOCK_FUSE_POST
-    ISP_LOCK_FUSE_POST = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.lock_bits)
-endif
+        ifndef USB_PID
+            USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid 2>/dev/null)
+        endif
+    endif
 
-ifndef ISP_HIGH_FUSE
-    ISP_HIGH_FUSE      = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.high_fuses)
-endif
+    # normal programming info
+    ifndef AVRDUDE_ARD_PROGRAMMER
+        AVRDUDE_ARD_PROGRAMMER = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.protocol)
+    endif
 
-ifndef ISP_LOW_FUSE
-    ISP_LOW_FUSE       = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.low_fuses)
-endif
+    ifndef AVRDUDE_ARD_BAUDRATE
+        AVRDUDE_ARD_BAUDRATE   = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.speed)
+    endif
 
-ifndef ISP_EXT_FUSE
-    ISP_EXT_FUSE       = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.extended_fuses)
+    # fuses if you're using e.g. ISP
+    ifndef ISP_LOCK_FUSE_PRE
+        ISP_LOCK_FUSE_PRE  = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.unlock_bits)
+    endif
+
+    ifndef ISP_HIGH_FUSE
+        ISP_HIGH_FUSE      = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.high_fuses)
+    endif
+
+    ifndef ISP_LOW_FUSE
+        ISP_LOW_FUSE       = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.low_fuses)
+    endif
+
+    ifndef ISP_EXT_FUSE
+        ISP_EXT_FUSE       = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.extended_fuses)
+    endif
+
+    ifndef ISP_LOCK_FUSE_POST
+        ISP_LOCK_FUSE_POST = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.lock_bits)
+    endif
+
+    ifndef HEX_MAXIMUM_SIZE
+        HEX_MAXIMUM_SIZE  = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.maximum_size)
+    endif
+
 endif
 
 # Everything gets built in here (include BOARD_TAG now)
 ifndef OBJDIR
-	OBJDIR  	  = build-$(BOARD_TAG)
-endif
-
-ifndef HEX_MAXIMUM_SIZE
-	HEX_MAXIMUM_SIZE  = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.maximum_size)
+    OBJDIR = build-$(BOARD_TAG)
 endif
 
 ########################################################################
@@ -516,9 +522,21 @@ LOCAL_OBJ_FILES = $(LOCAL_C_SRCS:.c=.o)   $(LOCAL_CPP_SRCS:.cpp=.o) \
 		$(LOCAL_INO_SRCS:.ino=.o) $(LOCAL_AS_SRCS:.S=.o)
 LOCAL_OBJS      = $(patsubst %,$(OBJDIR)/%,$(LOCAL_OBJ_FILES))
 
-ifneq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 1)
-    #TODO: Support more than one file. https://github.com/sudar/Arduino-Makefile/issues/49
-    $(error Need exactly one .pde or .ino file)
+# If NO_CORE is not set, then we need exactly one .pde or .ino file
+ifeq ($(strip $(NO_CORE)),)
+
+    ifeq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 0)
+        ifeq ($(strip $(NO_CORE)),)
+            $(error No .pde or .ino files found. If you want to compile .c or .cpp files, then set NO_CORE)
+        endif
+    endif
+
+    # Ideally, this should just check if there are more than one file
+    ifneq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 1)
+        #TODO: Support more than one file. https://github.com/sudar/Arduino-Makefile/issues/49
+        $(error Need exactly one .pde or .ino file)
+    endif
+
 endif
 
 # core sources
@@ -558,22 +576,24 @@ endif
 # to the command we're using (here screen). So, read the screen docs
 # for more information (search for 'character special device').
 #
-ifndef MONITOR_BAUDRATE
-    SPEED = $(shell egrep -h 'Serial.begin\([0-9]+\)' $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS) | sed -e 's/[^0-9]//g'| head -n1)
-    MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
+ifeq ($(strip $(NO_CORE)),)
+    ifndef MONITOR_BAUDRATE
+        SPEED = $(shell egrep -h 'Serial.begin\([0-9]+\)' $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS) | sed -e 's/[^0-9]//g'| head -n1)
+        MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
 
-    ifeq ($(MONITOR_BAUDRATE),)
-        MONITOR_BAUDRATE = 9600
-        $(call show_config_variable,MONITOR_BAUDRATE,[ASSUMED])
+        ifeq ($(MONITOR_BAUDRATE),)
+            MONITOR_BAUDRATE = 9600
+            $(call show_config_variable,MONITOR_BAUDRATE,[ASSUMED])
+        else
+            $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
+        endif
     else
-        $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
+        $(call show_config_variable,MONITOR_BAUDRATE, [USER])
     endif
-else
-    $(call show_config_variable,MONITOR_BAUDRATE, [USER])
-endif
 
-ifndef MONITOR_CMD
-    MONITOR_CMD = screen
+    ifndef MONITOR_CMD
+        MONITOR_CMD = screen
+    endif
 endif
 
 ########################################################################
