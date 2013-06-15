@@ -10,6 +10,7 @@ The following is the rough list of changes that went into different versions. I 
 - Add the ability to configure avrdude options. Fix issue #53
 - Handle cases where certain fuse bits are not present. Fix issue #61
 - Add support for compiling plain AVR C files. Fix issue #63
+- Add an example to show how to compile AVR C files. Fix issue #73
 
 ### 0.10.6 (2013-06-14)
 - Fix whitespace and add /dev/null redirection (https://github.com/sej7278)
