@@ -348,14 +348,14 @@ endif
 #
 ifndef ARDUINO_SKETCHBOOK
     ifneq ($(wildcard $(HOME)/.arduino/preferences.txt),)
-	ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
+        ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
                                           $(HOME)/.arduino/preferences.txt | \
                                      sed -e 's/sketchbook.path=//' )
     endif
 
-	# on mac
+    # on mac
     ifneq ($(wildcard $(HOME)/Library/Arduino/preferences.txt),)
-	ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
+        ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
                                           $(HOME)/Library/Arduino/preferences.txt | \
                                      sed -e 's/sketchbook.path=//' )
     endif
@@ -413,9 +413,9 @@ ifndef BOARD_TAG
     BOARD_TAG   = uno
     $(call show_config_variable,BOARD_TAG,[DEFAULT])
 else
-	# Strip the board tag of any extra whitespace, since it was causing the makefile to fail
-	# https://github.com/sudar/Arduino-Makefile/issues/57
-	BOARD_TAG := $(strip $(BOARD_TAG))
+    # Strip the board tag of any extra whitespace, since it was causing the makefile to fail
+    # https://github.com/sudar/Arduino-Makefile/issues/57
+    BOARD_TAG := $(strip $(BOARD_TAG))
     $(call show_config_variable,BOARD_TAG,[USER])
 endif
 
