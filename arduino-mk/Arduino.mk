@@ -818,6 +818,34 @@ ifndef AVRDUDE_ISP_BAUDRATE
     AVRDUDE_ISP_BAUDRATE = 19200
 endif
 
+# Pre fuse settings
+ifndef AVRDUDE_ISP_FUSES_PRE
+
+    ifneq ($(strip $(ISP_LOCK_FUSE_PRE)),)
+        AVRDUDE_ISP_FUSES_PRE += -U lock:w:$(ISP_LOCK_FUSE_PRE):m
+    endif
+
+    ifneq ($(strip $(ISP_HIGH_FUSE)),)
+        AVRDUDE_ISP_FUSES_PRE += -U hfuse:w:$(ISP_HIGH_FUSE):m
+    endif
+
+    ifneq ($(strip $(ISP_LOW_FUSE)),)
+        AVRDUDE_ISP_FUSES_PRE += -U lfuse:w:$(ISP_LOW_FUSE):m
+    endif
+
+    ifneq ($(strip $(ISP_EXT_FUSE)),)
+        AVRDUDE_ISP_FUSES_PRE += -U efuse:w:$(ISP_EXT_FUSE):m
+    endif
+
+endif
+
+# Post fuse settings
+ifndef AVRDUDE_ISP_FUSES_POST
+    ifneq ($(strip $(ISP_LOCK_FUSE_POST)),)
+        AVRDUDE_ISP_FUSES_POST += -U lock:w:$(ISP_LOCK_FUSE_POST):m
+    endif
+endif
+
 AVRDUDE_ISP_OPTS = -c $(ISP_PROG) -b $(AVRDUDE_ISP_BAUDRATE) -P $(call get_isp_port)
 
 ifndef ISP_EEPROM
@@ -902,15 +930,14 @@ reset_stty:
 		$$STTYF $(call get_arduino_port) -hupcl
 
 ispload:	$(TARGET_EEP) $(TARGET_HEX) verify_size
-		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e \
-			-U lock:w:$(ISP_LOCK_FUSE_PRE):m \
-			-U hfuse:w:$(ISP_HIGH_FUSE):m \
-			-U lfuse:w:$(ISP_LOW_FUSE):m \
-			-U efuse:w:$(ISP_EXT_FUSE):m
-		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -D \
-			$(AVRDUDE_ISPLOAD_OPTS)
+ifdef AVRDUDE_ISP_FUSES_PRE
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e $(AVRDUDE_ISP_FUSES_PRE)
+endif
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) \
-			-U lock:w:$(ISP_LOCK_FUSE_POST):m
+			$(AVRDUDE_ISPLOAD_OPTS)
+ifdef AVRDUDE_ISP_FUSES_POST
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) $(AVRDUDE_ISP_FUSES_POST)
+endif
 
 clean:
 		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR}

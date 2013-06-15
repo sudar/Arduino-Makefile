@@ -8,6 +8,7 @@ The following is the rough list of changes that went into different versions. I 
 - Fix whitespace issues
 - Add a warning when HEX_MAXIMUM_SIZE is not specified
 - Add the ability to configure avrdude options. Fix issue #53
+- Handle cases where certain fuse bits are not present. Fix issue #61
 
 ### 0.10.6 (2013-06-14)
 - Fix whitespace and add /dev/null redirection (https://github.com/sej7278)
