@@ -613,6 +613,7 @@ REMOVE  = rm -rf
 MV      = mv -f
 CAT     = cat
 ECHO    = echo
+MKDIR   = mkdir -p
 
 # General arguments
 USER_LIBS     = $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(ARDUINO_LIBS)))
@@ -705,19 +706,19 @@ $(call show_separator)
 
 # library sources
 $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c
-	mkdir -p $(dir $@)
+	$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp
-	mkdir -p $(dir $@)
+	$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.cpp
-	mkdir -p $(dir $@)
+	$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c
-	mkdir -p $(dir $@)
+	$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 ifdef COMMON_DEPS
@@ -840,7 +841,7 @@ all: 		$(TARGET_EEP) $(TARGET_HEX) verify_size
 # list) to prevent remaking the target when any file in the directory
 # changes.
 $(OBJDIR):
-		mkdir $(OBJDIR)
+		$(MKDIR) $(OBJDIR)
 
 $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 		$(CC) $(LDFLAGS) -o $@ $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS) -lc -lm
