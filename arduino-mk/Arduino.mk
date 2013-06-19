@@ -772,8 +772,11 @@ $(OBJDIR)/%.o: %.ino $(COMMON_DEPS) | $(OBJDIR)
 	$(CXX) -x c++ -include Arduino.h -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # generated assembly
-$(OBJDIR)/%.s: $(OBJDIR)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
-	$(CXX) -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+$(OBJDIR)/%.s: %.pde $(COMMON_DEPS) | $(OBJDIR)
+	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+
+$(OBJDIR)/%.s: %.ino $(COMMON_DEPS) | $(OBJDIR)
+	$(CXX) -x c++ -include Arduino.h -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 #$(OBJDIR)/%.lst: $(OBJDIR)/%.s
 #	$(AS) -mmcu=$(MCU) -alhnd $< > $@
