@@ -380,8 +380,16 @@ endif
 ########################################################################
 # Reset
 #
+ifeq ($(BOARD_TAG),leonardo)
+    LEO_RESET = 1
+endif
+
+ifeq ($(BOARD_TAG),micro)
+    LEO_RESET = 1
+endif
+
 ifndef RESET_CMD
-    ifeq ($(BOARD_TAG),leonardo)
+    ifdef LEO_RESET
        RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --leonardo \
           $(ARD_RESET_OPTS) $(call get_arduino_port)
     else
@@ -391,7 +399,7 @@ ifndef RESET_CMD
 endif
 
 ifndef WAIT_CONNECTION_CMD
-    ifeq ($(BOARD_TAG),leonardo)
+    ifdef LEO_RESET
        WAIT_CONNECTION_CMD = \
          $(ARDMK_PATH)/wait-connection-leonardo $(call get_arduino_port)
     else
