@@ -5,6 +5,7 @@ The following is the rough list of changes that went into different versions. I 
 
 ### 0.12.1 (in development)
 - Add $OBJDIR to the list of configuration that gets printed. Fix issue #77
+- Add support for specifying optimization level. Fix issue #81
 
 ### 0.12.0 (2013-06-20)
 - Fix "generated_assembly" target, which got broken earlier. Fix issue #76 (https://github.com/matthijskooijman)

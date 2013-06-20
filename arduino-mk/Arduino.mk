@@ -668,10 +668,20 @@ USER_LIB_OBJS = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(USER_LIB_
 # Dependency files
 DEPS            = $(LOCAL_OBJS:.o=.d) $(LIB_OBJS:.o=.d) $(USER_LIB_OBJS:.o=.d) $(CORE_OBJS:.o=.d)
 
+# Optimization level for the compiler.
+# You can get the list of options at http://www.nongnu.org/avr-libc/user-manual/using_tools.html#gcc_optO
+# Also read http://www.nongnu.org/avr-libc/user-manual/FAQ.html#faq_optflags
+ifndef OPTIMIZATION_LEVEL
+    OPTIMIZATION_LEVEL=s
+    $(call show_config_variable,OPTIMIZATION_LEVEL,[DEFAULT])
+else
+    $(call show_config_variable,OPTIMIZATION_LEVEL,[USER])
+endif
+
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
 CPPFLAGS      += -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
         -I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
-        $(SYS_INCLUDES) $(USER_INCLUDES) -g -Os -Wall \
+        $(SYS_INCLUDES) $(USER_INCLUDES) -g -O$(OPTIMIZATION_LEVEL) -Wall \
         -ffunction-sections -fdata-sections
 
 # USB IDs for the Leonardo
@@ -682,7 +692,7 @@ endif
 CFLAGS        += -std=gnu99 $(EXTRA_FLAGS) $(EXTRA_CFLAGS)
 CXXFLAGS      += -fno-exceptions $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS)
 ASFLAGS       += -mmcu=$(MCU) -I. -x assembler-with-cpp
-LDFLAGS       += -mmcu=$(MCU) -Wl,--gc-sections -Os $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS)
+LDFLAGS       += -mmcu=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL) $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS)
 SIZEFLAGS     ?= --mcu=$(MCU) -C
 
 # Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
