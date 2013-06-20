@@ -59,7 +59,7 @@ is set to `$HOME/sketchbook`.
 
 ## Versioning
 
-The current version of the makefile is `0.11.0`. You can find the full history in the [HISTORY.md](HISTORY.md) file
+The current version of the makefile is `0.12.0`. You can find the full history in the [HISTORY.md](HISTORY.md) file
 
 This project adheres to Semantic [Versioning 2.0](http://semver.org/).
 

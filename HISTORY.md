@@ -3,7 +3,7 @@ A Makefile for Arduino Sketches
 
 The following is the rough list of changes that went into different versions. I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
-### 0.11.1 (in development)
+### 0.12.0 (2013-06-20)
 - Fix "generated_assembly" target, which got broken earlier. Fix issue #76 (https://github.com/matthijskooijman)
 - Deprecate "generated_assembly" target in favour of "generate_assembly". Fix issue #79
 
