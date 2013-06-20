@@ -990,10 +990,13 @@ endif
 
 verify_size:	$(TARGET_HEX) $(TARGET_HEX).sizeok
 
-generated_assembly: $(OBJDIR)/$(TARGET).s
+generate_assembly: $(OBJDIR)/$(TARGET).s
 	@$(ECHO) Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s
 
-.PHONY:	all upload raw_upload raw_eeprom error_on_leonardo reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly verify_size
+generated_assembly: generate_assembly
+	@$(ECHO) "generated_assembly" target is deprecated. Use "generate_assembly" target instead
+	
+.PHONY:	all upload raw_upload raw_eeprom error_on_leonardo reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly generate_assembly verify_size
 
 # added - in the beginning, so that we don't get an error if the file is not present
 -include $(DEPS)
