@@ -99,7 +99,7 @@ Specify the DTR pulse width in seconds.
 
 =item --leonardo
 
-Reset a Leonardo.
+Reset a Leonardo or Micro.
 
 =back
 
@@ -115,7 +115,7 @@ Patches are welcome.
 
 Martin Oldfield, ex-atelier@mjo.tc
 
-Support for Leonardo added by sej7278, https://github.com/sej7278
+Support for Leonardo/Micro added by sej7278, https://github.com/sej7278
 
 Thanks to Daniele Vergini who suggested this to me, and supplied
 a command line version.
