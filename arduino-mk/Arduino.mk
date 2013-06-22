@@ -85,7 +85,7 @@
 #
 # For example:
 #
-#       ARDUINO_LIBS = Ethernet Ethernet/utility SPI
+#       ARDUINO_LIBS = Ethernet SPI
 #       BOARD_TAG    = uno
 #       ARDUINO_PORT = /dev/cu.usb*
 #
