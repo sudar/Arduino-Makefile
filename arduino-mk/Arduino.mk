@@ -252,6 +252,7 @@ ifndef TARGET
 endif
 
 ########################################################################
+#
 # Arduino version number
 ifndef ARDUINO_VERSION
     # Remove all the decimals, and right-pad with zeros, and finally grab the first 3 bytes.
@@ -267,6 +268,33 @@ ifndef ARDUINO_VERSION
     endif
 else
     $(call show_config_variable,ARDUINO_VERSION,[USER])
+endif
+
+########################################################################
+# Arduino Sketchbook folder
+#
+ifndef ARDUINO_SKETCHBOOK
+    ifneq ($(wildcard $(HOME)/.arduino/preferences.txt),)
+        ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
+                                          $(HOME)/.arduino/preferences.txt | \
+                                     sed -e 's/sketchbook.path=//' )
+    endif
+
+    # on mac
+    ifneq ($(wildcard $(HOME)/Library/Arduino/preferences.txt),)
+        ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
+                                          $(HOME)/Library/Arduino/preferences.txt | \
+                                     sed -e 's/sketchbook.path=//' )
+    endif
+
+    ifneq ($(ARDUINO_SKETCHBOOK),)
+        $(call show_config_variable,ARDUINO_SKETCHBOOK,[AUTODETECTED],(from arduino preferences file))
+    else
+        ARDUINO_SKETCHBOOK = $(HOME)/sketchbook
+        $(call show_config_variable,ARDUINO_SKETCHBOOK,[DEFAULT])
+    endif
+else
+    $(call show_config_variable,ARDUINO_SKETCHBOOK)
 endif
 
 ########################################################################
@@ -301,17 +329,53 @@ ifdef ARDUINO_DIR
     $(call show_config_variable,ARDUINO_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
     ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/arduino/cores/arduino
 
-    ifndef ARDUINO_VAR_PATH
-        ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
-        $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ARDUINO_DIR))
+    # Third party hardware and core like ATtiny or ATmega 16
+    ifdef ALTERNATE_CORE
+        $(call show_config_variable,ALTERNATE_CORE,[USER])
+
+        ifndef ALTERNATE_CORE_PATH
+            ALTERNATE_CORE_PATH = $(ARDUINO_SKETCHBOOK)/hardware/$(ALTERNATE_CORE)
+        endif
+    endif
+
+    ifdef ALTERNATE_CORE_PATH
+
+        ifdef ALTERNATE_CORE
+            $(call show_config_variable,ALTERNATE_CORE_PATH,[COMPUTED], (from ARDUINO_SKETCHBOOK and ALTERNATE_CORE))
+        else
+            $(call show_config_variable,ALTERNATE_CORE_PATH,[USER])
+        endif
+
+        ifndef ARDUINO_VAR_PATH
+            ARDUINO_VAR_PATH  = $(ALTERNATE_CORE_PATH)/variants
+            $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ALTERNATE_CORE_PATH))
+        endif
+
+        ifndef BOARDS_TXT
+            BOARDS_TXT  = $(ALTERNATE_CORE_PATH)/boards.txt
+            $(call show_config_variable,BOARDS_TXT,[COMPUTED],(from ALTERNATE_CORE_PATH))
+        endif
+
     else
-        $(call show_config_variable,ARDUINO_VAR_PATH,[USER])
+
+        ifndef ARDUINO_VAR_PATH
+            ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
+            $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ARDUINO_DIR))
+        else
+            $(call show_config_variable,ARDUINO_VAR_PATH,[USER])
+        endif
+
+        ifndef BOARDS_TXT
+            BOARDS_TXT  = $(ARDUINO_DIR)/hardware/arduino/boards.txt
+            $(call show_config_variable,BOARDS_TXT,[COMPUTED],(from ARDUINO_DIR))
+        else
+            $(call show_config_variable,BOARDS_TXT,[USER])
+        endif
+
     endif
 
 else
-
     echo $(error "ARDUINO_DIR is not defined")
-
 endif
 
 ifdef AVR_TOOLS_DIR
@@ -346,30 +410,6 @@ endif
 ########################################################################
 # Miscellaneous
 #
-ifndef ARDUINO_SKETCHBOOK
-    ifneq ($(wildcard $(HOME)/.arduino/preferences.txt),)
-        ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
-                                          $(HOME)/.arduino/preferences.txt | \
-                                     sed -e 's/sketchbook.path=//' )
-    endif
-
-    # on mac
-    ifneq ($(wildcard $(HOME)/Library/Arduino/preferences.txt),)
-        ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
-                                          $(HOME)/Library/Arduino/preferences.txt | \
-                                     sed -e 's/sketchbook.path=//' )
-    endif
-
-    ifneq ($(ARDUINO_SKETCHBOOK),)
-        $(call show_config_variable,ARDUINO_SKETCHBOOK,[AUTODETECTED],(in arduino preferences file))
-    else
-        ARDUINO_SKETCHBOOK = $(HOME)/sketchbook
-        $(call show_config_variable,ARDUINO_SKETCHBOOK,[DEFAULT])
-    endif
-else
-    $(call show_config_variable,ARDUINO_SKETCHBOOK)
-endif
-
 ifndef USER_LIB_PATH
     USER_LIB_PATH = $(ARDUINO_SKETCHBOOK)/libraries
     $(call show_config_variable,USER_LIB_PATH,[DEFAULT],(in user sketchbook))
@@ -425,10 +465,6 @@ else
     # https://github.com/sudar/Arduino-Makefile/issues/57
     BOARD_TAG := $(strip $(BOARD_TAG))
     $(call show_config_variable,BOARD_TAG,[USER])
-endif
-
-ifndef BOARDS_TXT
-    BOARDS_TXT  = $(ARDUINO_DIR)/hardware/arduino/boards.txt
 endif
 
 ifndef PARSE_BOARD

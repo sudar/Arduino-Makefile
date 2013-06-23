@@ -8,6 +8,7 @@ The following is the rough list of changes that went into different versions. I 
 - Add support for specifying optimization level. Fix issue #81
 - Add support for reseting "Micro" Arduino. Fix issue #80 (https://github.com/sej7278)
 - Remove "utility" from example makefiles. Fix issue #84
+- Auto detect alternate core path from sketchbook folder. Fix issue #86
 
 ### 0.12.0 (2013-06-20)
 - Fix "generated_assembly" target, which got broken earlier. Fix issue #76 (https://github.com/matthijskooijman)
