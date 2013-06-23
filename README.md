@@ -2,12 +2,7 @@
 
 This is a very simple Makefile which knows how to build Arduino sketches. It defines the entire workflows for compiling code, flashing it to Arduino and even communicating through Serial monitor. You don't need to change anything in the Arduino sketches.
 
-If you're using Debian or Ubuntu, you can find this in the `arduino-mk` package.
-
-## Credits
-
-This makefile was originally created by [Martin Oldfield](http://mjo.tc/atelier/2009/02/arduino-cli.html) and he maintained it till v0.10.2. 
-From May 2013, it is maintained by [Sudar](http://hardwarefun.com)
+If you're using FreeBSD, Debian or Ubuntu, you can find this in the `arduino-mk` package.
 
 ## Usage
 
@@ -50,6 +45,8 @@ On other systems:
        cpanm Device::SerialPort
        cpanm YAML
 
+You can also find more [detailed instructions in this guide](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile) or also checkout the sample makefiles inside the examples/ folder
+
 ## User Libraries
 
 In order to use Arduino libraries installed in the user's sketchbook folder (the
@@ -77,6 +74,11 @@ If you are looking for ideas to work on, then check out the following TODO items
 - When you compile for the first time, it builds all libs inside Arduino directory even if it is not needed. But while linking only the relevant files are linked. ([issue #29](https://github.com/sudar/Arduino-Makefile/issues/29)). Even Arduino IDE does the same thing though.
 
 If you find an issue or have an idea for a feature then log them in the [issue tracker](https://github.com/sudar/Arduino-Makefile/issues/)
+
+## Credits
+
+This makefile was originally created by [Martin Oldfield](http://mjo.tc/atelier/2009/02/arduino-cli.html) and he maintained it till v0.10.2. 
+From May 2013, it is maintained by [Sudar](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile)
 
 ## Similar works
 - It's not a derivative of this, but Alan Burlison has written a [similar thing](http://bleaklow.com/2010/06/04/a_makefile_for_arduino_sketches.html).
