@@ -238,8 +238,9 @@ ifndef ARDUINO_DIR
     ifdef AUTO_ARDUINO_DIR
        ARDUINO_DIR = $(AUTO_ARDUINO_DIR)
        $(call show_config_variable,ARDUINO_DIR,[AUTODETECTED])
+    else
+        echo $(error "ARDUINO_DIR is not defined")
     endif
-
 else
     $(call show_config_variable,ARDUINO_DIR,[USER])
 endif
@@ -300,82 +301,76 @@ endif
 ########################################################################
 # Arduino and system paths
 #
-ifdef ARDUINO_DIR
+ifndef AVR_TOOLS_DIR
 
-    ifndef AVR_TOOLS_DIR
-
-        BUNDLED_AVR_TOOLS_DIR := $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/avr)
-        ifdef BUNDLED_AVR_TOOLS_DIR
-            AVR_TOOLS_DIR     = $(BUNDLED_AVR_TOOLS_DIR)
-            # The avrdude bundled with Arduino can't find it's config
-            AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
-            $(call show_config_variable,AVR_TOOLS_DIR,[BUNDLED],(in Arduino distribution))
-
-        else
-
-            SYSTEMPATH_AVR_TOOLS_DIR := $(call dir_if_exists,$(abspath $(dir $(shell which avr-gcc))/..))
-            ifdef SYSTEMPATH_AVR_TOOLS_DIR
-                AVR_TOOLS_DIR     = $(SYSTEMPATH_AVR_TOOLS_DIR)
-                $(call show_config_variable,AVR_TOOLS_DIR,[AUTODETECTED],(found in $$PATH))
-            endif # SYSTEMPATH_AVR_TOOLS_DIR
-
-        endif # BUNDLED_AVR_TOOLS_DIR
+    BUNDLED_AVR_TOOLS_DIR := $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/avr)
+    ifdef BUNDLED_AVR_TOOLS_DIR
+        AVR_TOOLS_DIR     = $(BUNDLED_AVR_TOOLS_DIR)
+        # The avrdude bundled with Arduino can't find it's config
+        AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
+        $(call show_config_variable,AVR_TOOLS_DIR,[BUNDLED],(in Arduino distribution))
 
     else
-        $(call show_config_variable,AVR_TOOLS_DIR,[USER])
-    endif #ndef AVR_TOOLS_DIR
 
-    ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
-    $(call show_config_variable,ARDUINO_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
-    ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/arduino/cores/arduino
+        SYSTEMPATH_AVR_TOOLS_DIR := $(call dir_if_exists,$(abspath $(dir $(shell which avr-gcc))/..))
+        ifdef SYSTEMPATH_AVR_TOOLS_DIR
+            AVR_TOOLS_DIR     = $(SYSTEMPATH_AVR_TOOLS_DIR)
+            $(call show_config_variable,AVR_TOOLS_DIR,[AUTODETECTED],(found in $$PATH))
+        endif # SYSTEMPATH_AVR_TOOLS_DIR
 
-    # Third party hardware and core like ATtiny or ATmega 16
+    endif # BUNDLED_AVR_TOOLS_DIR
+
+else
+    $(call show_config_variable,AVR_TOOLS_DIR,[USER])
+endif #ndef AVR_TOOLS_DIR
+
+ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
+$(call show_config_variable,ARDUINO_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
+ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/arduino/cores/arduino
+
+# Third party hardware and core like ATtiny or ATmega 16
+ifdef ALTERNATE_CORE
+    $(call show_config_variable,ALTERNATE_CORE,[USER])
+
+    ifndef ALTERNATE_CORE_PATH
+        ALTERNATE_CORE_PATH = $(ARDUINO_SKETCHBOOK)/hardware/$(ALTERNATE_CORE)
+    endif
+endif
+
+ifdef ALTERNATE_CORE_PATH
+
     ifdef ALTERNATE_CORE
-        $(call show_config_variable,ALTERNATE_CORE,[USER])
-
-        ifndef ALTERNATE_CORE_PATH
-            ALTERNATE_CORE_PATH = $(ARDUINO_SKETCHBOOK)/hardware/$(ALTERNATE_CORE)
-        endif
+        $(call show_config_variable,ALTERNATE_CORE_PATH,[COMPUTED], (from ARDUINO_SKETCHBOOK and ALTERNATE_CORE))
+    else
+        $(call show_config_variable,ALTERNATE_CORE_PATH,[USER])
     endif
 
-    ifdef ALTERNATE_CORE_PATH
+    ifndef ARDUINO_VAR_PATH
+        ARDUINO_VAR_PATH  = $(ALTERNATE_CORE_PATH)/variants
+        $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ALTERNATE_CORE_PATH))
+    endif
 
-        ifdef ALTERNATE_CORE
-            $(call show_config_variable,ALTERNATE_CORE_PATH,[COMPUTED], (from ARDUINO_SKETCHBOOK and ALTERNATE_CORE))
-        else
-            $(call show_config_variable,ALTERNATE_CORE_PATH,[USER])
-        endif
-
-        ifndef ARDUINO_VAR_PATH
-            ARDUINO_VAR_PATH  = $(ALTERNATE_CORE_PATH)/variants
-            $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ALTERNATE_CORE_PATH))
-        endif
-
-        ifndef BOARDS_TXT
-            BOARDS_TXT  = $(ALTERNATE_CORE_PATH)/boards.txt
-            $(call show_config_variable,BOARDS_TXT,[COMPUTED],(from ALTERNATE_CORE_PATH))
-        endif
-
-    else
-
-        ifndef ARDUINO_VAR_PATH
-            ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
-            $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ARDUINO_DIR))
-        else
-            $(call show_config_variable,ARDUINO_VAR_PATH,[USER])
-        endif
-
-        ifndef BOARDS_TXT
-            BOARDS_TXT  = $(ARDUINO_DIR)/hardware/arduino/boards.txt
-            $(call show_config_variable,BOARDS_TXT,[COMPUTED],(from ARDUINO_DIR))
-        else
-            $(call show_config_variable,BOARDS_TXT,[USER])
-        endif
-
+    ifndef BOARDS_TXT
+        BOARDS_TXT  = $(ALTERNATE_CORE_PATH)/boards.txt
+        $(call show_config_variable,BOARDS_TXT,[COMPUTED],(from ALTERNATE_CORE_PATH))
     endif
 
 else
-    echo $(error "ARDUINO_DIR is not defined")
+
+    ifndef ARDUINO_VAR_PATH
+        ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/arduino/variants
+        $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ARDUINO_DIR))
+    else
+        $(call show_config_variable,ARDUINO_VAR_PATH,[USER])
+    endif
+
+    ifndef BOARDS_TXT
+        BOARDS_TXT  = $(ARDUINO_DIR)/hardware/arduino/boards.txt
+        $(call show_config_variable,BOARDS_TXT,[COMPUTED],(from ARDUINO_DIR))
+    else
+        $(call show_config_variable,BOARDS_TXT,[USER])
+    endif
+
 endif
 
 ifdef AVR_TOOLS_DIR
