@@ -1047,7 +1047,7 @@ generate_assembly: $(OBJDIR)/$(TARGET).s
 
 generated_assembly: generate_assembly
 	@$(ECHO) "generated_assembly" target is deprecated. Use "generate_assembly" target instead
-	
+
 .PHONY:	all upload raw_upload raw_eeprom error_on_leonardo reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly generate_assembly verify_size
 
 # added - in the beginning, so that we don't get an error if the file is not present
