@@ -196,6 +196,18 @@
 #
 ########################################################################
 
+
+########################################################################
+#
+# include local configuration if it  exists
+MYDIR := $(dir $(lastword $(MAKEFILE_LIST)))
+ifneq ($(wildcard $(MYDIR)/Arduino.mk.local),) 
+include $(MYDIR)/Arduino.mk.local
+endif
+
+
+
+
 # Useful functions
 # Returns the first argument (typically a directory), if the file or directory
 # named by concatenating the first and optionally second argument
