@@ -59,6 +59,13 @@ standard location for custom libraries when using the Arduino IDE), you need to
 set the `ARDUINO_SKETCHBOOK` variable to point to this directory. By default it
 is set to `$HOME/sketchbook`.
 
+## avrdude
+
+To upload compiled files, `avrdude` is used. This Makefile tries to find `avrdude` and it's config (`avrdude.conf`) below `ARDUINO_DIR`. If you like to use the one installed on your system instead of the one which came with Arduino, you can try to set the variables `AVRDUDE` and `AVRDUDE_CONF`. On a typical Linux system these could be set to
+
+      AVRDDUDE     = /usr/bin/avrdude
+      AVRDUDE_CONF = /etc/avrdude.conf
+
 ## Versioning
 
 The current version of the makefile is `0.12.0`. You can find the full history in the [HISTORY.md](HISTORY.md) file
