@@ -33,6 +33,11 @@ On Fedora:
        yum install perl-Device-SerialPort
        yum install perl-YAML
 
+On openSUSE:
+
+      zypper install perl-Device-SerialPort
+      zypper install perl-YAML
+
 On Mac using MacPorts:
 
        sudo port install p5-device-serialport
