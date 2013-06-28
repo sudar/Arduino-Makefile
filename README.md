@@ -6,6 +6,8 @@ If you're using FreeBSD, Debian or Ubuntu, you can find this in the `arduino-mk`
 
 ## Usage
 
+You can also find more [detailed instructions in this guide](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile) or also checkout the sample makefiles inside the examples/ folder
+
 Download a copy of this repo some where in your system.
 
 On the Mac you might want to set:
@@ -50,14 +52,20 @@ On other systems:
        cpanm Device::SerialPort
        cpanm YAML
 
-You can also find more [detailed instructions in this guide](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile) or also checkout the sample makefiles inside the examples/ folder
+## Including Libraries
 
-## User Libraries
+You can specify space separated list of libraries that are needed for your sketch to the variable `ARDUINO_LIBS`.
 
-In order to use Arduino libraries installed in the user's sketchbook folder (the
-standard location for custom libraries when using the Arduino IDE), you need to
-set the `ARDUINO_SKETCHBOOK` variable to point to this directory. By default it
-is set to `$HOME/sketchbook`.
+`ARDUINO_LIBS = Wire SoftwareSerial`
+
+The libraries will be searched in the following places in the following order.
+
+- `/libraries` folder inside your sketchbook folder. Sketchbook folder will be auto detected from your Arduino preference file. You can also manually set it through `ARDUINO_SKETCHBOOK`.
+- `/libraries` folder inside your Arduino folder, which is read from `ARDUINO_DIR`.
+
+The libraries inside user folder will take precedence over libraries present in Arduino core folder.
+
+The makefile can autodetect the libraries that are included from your sketch and can include them automatically. But it can't detect libraries that are included from other libraries. (see [issue #93](https://github.com/sudar/Arduino-Makefile/issues/93))
 
 ## avrdude
 
