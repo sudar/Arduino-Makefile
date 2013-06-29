@@ -306,11 +306,12 @@ ifndef AVR_TOOLS_DIR
     BUNDLED_AVR_TOOLS_DIR := $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/avr)
     ifdef BUNDLED_AVR_TOOLS_DIR
         AVR_TOOLS_DIR     = $(BUNDLED_AVR_TOOLS_DIR)
+        $(call show_config_variable,AVR_TOOLS_DIR,[BUNDLED],(in Arduino distribution))
+
         # if AVRDUDE_CONF is already defined, don't overwrite it
         ifndef AVRDUDE_CONF
             # The avrdude bundled with Arduino can't find it's config
             AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
-            $(call show_config_variable,AVR_TOOLS_DIR,[BUNDLED],(in Arduino distribution))
        endif
     else
 
