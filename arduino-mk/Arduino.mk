@@ -195,7 +195,6 @@
 #
 #
 ########################################################################
-
 # Useful functions
 # Returns the first argument (typically a directory), if the file or directory
 # named by concatenating the first and optionally second argument
@@ -231,6 +230,25 @@ show_separator = $(call arduino_output,-------------------------)
 $(call show_separator)
 $(call arduino_output,Arduino.mk Configuration:)
 
+########################################################################
+#
+# Detect OS
+ifeq ($(OS),Windows_NT)
+    CURRENT_OS = WINDOWS
+else
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+        CURRENT_OS = LINUX
+    endif
+    ifeq ($(UNAME_S),Darwin)
+        CURRENT_OS = MAC
+    endif
+endif
+$(call show_config_variable,CURRENT_OS,[AUTODETECTED])
+
+########################################################################
+#
+# Arduino Directory
 ifndef ARDUINO_DIR
     AUTO_ARDUINO_DIR := $(firstword \
         $(call dir_if_exists,/usr/share/arduino) \
