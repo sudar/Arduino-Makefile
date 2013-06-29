@@ -326,11 +326,27 @@ ifndef AVR_TOOLS_DIR
         AVR_TOOLS_DIR     = $(BUNDLED_AVR_TOOLS_DIR)
         $(call show_config_variable,AVR_TOOLS_DIR,[BUNDLED],(in Arduino distribution))
 
-        # if AVRDUDE_CONF is already defined, don't overwrite it
-        ifndef AVRDUDE_CONF
-            # The avrdude bundled with Arduino can't find it's config
-            AVRDUDE_CONF	  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
-       endif
+        # In Linux distribution of Arduino, the path to avrdude and avrdude.conf are different
+        # More details at https://github.com/sudar/Arduino-Makefile/issues/48 and 
+        # https://groups.google.com/a/arduino.cc/d/msg/developers/D_m97jGr8Xs/uQTt28KO_8oJ
+        ifeq ($(CURRENT_OS),LINUX)
+
+            ifndef AVRDUDE
+                AVRDUDE = $(AVR_TOOLS_DIR)/../avrdude
+            endif
+
+            ifndef AVRDUDE_CONF
+                AVRDUDE_CONF = $(AVR_TOOLS_DIR)/../avrdude.conf
+            endif
+            
+        else
+
+            ifndef AVRDUDE_CONF
+                AVRDUDE_CONF  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
+            endif
+
+        endif
+
     else
 
         SYSTEMPATH_AVR_TOOLS_DIR := $(call dir_if_exists,$(abspath $(dir $(shell which avr-gcc))/..))
@@ -344,6 +360,10 @@ ifndef AVR_TOOLS_DIR
 else
     $(call show_config_variable,AVR_TOOLS_DIR,[USER])
 endif #ndef AVR_TOOLS_DIR
+
+ifndef AVR_TOOLS_PATH
+    AVR_TOOLS_PATH    = $(AVR_TOOLS_DIR)/bin
+endif
 
 ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
 $(call show_config_variable,ARDUINO_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
@@ -392,12 +412,6 @@ else
         $(call show_config_variable,BOARDS_TXT,[USER])
     endif
 
-endif
-
-ifdef AVR_TOOLS_DIR
-    ifndef AVR_TOOLS_PATH
-        AVR_TOOLS_PATH    = $(AVR_TOOLS_DIR)/bin
-    endif
 endif
 
 ########################################################################
@@ -881,17 +895,10 @@ $(OBJDIR)/%.sym: $(OBJDIR)/%.elf $(COMMON_DEPS)
 ########################################################################
 #
 # Avrdude
+# If avrdude is installed separately, it can find its own config file
 #
 ifndef AVRDUDE
     AVRDUDE          = $(AVR_TOOLS_PATH)/avrdude
-endif
-
-ifndef AVRDUDE_CONF
-    ifndef AVR_TOOLS_DIR
-        # The avrdude bundled with Arduino can't find its config
-        AVRDUDE_CONF  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
-    endif
-    # If avrdude is installed separately, it can find its own config file
 endif
 
 # Default avrdude options. -V Do not verify, -q - suppress progress output
