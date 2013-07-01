@@ -11,6 +11,7 @@ The following is the rough list of changes that went into different versions. I 
 - Auto detect alternate core path from sketchbook folder. Fix issue #86
 - Remove redundant checks for ARDUINO_DIR
 - Improve avrdude and avrdude.conf path auto detection. Fix issue #48
+- Move binary sketch size verification logic inside makefile. Fix issue #54
 
 ### 0.12.0 (2013-06-20)
 - Fix "generated_assembly" target, which got broken earlier. Fix issue #76 (https://github.com/matthijskooijman)

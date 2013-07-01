@@ -879,8 +879,13 @@ $(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
 $(OBJDIR)/%.hex: $(OBJDIR)/%.elf $(COMMON_DEPS)
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
 	@$(ECHO)
-	@$(ECHO)
 	$(call avr_size,$<,$@)
+ifneq ($(strip $(HEX_MAXIMUM_SIZE)),)
+	@if [ `$(SIZE) $@ | awk 'FNR == 2 {print $$2}'` -le $(HEX_MAXIMUM_SIZE) ]; then touch $@.sizeok; fi
+else
+	@$(ECHO) Maximum flash memory of $(BOARD_TAG) is not specified. Make sure the size of $@ is less than $(BOARD_TAG)\'s flash memory
+	@touch $@.sizeok
+endif
 
 $(OBJDIR)/%.eep: $(OBJDIR)/%.elf $(COMMON_DEPS)
 	-$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" \
@@ -968,7 +973,7 @@ endif
 # Explicit targets start here
 #
 
-all: 		$(TARGET_EEP) $(TARGET_HEX) verify_size
+all: 		$(TARGET_EEP) $(TARGET_HEX)
 
 # Rule to create $(OBJDIR) automatically. All rules with recipes that
 # create a file within it, but do not already depend on a file within it
@@ -1060,15 +1065,14 @@ disasm: $(OBJDIR)/$(TARGET).lss
 symbol_sizes: $(OBJDIR)/$(TARGET).sym
 	@$(ECHO) A symbol listing sorted by their size have been dumped to $(OBJDIR)/$(TARGET).sym
 
-$(TARGET_HEX).sizeok: $(TARGET_HEX)
-ifneq ($(strip $(HEX_MAXIMUM_SIZE)),)
-	$(ARDMK_PATH)/ard-verify-size $(TARGET_HEX) $(HEX_MAXIMUM_SIZE)
-	touch $@
-else
-	@$(ECHO) Maximum Hex size is not specified. Make sure the hex file that you are going to upload is less than microcontrollers flash memory
+verify_size:
+ifeq ($(strip $(HEX_MAXIMUM_SIZE)),)
+	@$(ECHO)
+	@$(ECHO) Maximum flash memory of $(BOARD_TAG) is not specified. Make sure the size of $(TARGET_HEX) is less than $(BOARD_TAG)\'s flash memory
+	@$(ECHO)
 endif
-
-verify_size:	$(TARGET_HEX) $(TARGET_HEX).sizeok
+	@if [ ! -f $(TARGET_HEX).sizeok ]; then echo >&2 "\nThe size of the compiled binary file is greater than the $(BOARD_TAG)'s flash memory. \
+See http://www.arduino.cc/en/Guide/Troubleshooting#size for tips on reducing it."; false; fi
 
 generate_assembly: $(OBJDIR)/$(TARGET).s
 	@$(ECHO) Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s
