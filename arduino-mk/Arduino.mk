@@ -764,8 +764,14 @@ endif
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
 CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
         -I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
-        $(SYS_INCLUDES) $(USER_INCLUDES) -g -O$(OPTIMIZATION_LEVEL) -Wall \
-        -ffunction-sections -fdata-sections
+        $(SYS_INCLUDES) $(USER_INCLUDES) -Wall -ffunction-sections \
+        -fdata-sections
+
+ifdef DEBUG
+CPPFLAGS += -O0 -g
+else
+CPPFLAGS += -O$(OPTIMIZATION_LEVEL)
+endif
 
 # USB IDs for the Leonardo
 ifeq ($(VARIANT),leonardo)

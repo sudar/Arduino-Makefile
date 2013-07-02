@@ -15,6 +15,7 @@ The following is the rough list of changes that went into different versions. I 
 - Remove dependency on wait-connection-leonardo shell script. Fix issue #95
 - Add support for the Digilent chipKIT platform. (https://github.com/peplin)
 - Implement ard-parse-boards with shell scripting instead of Perl (https://github.com/peplin)
+- Compile with debugging symbols only when DEBUG=1 (https://github.com/peplin)
 
 ### 0.12.0 (2013-06-20)
 - Fix "generated_assembly" target, which got broken earlier. Fix issue #76 (https://github.com/matthijskooijman)
