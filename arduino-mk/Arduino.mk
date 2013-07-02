@@ -29,7 +29,7 @@
 #
 # We need to worry about three different sorts of file:
 #
-# 1. Things which are included in this distribution e.g. ard-parse-boards
+# 1. Things which are included in this distribution e.g. ard-reset-arduino
 #    => ARDMK_DIR
 #
 # 2. Things which are always in the Arduino distribution e.g.
@@ -100,7 +100,7 @@
 #    ARDUINO_PORT - The port where the Arduino can be found (only needed
 #                   when uploading)
 #
-#    BOARD_TAG    - The ard-parse-boards tag for the board e.g. uno or mega
+#    BOARD_TAG    - The tag for the board e.g. uno or mega
 #                   'make show_boards' shows a list
 #
 # If you have your additional libraries relative to your source, rather
@@ -507,78 +507,71 @@ else
 endif
 
 ifndef PARSE_BOARD
-    PARSE_BOARD = $(ARDMK_PATH)/ard-parse-boards
-endif
-
-ifndef PARSE_BOARD_OPTS
-    PARSE_BOARD_OPTS = --boards_txt=$(BOARDS_TXT)
+    # result = $(call READ_BOARD_TXT, 'boardname', 'parameter')
+    PARSE_BOARD = $(shell grep $(1).$(2) $(BOARDS_TXT) | cut -d = -f 2 )
 endif
 
 # If NO_CORE is set, then we don't have to parse boards.txt file
 # But the user might have to define MCU, F_CPU etc
 ifeq ($(strip $(NO_CORE)),)
 
-    ifndef PARSE_BOARD_CMD
-        PARSE_BOARD_CMD = $(PARSE_BOARD) $(PARSE_BOARD_OPTS)
-    endif
-
     # Which variant ? This affects the include path
     ifndef VARIANT
-        VARIANT = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.variant)
+        VARIANT = $(call PARSE_BOARD,$(BOARD_TAG),build.variant)
     endif
 
     # processor stuff
     ifndef MCU
-        MCU   = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.mcu)
+        MCU   = $(call PARSE_BOARD,$(BOARD_TAG),build.mcu)
     endif
 
     ifndef F_CPU
-        F_CPU = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.f_cpu)
+        F_CPU = $(call PARSE_BOARD,$(BOARD_TAG),build.f_cpu)
     endif
 
     ifeq ($(VARIANT),leonardo)
         # USB IDs for the Leonardo
         ifndef USB_VID
-            USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid 2>/dev/null)
+            USB_VID = $(call PARSE_BOARD,$(BOARD_TAG),build.vid)
         endif
 
         ifndef USB_PID
-            USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid 2>/dev/null)
+            USB_PID = $(call PARSE_BOARD,$(BOARD_TAG),build.pid)
         endif
     endif
 
     # normal programming info
     ifndef AVRDUDE_ARD_PROGRAMMER
-        AVRDUDE_ARD_PROGRAMMER = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.protocol)
+        AVRDUDE_ARD_PROGRAMMER = $(call PARSE_BOARD,$(BOARD_TAG),upload.protocol)
     endif
 
     ifndef AVRDUDE_ARD_BAUDRATE
-        AVRDUDE_ARD_BAUDRATE   = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.speed)
+        AVRDUDE_ARD_BAUDRATE = $(call PARSE_BOARD,$(BOARD_TAG),upload.speed)
     endif
 
     # fuses if you're using e.g. ISP
     ifndef ISP_LOCK_FUSE_PRE
-        ISP_LOCK_FUSE_PRE  = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.unlock_bits)
+        ISP_LOCK_FUSE_PRE = $(call PARSE_BOARD,$(BOARD_TAG),bootloader.unlock_bits)
     endif
 
     ifndef ISP_HIGH_FUSE
-        ISP_HIGH_FUSE      = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.high_fuses)
+        ISP_HIGH_FUSE = $(call PARSE_BOARD,$(BOARD_TAG),bootloader.high_fuses)
     endif
 
     ifndef ISP_LOW_FUSE
-        ISP_LOW_FUSE       = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.low_fuses)
+        ISP_LOW_FUSE = $(call PARSE_BOARD,$(BOARD_TAG),bootloader.low_fuses)
     endif
 
     ifndef ISP_EXT_FUSE
-        ISP_EXT_FUSE       = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.extended_fuses)
+        ISP_EXT_FUSE = $(call PARSE_BOARD,$(BOARD_TAG),bootloader.extended_fuses)
     endif
 
     ifndef ISP_LOCK_FUSE_POST
-        ISP_LOCK_FUSE_POST = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.lock_bits)
+        ISP_LOCK_FUSE_POST = $(call PARSE_BOARD,$(BOARD_TAG),bootloader.lock_bits)
     endif
 
     ifndef HEX_MAXIMUM_SIZE
-        HEX_MAXIMUM_SIZE  = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) upload.maximum_size)
+        HEX_MAXIMUM_SIZE  = $(call PARSE_BOARD,$(BOARD_TAG),upload.maximum_size)
     endif
 
 endif
@@ -1076,7 +1069,7 @@ size:		$(TARGET_HEX)
 		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
 
 show_boards:
-		$(PARSE_BOARD_CMD) --boards
+	@cat $(BOARDS_TXT) | grep -E "^[[:alnum:]]" | cut -d . -f 1 | uniq
 
 monitor:
 		$(MONITOR_CMD) $(call get_arduino_port) $(MONITOR_BAUDRATE)
