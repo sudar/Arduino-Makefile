@@ -3,7 +3,7 @@ A Makefile for Arduino Sketches
 
 The following is the rough list of changes that went into different versions. I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
-### 0.12.1 (in development)
+### 0.13.0 (in development)
 - Add $OBJDIR to the list of configuration that gets printed. Fix issue #77
 - Add support for specifying optimization level. Fix issue #81
 - Add support for reseting "Micro" Arduino. Fix issue #80 (https://github.com/sej7278)
@@ -13,6 +13,7 @@ The following is the rough list of changes that went into different versions. I 
 - Improve avrdude and avrdude.conf path auto detection. Fix issue #48
 - Move binary sketch size verification logic inside makefile. Fix issue #54
 - Remove dependency on wait-connection-leonardo shell script. Fix issue #95
+- Add support for the Digilent chipKIT platform. (https://github.com/peplin)
 
 ### 0.12.0 (2013-06-20)
 - Fix "generated_assembly" target, which got broken earlier. Fix issue #76 (https://github.com/matthijskooijman)
