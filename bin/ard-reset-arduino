@@ -39,7 +39,18 @@ foreach my $dev (@ARGV)
         $p->write_settings;
         $p->close;
 
-        print STDERR "Switching to 1200 baud on $dev\n"
+        print STDERR "Forcing reset using 1200bps open/close on port $dev\n"
+            if $Opt{verbose};
+
+        # wait for it to come back
+        sleep 1;
+        while( ! -e $dev ) {
+            print STDERR "Waiting for $dev to come back\n"
+                if $Opt{verbose};
+            sleep 1;
+        }
+
+        print STDERR "$dev has come back after reset\n"
             if $Opt{verbose};
     }
     else

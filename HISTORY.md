@@ -12,6 +12,7 @@ The following is the rough list of changes that went into different versions. I 
 - Remove redundant checks for ARDUINO_DIR
 - Improve avrdude and avrdude.conf path auto detection. Fix issue #48
 - Move binary sketch size verification logic inside makefile. Fix issue #54
+- Remove dependency on wait-connection-leonardo shell script. Fix issue #95
 
 ### 0.12.0 (2013-06-20)
 - Fix "generated_assembly" target, which got broken earlier. Fix issue #76 (https://github.com/matthijskooijman)

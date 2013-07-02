@@ -468,15 +468,6 @@ ifndef RESET_CMD
     endif
 endif
 
-ifndef WAIT_CONNECTION_CMD
-    ifdef LEO_RESET
-       WAIT_CONNECTION_CMD = \
-         $(ARDMK_PATH)/wait-connection-leonardo $(call get_arduino_port)
-    else
-       WAIT_CONNECTION_CMD =
-    endif
-endif
-
 ifeq ($(BOARD_TAG),leonardo)
     ERROR_ON_LEONARDO = $(error On leonardo, raw_xxx operation is not supported)
 else
@@ -1024,7 +1015,6 @@ raw_eeprom:	$(TARGET_HEX) verify_size
 reset:
 		$(call arduino_output,Resetting Arduino...)
 		$(RESET_CMD)
-		$(WAIT_CONNECTION_CMD)
 
 # stty on MacOS likes -F, but on Debian it likes -f redirecting
 # stdin/out appears to work but generates a spurious error on MacOS at
