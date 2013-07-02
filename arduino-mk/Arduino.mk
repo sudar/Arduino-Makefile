@@ -327,7 +327,7 @@ ifndef AVR_TOOLS_DIR
         $(call show_config_variable,AVR_TOOLS_DIR,[BUNDLED],(in Arduino distribution))
 
         # In Linux distribution of Arduino, the path to avrdude and avrdude.conf are different
-        # More details at https://github.com/sudar/Arduino-Makefile/issues/48 and 
+        # More details at https://github.com/sudar/Arduino-Makefile/issues/48 and
         # https://groups.google.com/a/arduino.cc/d/msg/developers/D_m97jGr8Xs/uQTt28KO_8oJ
         ifeq ($(CURRENT_OS),LINUX)
 
@@ -338,7 +338,7 @@ ifndef AVR_TOOLS_DIR
             ifndef AVRDUDE_CONF
                 AVRDUDE_CONF = $(AVR_TOOLS_DIR)/../avrdude.conf
             endif
-            
+
         else
 
             ifndef AVRDUDE_CONF
@@ -450,17 +450,9 @@ endif
 ########################################################################
 # Reset
 #
-ifeq ($(BOARD_TAG),leonardo)
-    LEO_RESET = 1
-endif
-
-ifeq ($(BOARD_TAG),micro)
-    LEO_RESET = 1
-endif
-
 ifndef RESET_CMD
-    ifdef LEO_RESET
-       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --leonardo \
+    ifneq ($(CATERINA),)
+       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --caterina \
           $(ARD_RESET_OPTS) $(call get_arduino_port)
     else
        RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino \
@@ -468,8 +460,8 @@ ifndef RESET_CMD
     endif
 endif
 
-ifeq ($(BOARD_TAG),leonardo)
-    ERROR_ON_LEONARDO = $(error On leonardo, raw_xxx operation is not supported)
+ifneq ($(CATERINA),)
+    ERROR_ON_LEONARDO = $(error On Leonardo, raw_xxx operation is not supported)
 else
     ERROR_ON_LEONARDO =
 endif
@@ -509,6 +501,9 @@ ifeq ($(strip $(NO_CORE)),)
         VARIANT = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.variant)
     endif
 
+    # see if we are a caterina device like leonardo or micro
+    CATERINA = $(findstring caterina,$(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.path))
+
     # processor stuff
     ifndef MCU
         MCU   = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.mcu)
@@ -518,15 +513,10 @@ ifeq ($(strip $(NO_CORE)),)
         F_CPU = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.f_cpu)
     endif
 
-    ifeq ($(VARIANT),leonardo)
+    ifneq ($(CATERINA),)
         # USB IDs for the Leonardo
-        ifndef USB_VID
-            USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid 2>/dev/null)
-        endif
-
-        ifndef USB_PID
-            USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid 2>/dev/null)
-        endif
+        USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid 2>/dev/null)
+        USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid 2>/dev/null)
     endif
 
     # normal programming info
@@ -750,7 +740,7 @@ CPPFLAGS      += -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
         -ffunction-sections -fdata-sections
 
 # USB IDs for the Leonardo
-ifeq ($(VARIANT),leonardo)
+ifneq ($(CATERINA),)
     CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
 endif
 
