@@ -195,15 +195,6 @@
 #
 #
 ########################################################################
-# Useful functions
-# Returns the first argument (typically a directory), if the file or directory
-# named by concatenating the first and optionally second argument
-# (directory and optional filename) exists
-dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
-
-# For message printing: pad the right side of the first argument with spaces to
-# the number of bytes indicated by the second argument.
-space_pad_to = $(shell echo $(1) "                                                      " | head -c$(2))
 
 arduino_output =
 # When output is not suppressed and we're in the top-level makefile,
@@ -217,34 +208,29 @@ ifndef ARDUINO_QUIET
     endif
 endif
 
-# Call with some text, and a prefix tag if desired (like [AUTODETECTED]),
-show_config_info = $(call arduino_output,- $(call space_pad_to,$(2),20) $(1))
-
-# Call with the name of the variable, a prefix tag if desired (like [AUTODETECTED]),
-# and an explanation if desired (like (found in $$PATH)
-show_config_variable = $(call show_config_info,$(1) = $($(1)) $(3),$(2))
-
-# Just a nice simple visual separator
-show_separator = $(call arduino_output,-------------------------)
-
-$(call show_separator)
-$(call arduino_output,Arduino.mk Configuration:)
-
 ########################################################################
+# Makefile distribution path
 #
-# Detect OS
-ifeq ($(OS),Windows_NT)
-    CURRENT_OS = WINDOWS
+ifndef ARDMK_DIR
+    # presume it's a level above the path to our own file
+    ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST))))/..)
+    $(call show_config_variable,ARDMK_DIR,[COMPUTED],(relative to $(notdir $(lastword $(MAKEFILE_LIST)))))
 else
-    UNAME_S := $(shell uname -s)
-    ifeq ($(UNAME_S),Linux)
-        CURRENT_OS = LINUX
-    endif
-    ifeq ($(UNAME_S),Darwin)
-        CURRENT_OS = MAC
-    endif
+    $(call show_config_variable,ARDMK_DIR,[USER])
 endif
-$(call show_config_variable,CURRENT_OS,[AUTODETECTED])
+
+ifdef ARDMK_DIR
+    ifndef ARDMK_PATH
+        ARDMK_PATH = $(ARDMK_DIR)/bin
+        $(call show_config_variable,ARDMK_PATH,[COMPUTED],(relative to ARDMK_DIR))
+    else
+        $(call show_config_variable,ARDMK_PATH,[USER])
+    endif
+else
+    echo $(error "ARDMK_DIR is not defined")
+endif
+
+include $(ARDMK_DIR)/arduino-mk/Common.mk
 
 ########################################################################
 #
@@ -292,19 +278,31 @@ endif
 ########################################################################
 # Arduino Sketchbook folder
 #
-ifndef ARDUINO_SKETCHBOOK
-    ifneq ($(wildcard $(HOME)/.arduino/preferences.txt),)
-        ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
-                                          $(HOME)/.arduino/preferences.txt | \
-                                     sed -e 's/sketchbook.path=//' )
+
+ifndef ARDUINO_PREFERENCES_PATH
+    AUTO_ARDUINO_PREFERENCES := $(firstword \
+        $(call dir_if_exists,$(HOME)/.arduino/preferences.txt) \
+        $(call dir_if_exists,$(HOME)/Library/Arduino/preferences.txt) )
+    ifdef AUTO_ARDUINO_PREFERENCES
+       ARDUINO_PREFERENCES_PATH = $(AUTO_ARDUINO_PREFERENCES)
+       $(call show_config_variable,ARDUINO_PREFERENCES_PATH,[autodetected])
+    else
+        echo $(error "ARDUINO_PREFERENCES is not defined")
     endif
 
-    # on mac
-    ifneq ($(wildcard $(HOME)/Library/Arduino/preferences.txt),)
-        ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
-                                          $(HOME)/Library/Arduino/preferences.txt | \
-                                     sed -e 's/sketchbook.path=//' )
+    $(call show_config_variable,ARDUINO_PREFERENCES_PATH,[AUTODETECTED])
+else
+    $(call show_config_variable,ARDUINO_PREFERENCES_PATH,[USER])
+endif
+
+ifndef ARDUINO_SKETCHBOOK
+    ifeq ($(ARDUINO_PREFERENCES_PATH),)
+        echo $(error No ARDUINO_PREFERENCES_PATH detected, cannot autodetect ARDUINO_SKETCHBOOK)
     endif
+
+    ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
+                                      $(ARDUINO_PREFERENCES_PATH) | \
+                                 sed -e 's/sketchbook.path=//' )
 
     ifneq ($(ARDUINO_SKETCHBOOK),)
         $(call show_config_variable,ARDUINO_SKETCHBOOK,[AUTODETECTED],(from arduino preferences file))
@@ -349,10 +347,12 @@ ifndef AVR_TOOLS_DIR
 
     else
 
-        SYSTEMPATH_AVR_TOOLS_DIR := $(call dir_if_exists,$(abspath $(dir $(shell which avr-gcc))/..))
+        SYSTEMPATH_AVR_TOOLS_DIR := $(call dir_if_exists,$(abspath $(dir $(shell which $(CC_NAME)))/..))
         ifdef SYSTEMPATH_AVR_TOOLS_DIR
-            AVR_TOOLS_DIR     = $(SYSTEMPATH_AVR_TOOLS_DIR)
+            AVR_TOOLS_DIR = $(SYSTEMPATH_AVR_TOOLS_DIR)
             $(call show_config_variable,AVR_TOOLS_DIR,[AUTODETECTED],(found in $$PATH))
+        else
+            echo $(error No AVR tools directory found)
         endif # SYSTEMPATH_AVR_TOOLS_DIR
 
     endif # BUNDLED_AVR_TOOLS_DIR
@@ -367,7 +367,12 @@ endif
 
 ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
 $(call show_config_variable,ARDUINO_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
-ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/arduino/cores/arduino
+ifndef ARDUINO_CORE_PATH
+    ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/arduino/cores/arduino
+    $(call show_config_variable,ARDUINO_CORE_PATH,[DEFAULT])
+else
+    $(call show_config_variable,ARDUINO_CORE_PATH,[USER])
+endif
 
 # Third party hardware and core like ATtiny or ATmega 16
 ifdef ALTERNATE_CORE
@@ -413,29 +418,6 @@ else
     endif
 
 endif
-
-########################################################################
-# Makefile distribution path
-#
-ifndef ARDMK_DIR
-    # presume it's a level above the path to our own file
-    ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST))))/..)
-    $(call show_config_variable,ARDMK_DIR,[COMPUTED],(relative to $(notdir $(lastword $(MAKEFILE_LIST)))))
-else
-    $(call show_config_variable,ARDMK_DIR,[USER])
-endif
-
-ifdef ARDMK_DIR
-    ifndef ARDMK_PATH
-        ARDMK_PATH = $(ARDMK_DIR)/bin
-        $(call show_config_variable,ARDMK_PATH,[COMPUTED],(relative to ARDMK_DIR))
-    else
-        $(call show_config_variable,ARDMK_PATH,[USER])
-    endif
-else
-    echo $(error "ARDMK_DIR is not defined")
-endif
-
 
 ########################################################################
 # Miscellaneous
@@ -697,15 +679,43 @@ TARGET_EEP = $(OBJDIR)/$(TARGET).eep
 TARGETS    = $(OBJDIR)/$(TARGET).*
 CORE_LIB   = $(OBJDIR)/libcore.a
 
+ifndef CC_NAME
+CC_NAME      = avr-gcc
+endif
+
+ifndef CXX_NAME
+CXX_NAME     = avr-g++
+endif
+
+ifndef OBJCOPY_NAME
+OBJCOPY_NAME = avr-objcopy
+endif
+
+ifndef OBJDUMP_NAME
+OBJDUMP_NAME = avr-objdump
+endif
+
+ifndef AR_NAME
+AR_NAME      = avr-ar
+endif
+
+ifndef SIZE_NAME
+SIZE_NAME    = avr-size
+endif
+
+ifndef NM_NAME
+NM_NAME      = avr-nm
+endif
+
 # Names of executables
-CC      = $(AVR_TOOLS_PATH)/avr-gcc
-CXX     = $(AVR_TOOLS_PATH)/avr-g++
-AS      = $(AVR_TOOLS_PATH)/avr-as
-OBJCOPY = $(AVR_TOOLS_PATH)/avr-objcopy
-OBJDUMP = $(AVR_TOOLS_PATH)/avr-objdump
-AR      = $(AVR_TOOLS_PATH)/avr-ar
-SIZE    = $(AVR_TOOLS_PATH)/avr-size
-NM      = $(AVR_TOOLS_PATH)/avr-nm
+CC      = $(AVR_TOOLS_PATH)/$(CC_NAME)
+CXX     = $(AVR_TOOLS_PATH)/$(CXX_NAME)
+AS      = $(AVR_TOOLS_PATH)/$(AS_NAME)
+OBJCOPY = $(AVR_TOOLS_PATH)/$(OBJCOPY_NAME)
+OBJDUMP = $(AVR_TOOLS_PATH)/$(OBJDUMP_NAME)
+AR      = $(AVR_TOOLS_PATH)/$(AR_NAME)
+SIZE    = $(AVR_TOOLS_PATH)/$(SIZE_NAME)
+NM      = $(AVR_TOOLS_PATH)/$(NM_NAME)
 REMOVE  = rm -rf
 MV      = mv -f
 CAT     = cat
@@ -752,8 +762,15 @@ else
     $(call show_config_variable,OPTIMIZATION_LEVEL,[USER])
 endif
 
+ifndef MCU_FLAG_NAME
+    MCU_FLAG_NAME = mmcu
+    $(call show_config_variable,MCU_FLAG_NAME,[DEFAULT])
+else
+    $(call show_config_variable,MCU_FLAG_NAME,[USER])
+endif
+
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
-CPPFLAGS      += -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
+CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
         -I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
         $(SYS_INCLUDES) $(USER_INCLUDES) -g -O$(OPTIMIZATION_LEVEL) -Wall \
         -ffunction-sections -fdata-sections
@@ -763,10 +780,14 @@ ifeq ($(VARIANT),leonardo)
     CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
 endif
 
-CFLAGS        += -std=gnu99 $(EXTRA_FLAGS) $(EXTRA_CFLAGS)
+ifdef USE_GNU99
+CFLAGS        += -std=gnu99
+endif
+
+CFLAGS        += $(EXTRA_FLAGS) $(EXTRA_CFLAGS)
 CXXFLAGS      += -fno-exceptions $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS)
-ASFLAGS       += -mmcu=$(MCU) -I. -x assembler-with-cpp
-LDFLAGS       += -mmcu=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL) $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS)
+ASFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -I. -x assembler-with-cpp
+LDFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL) $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_LDFLAGS)
 SIZEFLAGS     ?= --mcu=$(MCU) -C
 
 # Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
@@ -866,7 +887,7 @@ $(OBJDIR)/%.s: %.ino $(COMMON_DEPS) | $(OBJDIR)
 	$(CXX) -x c++ -include Arduino.h -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 #$(OBJDIR)/%.lst: $(OBJDIR)/%.s
-#	$(AS) -mmcu=$(MCU) -alhnd $< > $@
+#	$(AS) -$(MCU_FLAG_NAME)=$(MCU) -alhnd $< > $@
 
 # core files
 $(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS) | $(OBJDIR)
