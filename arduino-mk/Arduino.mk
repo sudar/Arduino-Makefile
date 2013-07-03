@@ -325,7 +325,7 @@ ifndef AVR_TOOLS_DIR
         $(call show_config_variable,AVR_TOOLS_DIR,[BUNDLED],(in Arduino distribution))
 
         # In Linux distribution of Arduino, the path to avrdude and avrdude.conf are different
-        # More details at https://github.com/sudar/Arduino-Makefile/issues/48 and 
+        # More details at https://github.com/sudar/Arduino-Makefile/issues/48 and
         # https://groups.google.com/a/arduino.cc/d/msg/developers/D_m97jGr8Xs/uQTt28KO_8oJ
         ifeq ($(CURRENT_OS),LINUX)
 
@@ -336,7 +336,7 @@ ifndef AVR_TOOLS_DIR
             ifndef AVRDUDE_CONF
                 AVRDUDE_CONF = $(AVR_TOOLS_DIR)/../avrdude.conf
             endif
-            
+
         else
 
             ifndef AVRDUDE_CONF
@@ -780,8 +780,11 @@ ifeq ($(VARIANT),leonardo)
     CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
 endif
 
-ifdef USE_GNU99
-CFLAGS        += -std=gnu99
+ifndef CFLAGS_STD
+    CFLAGS_STD        = -std=gnu99
+    $(call show_config_variable,CFLAGS_STD,[DEFAULT])
+else
+    $(call show_config_variable,CFLAGS_STD,[USER])
 endif
 
 CFLAGS        += $(EXTRA_FLAGS) $(EXTRA_CFLAGS)

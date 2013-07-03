@@ -96,5 +96,6 @@ LDSCRIPT_FILE = $(ARDUINO_CORE_PATH)/$(LDSCRIPT)
 MCU_FLAG_NAME=mprocessor
 LDFLAGS  += -T$(ARDUINO_CORE_PATH)/$(LDSCRIPT)
 CPPFLAGS += -mno-smart-io -fno-short-double
+CFLAGS_STD =
 
 include $(ARDMK_DIR)/arduino-mk/Arduino.mk
