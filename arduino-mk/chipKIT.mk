@@ -73,8 +73,6 @@ ifndef MPIDE_PREFERENCES_PATH
     else
         echo $(error "MPIDE_PREFERENCES_PATH is not defined")
     endif
-else
-    $(call show_config_variable,MPIDE_PREFERENCES_PATH,[USER])
 endif
 
 
