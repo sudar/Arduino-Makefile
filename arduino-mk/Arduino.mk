@@ -447,25 +447,6 @@ else
     $(call show_config_variable,USER_LIB_PATH,[USER])
 endif
 
-########################################################################
-# Reset
-#
-ifndef RESET_CMD
-    ifneq ($(CATERINA),)
-       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --caterina \
-          $(ARD_RESET_OPTS) $(call get_arduino_port)
-    else
-       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino \
-          $(ARD_RESET_OPTS) $(call get_arduino_port)
-    endif
-endif
-
-ifneq ($(CATERINA),)
-    ERROR_ON_LEONARDO = $(error On Leonardo, raw_xxx operation is not supported)
-else
-    ERROR_ON_LEONARDO =
-endif
-
 
 ########################################################################
 # boards.txt parsing
@@ -562,6 +543,27 @@ ifndef OBJDIR
 else
     $(call show_config_variable,OBJDIR,[USER])
 endif
+
+
+########################################################################
+# Reset
+#
+ifndef RESET_CMD
+    ifneq ($(CATERINA),)
+       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --caterina \
+          $(ARD_RESET_OPTS) $(call get_arduino_port)
+    else
+       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino \
+          $(ARD_RESET_OPTS) $(call get_arduino_port)
+    endif
+endif
+
+ifneq ($(CATERINA),)
+    ERROR_ON_LEONARDO = $(error On Leonardo, raw_xxx operation is not supported)
+else
+    ERROR_ON_LEONARDO =
+endif
+
 
 ########################################################################
 # Local sources
