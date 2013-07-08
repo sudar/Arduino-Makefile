@@ -523,11 +523,11 @@ ifeq ($(strip $(NO_CORE)),)
     ifeq ($(VARIANT),leonardo)
         # USB IDs for the Leonardo
         ifndef USB_VID
-            USB_VID = $(call PARSE_BOARD,$(BOARD_TAG,build.vid))
+            USB_VID = $(call PARSE_BOARD,$(BOARD_TAG),build.vid)
         endif
 
         ifndef USB_PID
-            USB_PID = $(call PARSE_BOARD,$(BOARD_TAG,build.pid))
+            USB_PID = $(call PARSE_BOARD,$(BOARD_TAG),build.pid)
         endif
     endif
 
