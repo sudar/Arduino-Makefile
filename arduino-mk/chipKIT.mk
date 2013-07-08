@@ -24,24 +24,16 @@
 # Makefile distribution path
 #
 
-# Call with the name of the variable, a prefix tag if desired (like [AUTODETECTED]),
-# and an explanation if desired (like (found in $$PATH)
-show_config_variable = $(call show_config_info,$(1) = $($(1)) $(3),$(2))
-
+# The show_config_variable is unavailable before we include the common makefile,
+# so we defer logging the ARDMK_DIR info until it happens in Arduino.mk
 ifndef ARDMK_DIR
     # presume it's a level above the path to our own file
     ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST))))/..)
-    $(call show_config_variable,ARDMK_DIR,[COMPUTED],(relative to $(notdir $(lastword $(MAKEFILE_LIST)))))
-else
-    $(call show_config_variable,ARDMK_DIR,[USER])
 endif
 
 ifdef ARDMK_DIR
     ifndef ARDMK_PATH
         ARDMK_PATH = $(ARDMK_DIR)/bin
-        $(call show_config_variable,ARDMK_PATH,[COMPUTED],(relative to ARDMK_DIR))
-    else
-        $(call show_config_variable,ARDMK_PATH,[USER])
     endif
 else
     echo $(error "ARDMK_DIR is not defined")
