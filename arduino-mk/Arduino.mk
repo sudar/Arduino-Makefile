@@ -285,30 +285,27 @@ endif
 # Arduino Sketchbook folder
 #
 
-ifndef ARDUINO_PREFERENCES_PATH
-
-    AUTO_ARDUINO_PREFERENCES := $(firstword \
-        $(call dir_if_exists,$(HOME)/.arduino/preferences.txt) \
-        $(call dir_if_exists,$(HOME)/Library/Arduino/preferences.txt) )
-    ifdef AUTO_ARDUINO_PREFERENCES
-       ARDUINO_PREFERENCES_PATH = $(AUTO_ARDUINO_PREFERENCES)
-       $(call show_config_variable,ARDUINO_PREFERENCES_PATH,[AUTODETECTED])
-    else
-        echo $(error "ARDUINO_PREFERENCES is not defined")
-    endif
-
-else
-    $(call show_config_variable,ARDUINO_PREFERENCES_PATH,[USER])
-endif
 
 ifndef ARDUINO_SKETCHBOOK
-    ifeq ($(ARDUINO_PREFERENCES_PATH),)
-        echo $(error No ARDUINO_PREFERENCES_PATH detected, cannot autodetect ARDUINO_SKETCHBOOK)
+    ifndef ARDUINO_PREFERENCES_PATH
+
+        AUTO_ARDUINO_PREFERENCES := $(firstword \
+            $(call dir_if_exists,$(HOME)/.arduino/preferences.txt) \
+            $(call dir_if_exists,$(HOME)/Library/Arduino/preferences.txt) )
+        ifdef AUTO_ARDUINO_PREFERENCES
+           ARDUINO_PREFERENCES_PATH = $(AUTO_ARDUINO_PREFERENCES)
+           $(call show_config_variable,ARDUINO_PREFERENCES_PATH,[AUTODETECTED])
+        endif
+
+    else
+        $(call show_config_variable,ARDUINO_PREFERENCES_PATH,[USER])
     endif
 
-    ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
-                                      $(ARDUINO_PREFERENCES_PATH) | \
-                                 sed -e 's/sketchbook.path=//' )
+    ifneq ($(ARDUINO_PREFERENCES_PATH),)
+        ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
+                                          $(ARDUINO_PREFERENCES_PATH) | \
+                                     sed -e 's/sketchbook.path=//' )
+    endif
 
     ifneq ($(ARDUINO_SKETCHBOOK),)
         $(call show_config_variable,ARDUINO_SKETCHBOOK,[AUTODETECTED],(from arduino preferences file))

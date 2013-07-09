@@ -62,8 +62,6 @@ ifndef MPIDE_PREFERENCES_PATH
     ifdef AUTO_MPIDE_PREFERENCES_PATH
        MPIDE_PREFERENCES_PATH = $(AUTO_MPIDE_PREFERENCES_PATH)
        $(call show_config_variable,MPIDE_PREFERENCES_PATH,[autodetected])
-    else
-        echo $(error "MPIDE_PREFERENCES_PATH is not defined")
     endif
 endif
 
