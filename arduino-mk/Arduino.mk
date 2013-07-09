@@ -465,33 +465,6 @@ else
     $(call show_config_variable,USER_LIB_PATH,[USER])
 endif
 
-########################################################################
-# Reset
-#
-ifeq ($(BOARD_TAG),leonardo)
-    LEO_RESET = 1
-endif
-
-ifeq ($(BOARD_TAG),micro)
-    LEO_RESET = 1
-endif
-
-ifndef RESET_CMD
-    ifdef LEO_RESET
-       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --leonardo \
-          $(ARD_RESET_OPTS) $(call get_arduino_port)
-    else
-       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino \
-          $(ARD_RESET_OPTS) $(call get_arduino_port)
-    endif
-endif
-
-ifeq ($(BOARD_TAG),leonardo)
-    ERROR_ON_LEONARDO = $(error On leonardo, raw_xxx operation is not supported)
-else
-    ERROR_ON_LEONARDO =
-endif
-
 
 ########################################################################
 # boards.txt parsing
@@ -520,6 +493,9 @@ ifeq ($(strip $(NO_CORE)),)
         VARIANT = $(call PARSE_BOARD,$(BOARD_TAG),build.variant)
     endif
 
+    # see if we are a caterina device like leonardo or micro
+    CATERINA = $(findstring caterina,$(call PARSE_BOARD,$(BOARD_TAG),bootloader.path))
+
     # processor stuff
     ifndef MCU
         MCU   = $(call PARSE_BOARD,$(BOARD_TAG),build.mcu)
@@ -529,8 +505,8 @@ ifeq ($(strip $(NO_CORE)),)
         F_CPU = $(call PARSE_BOARD,$(BOARD_TAG),build.f_cpu)
     endif
 
-    ifeq ($(VARIANT),leonardo)
-        # USB IDs for the Leonardo
+    ifneq ($(CATERINA),)
+        # USB IDs for the caterina devices like leonardo or micro
         ifndef USB_VID
             USB_VID = $(call PARSE_BOARD,$(BOARD_TAG),build.vid)
         endif
@@ -583,6 +559,27 @@ ifndef OBJDIR
 else
     $(call show_config_variable,OBJDIR,[USER])
 endif
+
+
+########################################################################
+# Reset
+#
+ifndef RESET_CMD
+    ifneq ($(CATERINA),)
+       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --caterina \
+          $(ARD_RESET_OPTS) $(call get_arduino_port)
+    else
+       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino \
+          $(ARD_RESET_OPTS) $(call get_arduino_port)
+    endif
+endif
+
+ifneq ($(CATERINA),)
+    ERROR_ON_CATERINA = $(error On $(BOARD_TAG), raw_xxx operation is not supported)
+else
+    ERROR_ON_CATERINA =
+endif
+
 
 ########################################################################
 # Local sources
@@ -773,8 +770,8 @@ else
 CPPFLAGS += -O$(OPTIMIZATION_LEVEL)
 endif
 
-# USB IDs for the Leonardo
-ifeq ($(VARIANT),leonardo)
+# USB IDs for the Caterina devices like leonardo or micro
+ifneq ($(CATERINA),)
     CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
 endif
 
@@ -1012,8 +1009,8 @@ $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 		$(AR) rcs $@ $(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 
-error_on_leonardo:
-		$(ERROR_ON_LEONARDO)
+error_on_caterina:
+		$(ERROR_ON_CATERINA)
 
 # Use submake so we can guarantee the reset happens
 # before the upload, even with make -j
@@ -1022,7 +1019,7 @@ upload:		$(TARGET_HEX) verify_size
 		$(MAKE) do_upload
 
 raw_upload:	$(TARGET_HEX) verify_size
-		$(MAKE) error_on_leonardo
+		$(MAKE) error_on_caterina
 		$(MAKE) do_upload
 
 do_upload:
@@ -1038,11 +1035,9 @@ eeprom:		$(TARGET_HEX) verify_size
 		$(MAKE) do_eeprom
 
 raw_eeprom:	$(TARGET_HEX) verify_size
-		$(MAKE) error_on_leonardo
+		$(MAKE) error_on_caterina
 		$(MAKE) do_eeprom
 
-# the last part is for leonardo.
-# wait until leonardo reboots and establish a new connection.
 reset:
 		$(call arduino_output,Resetting Arduino...)
 		$(RESET_CMD)
@@ -1101,7 +1096,7 @@ generate_assembly: $(OBJDIR)/$(TARGET).s
 generated_assembly: generate_assembly
 	@$(ECHO) "generated_assembly" target is deprecated. Use "generate_assembly" target instead
 
-.PHONY:	all upload raw_upload raw_eeprom error_on_leonardo reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly generate_assembly verify_size
+.PHONY:	all upload raw_upload raw_eeprom error_on_caterina reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly generate_assembly verify_size
 
 # added - in the beginning, so that we don't get an error if the file is not present
 -include $(DEPS)
