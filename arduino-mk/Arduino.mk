@@ -600,6 +600,8 @@ LOCAL_OBJS      = $(patsubst %,$(OBJDIR)/%,$(LOCAL_OBJ_FILES))
 # If NO_CORE is not set, then we need exactly one .pde or .ino file
 ifeq ($(strip $(NO_CORE)),)
 
+ifndef SKIP_SUFFIX_CHECK
+
     ifeq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 0)
         ifeq ($(strip $(NO_CORE)),)
             $(error No .pde or .ino files found. If you want to compile .c or .cpp files, then set NO_CORE)
@@ -611,6 +613,8 @@ ifeq ($(strip $(NO_CORE)),)
         #TODO: Support more than one file. https://github.com/sudar/Arduino-Makefile/issues/49
         $(error Need exactly one .pde or .ino file)
     endif
+
+endif
 
 endif
 
@@ -652,8 +656,11 @@ endif
 # for more information (search for 'character special device').
 #
 ifeq ($(strip $(NO_CORE)),)
+
     ifndef MONITOR_BAUDRATE
-        SPEED = $(shell egrep -h 'Serial.begin\([0-9]+\)' $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS) | sed -e 's/[^0-9]//g'| head -n1)
+        # in case no .pde or .ino are defined, add a fake file so egrep doesn't
+        # block waiting for input
+        SPEED = $(shell egrep -h 'Serial.begin\([0-9]+\)' $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS) nofile | sed -e 's/[^0-9]//g'| head -n1)
         MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
 
         ifeq ($(MONITOR_BAUDRATE),)
