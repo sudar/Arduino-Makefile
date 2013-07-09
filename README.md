@@ -22,35 +22,29 @@ On Linux, you might prefer:
     AVR_TOOLS_DIR = /usr
 
 The Makefile also delegates resetting the board to a short Perl program.
-You'll need to install `Device::SerialPort` to use it though. You'll also
-need the `YAML` library to run ard-parse-boards.
+You'll need to install `Device::SerialPort` to use it though.
 
 On Debian or Ubuntu:
 
        apt-get install libdevice-serialport-perl
-       apt-get install libyaml-perl
 
 On Fedora:
 
        yum install perl-Device-SerialPort
-       yum install perl-YAML
 
 On openSUSE:
 
       zypper install perl-Device-SerialPort
-      zypper install perl-YAML
 
 On Mac using MacPorts:
 
        sudo port install p5-device-serialport
-       sudo port install p5-YAML
 
       and use /opt/local/bin/perl5 instead of /usr/bin/perl
 
 On other systems:
 
        cpanm Device::SerialPort
-       cpanm YAML
 
 ## Including Libraries
 
