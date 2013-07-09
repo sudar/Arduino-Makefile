@@ -85,7 +85,7 @@ OBJDUMP_NAME = pic32-objdump
 OBJCOPY_NAME = pic32-objcopy
 SIZE_NAME = pic32-size
 
-LDSCRIPT = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) ldscript)
+LDSCRIPT = $(call PARSE_BOARD,$(BOARD_TAG),ldscript)
 LDSCRIPT_FILE = $(ARDUINO_CORE_PATH)/$(LDSCRIPT)
 
 MCU_FLAG_NAME=mprocessor
