@@ -73,7 +73,6 @@
 # DEPENDENCIES
 #
 # The Perl programs need a couple of libraries:
-#    YAML
 #    Device::SerialPort
 #
 ########################################################################
