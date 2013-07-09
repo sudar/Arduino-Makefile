@@ -465,33 +465,6 @@ else
     $(call show_config_variable,USER_LIB_PATH,[USER])
 endif
 
-########################################################################
-# Reset
-#
-ifeq ($(BOARD_TAG),leonardo)
-    LEO_RESET = 1
-endif
-
-ifeq ($(BOARD_TAG),micro)
-    LEO_RESET = 1
-endif
-
-ifndef RESET_CMD
-    ifdef LEO_RESET
-       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --leonardo \
-          $(ARD_RESET_OPTS) $(call get_arduino_port)
-    else
-       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino \
-          $(ARD_RESET_OPTS) $(call get_arduino_port)
-    endif
-endif
-
-ifeq ($(BOARD_TAG),leonardo)
-    ERROR_ON_LEONARDO = $(error On leonardo, raw_xxx operation is not supported)
-else
-    ERROR_ON_LEONARDO =
-endif
-
 
 ########################################################################
 # boards.txt parsing
@@ -527,6 +500,9 @@ ifeq ($(strip $(NO_CORE)),)
         VARIANT = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.variant)
     endif
 
+    # see if we are a caterina device like leonardo or micro
+    CATERINA = $(findstring caterina,$(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) bootloader.path))
+
     # processor stuff
     ifndef MCU
         MCU   = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.mcu)
@@ -536,15 +512,10 @@ ifeq ($(strip $(NO_CORE)),)
         F_CPU = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.f_cpu)
     endif
 
-    ifeq ($(VARIANT),leonardo)
+    ifneq ($(CATERINA),)
         # USB IDs for the Leonardo
-        ifndef USB_VID
-            USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid 2>/dev/null)
-        endif
-
-        ifndef USB_PID
-            USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid 2>/dev/null)
-        endif
+        USB_VID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.vid 2>/dev/null)
+        USB_PID = $(shell $(PARSE_BOARD_CMD) $(BOARD_TAG) build.pid 2>/dev/null)
     endif
 
     # normal programming info
@@ -590,6 +561,27 @@ ifndef OBJDIR
 else
     $(call show_config_variable,OBJDIR,[USER])
 endif
+
+
+########################################################################
+# Reset
+#
+ifndef RESET_CMD
+    ifneq ($(CATERINA),)
+       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --caterina \
+          $(ARD_RESET_OPTS) $(call get_arduino_port)
+    else
+       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino \
+          $(ARD_RESET_OPTS) $(call get_arduino_port)
+    endif
+endif
+
+ifneq ($(CATERINA),)
+    ERROR_ON_LEONARDO = $(error On Leonardo, raw_xxx operation is not supported)
+else
+    ERROR_ON_LEONARDO =
+endif
+
 
 ########################################################################
 # Local sources
@@ -775,7 +767,7 @@ CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_V
         -ffunction-sections -fdata-sections
 
 # USB IDs for the Leonardo
-ifeq ($(VARIANT),leonardo)
+ifneq ($(CATERINA),)
     CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
 endif
 

@@ -13,12 +13,12 @@ my %Opt =
   );
 
 GetOptions(\%Opt,
-	   "period=f",   # width of reset pulse in seconds
-	   "verbose!",
-	   "help!",
-	   "info!",
-	   "leonardo!",
-	  );
+       "period=f",   # width of reset pulse in seconds
+       "verbose!",
+       "help!",
+       "info!",
+       "caterina!",
+      );
 
 if ($Opt{help} || $Opt{info})
   {
@@ -33,7 +33,7 @@ foreach my $dev (@ARGV)
     my $p = Device::SerialPort->new($dev)
       or die "Unable to open $dev: $!\n";
 
-    if ($Opt{leonardo})
+    if ($Opt{caterina})
     {
         $p->baudrate(1200);
         $p->write_settings;
@@ -86,7 +86,7 @@ ard-reset-arduino - Reset an Arduino
 
     $ ard-reset-arduino --verbose --period=0.1 /dev/cu.usb*
 
-    $ ard-reset-arduino --verbose --leonardo /dev/ttyUSB0
+    $ ard-reset-arduino --verbose --caterina /dev/ttyUSB0
 
 =head1 DESCRIPTION
 
@@ -108,9 +108,9 @@ Watch what's going on on STDERR.
 
 Specify the DTR pulse width in seconds.
 
-=item --leonardo
+=item --caterina
 
-Reset a Leonardo or Micro.
+Reset a Leonardo, Micro, Robot or LilyPadUSB.
 
 =back
 
