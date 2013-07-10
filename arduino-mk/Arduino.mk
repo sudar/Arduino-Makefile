@@ -86,7 +86,7 @@
 #
 #       ARDUINO_LIBS = Ethernet SPI
 #       BOARD_TAG    = uno
-#       ARDUINO_PORT = /dev/cu.usb*
+#       MONITOR_PORT = /dev/cu.usb*
 #
 #       include /usr/local/share/Arduino.mk
 #
@@ -96,7 +96,7 @@
 #                   assume these are in $(ARDUINO_DIR)/hardware/libraries
 #                   or your sketchbook's libraries directory)
 #
-#    ARDUINO_PORT - The port where the Arduino can be found (only needed
+#    MONITOR_PORT - The port where the Arduino can be found (only needed
 #                   when uploading)
 #
 #    BOARD_TAG    - The tag for the board e.g. uno or mega
@@ -784,8 +784,11 @@ ASFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -I. -x assembler-with-cpp
 LDFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL) $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_LDFLAGS)
 SIZEFLAGS     ?= --mcu=$(MCU) -C
 
+# for backwards compatibility, grab ARDUINO_PORT if the user has it set
+MONITOR_PORT ?= $(ARDUINO_PORT)
+
 # Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
-get_arduino_port = $(if $(wildcard $(ARDUINO_PORT)),$(firstword $(wildcard $(ARDUINO_PORT))),$(error Arduino port $(ARDUINO_PORT) not found!))
+get_arduino_port = $(if $(wildcard $(MONITOR_PORT)),$(firstword $(wildcard $(MONITOR_PORT))),$(error Arduino port $(MONITOR_PORT) not found!))
 
 # Returns the ISP port (first wildcard expansion) if it exists, otherwise it errors.
 get_isp_port = $(if $(wildcard $(ISP_PORT)),$(firstword $(wildcard $(ISP_PORT))),$(error ISP port $(ISP_PORT) not found!))
