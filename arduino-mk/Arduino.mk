@@ -86,7 +86,7 @@
 #
 #       ARDUINO_LIBS = Ethernet SPI
 #       BOARD_TAG    = uno
-#       ARDUINO_PORT = /dev/cu.usb*
+#       MONITOR_PORT = /dev/cu.usb*
 #
 #       include /usr/local/share/Arduino.mk
 #
@@ -96,7 +96,7 @@
 #                   assume these are in $(ARDUINO_DIR)/hardware/libraries
 #                   or your sketchbook's libraries directory)
 #
-#    ARDUINO_PORT - The port where the Arduino can be found (only needed
+#    MONITOR_PORT - The port where the Arduino can be found (only needed
 #                   when uploading)
 #
 #    BOARD_TAG    - The tag for the board e.g. uno or mega
@@ -563,10 +563,10 @@ endif
 ifndef RESET_CMD
     ifneq ($(CATERINA),)
        RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --caterina \
-          $(ARD_RESET_OPTS) $(call get_arduino_port)
+          $(ARD_RESET_OPTS) $(call get_monitor_port)
     else
        RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino \
-          $(ARD_RESET_OPTS) $(call get_arduino_port)
+          $(ARD_RESET_OPTS) $(call get_monitor_port)
     endif
 endif
 
@@ -784,8 +784,11 @@ ASFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -I. -x assembler-with-cpp
 LDFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL) $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_LDFLAGS)
 SIZEFLAGS     ?= --mcu=$(MCU) -C
 
+# for backwards compatibility, grab ARDUINO_PORT if the user has it set
+MONITOR_PORT ?= $(ARDUINO_PORT)
+
 # Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
-get_arduino_port = $(if $(wildcard $(ARDUINO_PORT)),$(firstword $(wildcard $(ARDUINO_PORT))),$(error Arduino port $(ARDUINO_PORT) not found!))
+get_monitor_port = $(if $(wildcard $(MONITOR_PORT)),$(firstword $(wildcard $(MONITOR_PORT))),$(error Arduino port $(MONITOR_PORT) not found!))
 
 # Returns the ISP port (first wildcard expansion) if it exists, otherwise it errors.
 get_isp_port = $(if $(wildcard $(ISP_PORT)),$(firstword $(wildcard $(ISP_PORT))),$(error ISP port $(ISP_PORT) not found!))
@@ -931,7 +934,7 @@ ifdef AVRDUDE_CONF
     AVRDUDE_COM_OPTS += -C $(AVRDUDE_CONF)
 endif
 
-AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P $(call get_arduino_port)
+AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P $(call get_monitor_port)
 
 ifndef ISP_PROG
     ISP_PROG   = stk500v1
@@ -1045,9 +1048,9 @@ reset_stty:
 		for STTYF in 'stty -F' 'stty --file' 'stty -f' 'stty <' ; \
 		  do $$STTYF /dev/tty >/dev/null 2>&1 && break ; \
 		done ; \
-		$$STTYF $(call get_arduino_port)  hupcl ; \
+		$$STTYF $(call get_monitor_port)  hupcl ; \
 		(sleep 0.1 2>/dev/null || sleep 1) ; \
-		$$STTYF $(call get_arduino_port) -hupcl
+		$$STTYF $(call get_monitor_port) -hupcl
 
 ispload:	$(TARGET_EEP) $(TARGET_HEX) verify_size
 ifdef AVRDUDE_ISP_FUSES_PRE
@@ -1069,7 +1072,7 @@ show_boards:
 	@cat $(BOARDS_TXT) | grep -E "^[[:alnum:]]" | cut -d . -f 1 | uniq
 
 monitor:
-		$(MONITOR_CMD) $(call get_arduino_port) $(MONITOR_BAUDRATE)
+		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
 
 disasm: $(OBJDIR)/$(TARGET).lss
 	@$(ECHO) The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss
