@@ -53,7 +53,7 @@
 # On Linux, you might prefer:
 #
 #   ARDUINO_DIR   = /usr/share/arduino
-#   ARDMK_DIR     = /usr/local
+#   ARDMK_DIR     = /usr
 #   AVR_TOOLS_DIR = /usr
 #
 # You can either set these up in the Makefile, or put them in your
@@ -88,7 +88,7 @@
 #       BOARD_TAG    = uno
 #       MONITOR_PORT = /dev/cu.usb*
 #
-#       include /usr/local/share/Arduino.mk
+#       include /usr/share/arduino/Arduino.mk
 #
 # Hopefully these will be self-explanatory but in case they're not:
 #
@@ -236,7 +236,15 @@ else
     echo $(error "ARDMK_DIR is not defined")
 endif
 
-include $(ARDMK_DIR)/arduino-mk/Common.mk
+ifneq ($(wildcard $(ARDMK_DIR)/arduino-mk/Common.mk),)
+    # git checkout
+    include $(ARDMK_DIR)/arduino-mk/Common.mk
+else
+    ifneq ($(wildcard $(ARDMK_DIR)/Common.mk),) 
+        # package install
+        include $(ARDMK_DIR)/Common.mk
+    endif
+endif
 
 ########################################################################
 #

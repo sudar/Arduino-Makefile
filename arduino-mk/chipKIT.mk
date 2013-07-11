@@ -39,7 +39,15 @@ else
     echo $(error "ARDMK_DIR is not defined")
 endif
 
-include $(ARDMK_DIR)/arduino-mk/Common.mk
+ifneq ($(wildcard $(ARDMK_DIR)/arduino-mk/Common.mk),)
+    # git checkout
+    include $(ARDMK_DIR)/arduino-mk/Common.mk
+else
+    ifneq ($(wildcard $(ARDMK_DIR)/Common.mk),) 
+        # package install
+        include $(ARDMK_DIR)/Common.mk
+    endif
+endif
 
 ifndef MPIDE_DIR
     AUTO_MPIDE_DIR := $(firstword \

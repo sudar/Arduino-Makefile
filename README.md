@@ -18,7 +18,7 @@ On the Mac you might want to set:
 On Linux, you might prefer:
 
     ARDUINO_DIR   = /usr/share/arduino
-    ARDMK_DIR     = /usr/local
+    ARDMK_DIR     = /usr
     AVR_TOOLS_DIR = /usr
 
 The Makefile also delegates resetting the board to a short Perl program.
