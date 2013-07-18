@@ -44,7 +44,7 @@ On Mac using MacPorts:
 
 On other systems:
 
-       cpanm Device::SerialPort
+       cpan Device::SerialPort
 
 ## Including Libraries
 
