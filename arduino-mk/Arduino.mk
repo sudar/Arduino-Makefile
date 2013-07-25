@@ -211,12 +211,6 @@ endif
 # Makefile distribution path
 #
 
-# Call with the name of the variable, a prefix tag if desired (like
-# [AUTODETECTED]), and an explanation if desired (like (found in $$PATH). This
-# function definition is duplicated from Common.mk so that it is available
-# before we import that Makefile.
-show_config_variable = $(call show_config_info,$(1) = $($(1)) $(3),$(2))
-
 ifndef ARDMK_DIR
     # presume it's a level above the path to our own file
     ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST))))/..)
