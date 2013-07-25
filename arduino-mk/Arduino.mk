@@ -225,15 +225,11 @@ else
     $(call show_config_variable,ARDMK_DIR,[USER])
 endif
 
-ifdef ARDMK_DIR
-    ifndef ARDMK_PATH
-        ARDMK_PATH = $(ARDMK_DIR)/bin
-        $(call show_config_variable,ARDMK_PATH,[COMPUTED],(relative to ARDMK_DIR))
-    else
-        $(call show_config_variable,ARDMK_PATH,[USER])
-    endif
+ifndef ARDMK_PATH
+    ARDMK_PATH = $(ARDMK_DIR)/bin
+    $(call show_config_variable,ARDMK_PATH,[COMPUTED],(relative to ARDMK_DIR))
 else
-    echo $(error "ARDMK_DIR is not defined")
+    $(call show_config_variable,ARDMK_PATH,[USER])
 endif
 
 ifneq ($(wildcard $(ARDMK_DIR)/arduino-mk/Common.mk),)

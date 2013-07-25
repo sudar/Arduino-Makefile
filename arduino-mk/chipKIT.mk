@@ -31,12 +31,8 @@ ifndef ARDMK_DIR
     ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST))))/..)
 endif
 
-ifdef ARDMK_DIR
-    ifndef ARDMK_PATH
-        ARDMK_PATH = $(ARDMK_DIR)/bin
-    endif
-else
-    echo $(error "ARDMK_DIR is not defined")
+ifndef ARDMK_PATH
+    ARDMK_PATH = $(ARDMK_DIR)/bin
 endif
 
 ifneq ($(wildcard $(ARDMK_DIR)/arduino-mk/Common.mk),)
