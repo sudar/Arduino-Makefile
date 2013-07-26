@@ -214,16 +214,10 @@ endif
 ifndef ARDMK_DIR
     # presume it's a level above the path to our own file
     ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST))))/..)
-    $(call show_config_variable,ARDMK_DIR,[COMPUTED],(relative to $(notdir $(lastword $(MAKEFILE_LIST)))))
 else
-    $(call show_config_variable,ARDMK_DIR,[USER])
-endif
-
-ifndef ARDMK_PATH
-    ARDMK_PATH = $(ARDMK_DIR)/bin
-    $(call show_config_variable,ARDMK_PATH,[COMPUTED],(relative to ARDMK_DIR))
-else
-    $(call show_config_variable,ARDMK_PATH,[USER])
+    # show_config_variable macro is defined in Common.mk file and is not available yet. 
+    # Let's define a variable to know that user specified ARDMK_DIR
+    ARDMK_DIR_MSG = USER
 endif
 
 ifneq ($(wildcard $(ARDMK_DIR)/arduino-mk/Common.mk),)
@@ -234,6 +228,20 @@ else
         # package install
         include $(ARDMK_DIR)/Common.mk
     endif
+endif
+
+# show_config_variable macro is available now. So let's print config details for ARDMK_DIR
+ifndef ARDMK_DIR_MSG
+    $(call show_config_variable,ARDMK_DIR,[COMPUTED],(relative to $(notdir $(lastword $(MAKEFILE_LIST)))))
+else
+    $(call show_config_variable,ARDMK_DIR,[USER])
+endif
+
+ifndef ARDMK_PATH
+    ARDMK_PATH = $(ARDMK_DIR)/bin
+    $(call show_config_variable,ARDMK_PATH,[COMPUTED],(relative to ARDMK_DIR))
+else
+    $(call show_config_variable,ARDMK_PATH,[USER])
 endif
 
 ########################################################################
