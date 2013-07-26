@@ -30,7 +30,8 @@
 # We need to worry about three different sorts of file:
 #
 # 1. Things which are included in this distribution e.g. ard-reset-arduino
-#    => ARDMK_DIR
+#    => ARDMK_DIR - Where the *.mk files are stored
+#    => ARDMK_PATH - Where the ard-reset-arduino script is stored
 #
 # 2. Things which are always in the Arduino distribution e.g.
 #    boards.txt, libraries, &c.
@@ -62,9 +63,9 @@
 # If you don't specify these, we can try to guess, but that might not work
 # or work the way you want it to.
 #
-# If you don't install the ard-... binaries to /usr/local/bin, but
+# If you don't install the ard-reset-arduino binary to /usr/local/bin, but
 # instead copy them to e.g. /home/mjo/arduino.mk/bin then set
-#   ARDML_DIR = /home/mjo/arduino.mk
+#   ARDMK_PATH = /home/mjo/arduino.mk/bin
 #
 # If you'd rather not see the configuration output, define ARDUINO_QUIET.
 #

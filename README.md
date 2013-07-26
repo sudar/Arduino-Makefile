@@ -18,8 +18,14 @@ On the Mac you might want to set:
 On Linux, you might prefer:
 
     ARDUINO_DIR   = /usr/share/arduino
-    ARDMK_DIR     = /usr
+    ARDMK_DIR     = /usr/share/arduino
+    ARDMK_PATH    = /usr/bin
     AVR_TOOLS_DIR = /usr
+
+- `ARDUINO_DIR` - Path to Arduino installation
+- `ARDMK_DIR`   - Path where the `*.mk` are present. If you installed the package, then it is usually `/usr/share/arduino`
+- `ARDMK_PATH`  - Path where the `ard-reset-arduino` script is present. If you installed the package, then it is usually `/usr/bin`
+- `AVR_TOOLS_DIR` - Path where the avr tools chain binaries are present. If you are going to use the binaries that came with Arduino installation, then you don't have to set it.
 
 The Makefile also delegates resetting the board to a short Perl program.
 You'll need to install `Device::SerialPort` to use it though.
