@@ -17,6 +17,7 @@ The following is the rough list of changes that went into different versions. I 
 - Implement ard-parse-boards with shell scripting instead of Perl (https://github.com/peplin)
 - Compile with debugging symbols only when DEBUG=1 (https://github.com/peplin)
 - Replace Leonardo detection with Caterina detection (https://github.com/sej7278)
+- Autodetect baudrate only if either a .ino/.pde is present
 
 ### 0.12.0 (2013-06-20)
 - Fix "generated_assembly" target, which got broken earlier. Fix issue #76 (https://github.com/matthijskooijman)
