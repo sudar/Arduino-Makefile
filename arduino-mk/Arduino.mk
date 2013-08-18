@@ -195,6 +195,40 @@
 #
 #
 ########################################################################
+#
+# ALTERNATIVE CORES
+#
+# To use alternative cores for platforms such as ATtiny, you need to
+# specify a few more variables, depending on the core in use.
+#
+# The HLT (attiny-master) core can be used just by specifying
+# ALTERNATE_CORE, assuming your core is in your ~/sketchbook/hardware
+# directory. For example:
+#
+# ISP_PORT           = /dev/ttyACM0
+# BOARD_TAG          = attiny85
+# ALTERNATE_CORE     = attiny-master
+#
+# To use the more complex arduino-tiny and TinyCore2 cores, you must
+# also set ARDUINO_CORE_PATH and ARDUINO_VAR_PATH to the core
+# directory, as these cores essentially replace the main Arduino core.
+# For example:
+#
+# ISP_PORT          = /dev/ttyACM0
+# BOARD_TAG         = attiny85at8
+# ALTERNATE_CORE    = arduino-tiny
+# ARDUINO_VAR_PATH  = ~/sketchbook/hardware/arduino-tiny/cores/tiny
+# ARDUINO_CORE_PATH = ~/sketchbook/hardware/arduino-tiny/cores/tiny
+#
+# or....
+#
+# ISP_PORT          = /dev/ttyACM0
+# BOARD_TAG         = attiny861at8
+# ALTERNATE_CORE    = tiny2
+# ARDUINO_VAR_PATH  = ~/sketchbook/hardware/tiny2/cores/tiny
+# ARDUINO_CORE_PATH = ~/sketchbook/hardware/tiny2/cores/tiny
+#
+########################################################################
 
 arduino_output =
 # When output is not suppressed and we're in the top-level makefile,
