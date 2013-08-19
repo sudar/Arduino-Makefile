@@ -593,6 +593,7 @@ LOCAL_CC_SRCS   ?= $(wildcard *.cc)
 LOCAL_PDE_SRCS  ?= $(wildcard *.pde)
 LOCAL_INO_SRCS  ?= $(wildcard *.ino)
 LOCAL_AS_SRCS   ?= $(wildcard *.S)
+LOCAL_HEADERS   ?= $(wildcard *.h *.hh *.hpp)
 LOCAL_SRCS      = $(LOCAL_C_SRCS)   $(LOCAL_CPP_SRCS) \
 		$(LOCAL_CC_SRCS)   $(LOCAL_PDE_SRCS) \
 		$(LOCAL_INO_SRCS) $(LOCAL_AS_SRCS)
@@ -644,9 +645,9 @@ endif
 ifndef ARDUINO_LIBS
     # automatically determine included libraries
     ARDUINO_LIBS += $(filter $(notdir $(wildcard $(ARDUINO_DIR)/libraries/*)), \
-        $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
+        $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS) $(LOCAL_HEADERS)))
     ARDUINO_LIBS += $(filter $(notdir $(wildcard $(ARDUINO_SKETCHBOOK)/libraries/*)), \
-        $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
+        $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS) $(LOCAL_HEADERS)))
 endif
 
 ########################################################################
