@@ -1154,7 +1154,32 @@ generate_assembly: $(OBJDIR)/$(TARGET).s
 generated_assembly: generate_assembly
 	@$(ECHO) "generated_assembly" target is deprecated. Use "generate_assembly" target instead
 
-.PHONY:	all upload raw_upload raw_eeprom error_on_caterina reset reset_stty ispload clean depends size show_boards monitor disasm symbol_sizes generated_assembly generate_assembly verify_size
+help:
+	@$(ECHO) "\nAvailable targets:\n\
+  make             - no upload\n\
+  make upload      - upload\n\
+  make clean       - remove all our dependencies\n\
+  make depends     - update dependencies\n\
+  make reset       - reset the Arduino by tickling DTR on the serial port\n\
+  make raw_upload  - upload without first resetting\n\
+  make show_boards - list all the boards defined in boards.txt\n\
+  make monitor     - connect to the Arduino's serial port\n\
+  make size        - show the size of the compiled output (relative to\n\
+                     resources, if you have a patched avr-size)\n\
+  make disasm      - generate a .lss file in build-cli that contains\n\
+                     disassembly of the compiled file interspersed\n\
+                     with your original source code.\n\
+  make verify_size - Verify that the size of the final file is less than\n\
+                     the capacity of the micro controller.\n\
+  make eeprom      - upload the eep file\n\
+  make raw_eeprom  - upload the eep file without first resetting\n\
+  make help        - show this help\n\
+"
+	@$(ECHO) "Please refer to $(ARDMK_DIR)/arduino-mk/Arduino.mk for more details."
+
+.PHONY: all upload raw_upload raw_eeprom error_on_caterina reset reset_stty ispload \
+        clean depends size show_boards monitor disasm symbol_sizes generated_assembly \
+        generate_assembly verify_size help
 
 # added - in the beginning, so that we don't get an error if the file is not present
 -include $(DEPS)
