@@ -244,7 +244,6 @@ endif
 
 ########################################################################
 # Makefile distribution path
-#
 
 ifndef ARDMK_DIR
     # presume it's a level above the path to our own file
@@ -280,8 +279,8 @@ else
 endif
 
 ########################################################################
-#
 # Arduino Directory
+
 ifndef ARDUINO_DIR
     AUTO_ARDUINO_DIR := $(firstword \
         $(call dir_if_exists,/usr/share/arduino) \
@@ -297,15 +296,15 @@ else
 endif
 
 ########################################################################
-#
 # Default TARGET to pwd (ex Daniele Vergini)
+
 ifndef TARGET
     TARGET  = $(notdir $(CURDIR))
 endif
 
 ########################################################################
-#
 # Arduino version number
+
 ifndef ARDUINO_VERSION
     # Remove all the decimals, and right-pad with zeros, and finally grab the first 3 bytes.
     # Works for 1.0 and 1.0.1
@@ -324,8 +323,6 @@ endif
 
 ########################################################################
 # Arduino Sketchbook folder
-#
-
 
 ifndef ARDUINO_SKETCHBOOK
     ifndef ARDUINO_PREFERENCES_PATH
@@ -360,7 +357,6 @@ endif
 
 ########################################################################
 # Arduino and system paths
-#
 
 ifndef CC_NAME
 CC_NAME      = avr-gcc
@@ -494,7 +490,7 @@ endif
 
 ########################################################################
 # Miscellaneous
-#
+
 ifndef USER_LIB_PATH
     USER_LIB_PATH = $(ARDUINO_SKETCHBOOK)/libraries
     $(call show_config_variable,USER_LIB_PATH,[DEFAULT],(in user sketchbook))
@@ -502,10 +498,9 @@ else
     $(call show_config_variable,USER_LIB_PATH,[USER])
 endif
 
-
 ########################################################################
 # boards.txt parsing
-#
+
 ifndef BOARD_TAG
     BOARD_TAG   = uno
     $(call show_config_variable,BOARD_TAG,[DEFAULT])
@@ -597,10 +592,9 @@ else
     $(call show_config_variable,OBJDIR,[USER])
 endif
 
-
 ########################################################################
 # Reset
-#
+
 ifndef RESET_CMD
     ifneq ($(CATERINA),)
        RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --caterina \
@@ -617,10 +611,9 @@ else
     ERROR_ON_CATERINA =
 endif
 
-
 ########################################################################
 # Local sources
-#
+
 LOCAL_C_SRCS    ?= $(wildcard *.c)
 LOCAL_CPP_SRCS  ?= $(wildcard *.cpp)
 LOCAL_CC_SRCS   ?= $(wildcard *.cc)
@@ -674,7 +667,7 @@ endif
 
 ########################################################################
 # Determine ARDUINO_LIBS automatically
-#
+
 ifndef ARDUINO_LIBS
     # automatically determine included libraries
     ARDUINO_LIBS += $(filter $(notdir $(wildcard $(ARDUINO_DIR)/libraries/*)), \
@@ -685,11 +678,11 @@ endif
 
 ########################################################################
 # Serial monitor (just a screen wrapper)
-#
+
 # Quite how to construct the monitor command seems intimately tied
 # to the command we're using (here screen). So, read the screen docs
 # for more information (search for 'character special device').
-#
+
 ifeq ($(strip $(NO_CORE)),)
     ifndef MONITOR_BAUDRATE
         ifeq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 1)
@@ -714,7 +707,7 @@ endif
 
 ########################################################################
 # Include file to use for old .pde files
-#
+
 ifndef ARDUINO_HEADER
     # We should check for Arduino version, if the file is .pde because a
     # .pde file might be used in Arduino 1.0
@@ -727,7 +720,6 @@ endif
 
 ########################################################################
 # Rules for making stuff
-#
 
 # The name of the main targets
 TARGET_HEX = $(OBJDIR)/$(TARGET).hex
@@ -752,12 +744,12 @@ ECHO    = echo
 MKDIR   = mkdir -p
 
 # General arguments
-USER_LIBS     = $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(ARDUINO_LIBS)))
-USER_LIB_NAMES= $(patsubst $(USER_LIB_PATH)/%,%,$(USER_LIBS))
+USER_LIBS      = $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(ARDUINO_LIBS)))
+USER_LIB_NAMES = $(patsubst $(USER_LIB_PATH)/%,%,$(USER_LIBS))
 
 # Let user libraries override system ones.
-SYS_LIBS      = $(wildcard $(patsubst %,$(ARDUINO_LIB_PATH)/%,$(filter-out $(USER_LIB_NAMES),$(ARDUINO_LIBS))))
-SYS_LIB_NAMES = $(patsubst $(ARDUINO_LIB_PATH)/%,%,$(SYS_LIBS))
+SYS_LIBS       = $(wildcard $(patsubst %,$(ARDUINO_LIB_PATH)/%,$(filter-out $(USER_LIB_NAMES),$(ARDUINO_LIBS))))
+SYS_LIB_NAMES  = $(patsubst $(ARDUINO_LIB_PATH)/%,%,$(SYS_LIBS))
 
 # Error here if any are missing.
 LIBS_NOT_FOUND = $(filter-out $(USER_LIB_NAMES) $(SYS_LIB_NAMES),$(ARDUINO_LIBS))
@@ -765,21 +757,21 @@ ifneq (,$(strip $(LIBS_NOT_FOUND)))
     $(error The following libraries specified in ARDUINO_LIBS could not be found (searched USER_LIB_PATH and ARDUINO_LIB_PATH): $(LIBS_NOT_FOUND))
 endif
 
-SYS_LIBS     := $(wildcard $(SYS_LIBS) $(addsuffix /utility,$(SYS_LIBS)))
-USER_LIBS    := $(wildcard $(USER_LIBS) $(addsuffix /utility,$(USER_LIBS)))
-SYS_INCLUDES  = $(patsubst %,-I%,$(SYS_LIBS))
-USER_INCLUDES = $(patsubst %,-I%,$(USER_LIBS))
-LIB_C_SRCS    = $(wildcard $(patsubst %,%/*.c,$(SYS_LIBS)))
-LIB_CPP_SRCS  = $(wildcard $(patsubst %,%/*.cpp,$(SYS_LIBS)))
+SYS_LIBS           := $(wildcard $(SYS_LIBS) $(addsuffix /utility,$(SYS_LIBS)))
+USER_LIBS          := $(wildcard $(USER_LIBS) $(addsuffix /utility,$(USER_LIBS)))
+SYS_INCLUDES        = $(patsubst %,-I%,$(SYS_LIBS))
+USER_INCLUDES       = $(patsubst %,-I%,$(USER_LIBS))
+LIB_C_SRCS          = $(wildcard $(patsubst %,%/*.c,$(SYS_LIBS)))
+LIB_CPP_SRCS        = $(wildcard $(patsubst %,%/*.cpp,$(SYS_LIBS)))
 USER_LIB_CPP_SRCS   = $(wildcard $(patsubst %,%/*.cpp,$(USER_LIBS)))
 USER_LIB_C_SRCS     = $(wildcard $(patsubst %,%/*.c,$(USER_LIBS)))
-LIB_OBJS      = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(LIB_C_SRCS)) \
-        $(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS))
-USER_LIB_OBJS = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(USER_LIB_CPP_SRCS)) \
-        $(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(USER_LIB_C_SRCS))
+LIB_OBJS            = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(LIB_C_SRCS)) \
+                      $(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS))
+USER_LIB_OBJS       = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(USER_LIB_CPP_SRCS)) \
+                      $(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(USER_LIB_C_SRCS))
 
 # Dependency files
-DEPS            = $(LOCAL_OBJS:.o=.d) $(LIB_OBJS:.o=.d) $(USER_LIB_OBJS:.o=.d) $(CORE_OBJS:.o=.d)
+DEPS                = $(LOCAL_OBJS:.o=.d) $(LIB_OBJS:.o=.d) $(USER_LIB_OBJS:.o=.d) $(CORE_OBJS:.o=.d)
 
 # Optimization level for the compiler.
 # You can get the list of options at http://www.nongnu.org/avr-libc/user-manual/using_tools.html#gcc_optO
@@ -975,10 +967,9 @@ $(OBJDIR)/%.sym: $(OBJDIR)/%.elf $(COMMON_DEPS)
 	$(NM) --size-sort --demangle --reverse-sort --line-numbers $< > $@
 
 ########################################################################
-#
 # Avrdude
+
 # If avrdude is installed separately, it can find its own config file
-#
 ifndef AVRDUDE
     AVRDUDE          = $(AVR_TOOLS_PATH)/avrdude
 endif
@@ -1046,9 +1037,7 @@ ifneq ($(ISP_EEPROM), 0)
 endif
 
 ########################################################################
-#
 # Explicit targets start here
-#
 
 all: 		$(TARGET_EEP) $(TARGET_HEX)
 
@@ -1124,20 +1113,20 @@ endif
 clean:
 		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR}
 
-size:		$(TARGET_HEX)
+size:	$(TARGET_HEX)
 		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
 
 show_boards:
-	@cat $(BOARDS_TXT) | grep -E "^[[:alnum:]]" | cut -d . -f 1 | uniq
+		@cat $(BOARDS_TXT) | grep -E "^[[:alnum:]]" | cut -d . -f 1 | uniq
 
 monitor:
 		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
 
 disasm: $(OBJDIR)/$(TARGET).lss
-	@$(ECHO) The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss
+		@$(ECHO) The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss
 
 symbol_sizes: $(OBJDIR)/$(TARGET).sym
-	@$(ECHO) A symbol listing sorted by their size have been dumped to $(OBJDIR)/$(TARGET).sym
+		@$(ECHO) A symbol listing sorted by their size have been dumped to $(OBJDIR)/$(TARGET).sym
 
 verify_size:
 ifeq ($(strip $(HEX_MAXIMUM_SIZE)),)
@@ -1149,13 +1138,13 @@ endif
 See http://www.arduino.cc/en/Guide/Troubleshooting#size for tips on reducing it."; false; fi
 
 generate_assembly: $(OBJDIR)/$(TARGET).s
-	@$(ECHO) Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s
+		@$(ECHO) Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s
 
 generated_assembly: generate_assembly
-	@$(ECHO) "generated_assembly" target is deprecated. Use "generate_assembly" target instead
+		@$(ECHO) "generated_assembly" target is deprecated. Use "generate_assembly" target instead
 
 help:
-	@$(ECHO) "\nAvailable targets:\n\
+		@$(ECHO) "\nAvailable targets:\n\
   make             - no upload\n\
   make upload      - upload\n\
   make clean       - remove all our dependencies\n\
