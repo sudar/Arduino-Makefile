@@ -20,7 +20,6 @@ The following is the rough list of changes that went into different versions. I 
 - Autodetect baudrate only if either a .ino/.pde is present
 - Allow building with Arduino core, without a .ino/.pde file
 - Ability to support different Arduino cores (https://github.com/sej7278)
-- Add support for colorgcc
 
 ### 0.12.0 (2013-06-20)
 - Fix "generated_assembly" target, which got broken earlier. Fix issue #76 (https://github.com/matthijskooijman)

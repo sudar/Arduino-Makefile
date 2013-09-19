@@ -714,19 +714,19 @@ TARGETS    = $(OBJDIR)/$(TARGET).*
 CORE_LIB   = $(OBJDIR)/libcore.a
 
 # Names of executables
-CC      ?= $(AVR_TOOLS_PATH)/$(CC_NAME)
-CXX     ?= $(AVR_TOOLS_PATH)/$(CXX_NAME)
-AS      ?= $(AVR_TOOLS_PATH)/$(AS_NAME)
-OBJCOPY ?= $(AVR_TOOLS_PATH)/$(OBJCOPY_NAME)
-OBJDUMP ?= $(AVR_TOOLS_PATH)/$(OBJDUMP_NAME)
-AR      ?= $(AVR_TOOLS_PATH)/$(AR_NAME)
-SIZE    ?= $(AVR_TOOLS_PATH)/$(SIZE_NAME)
-NM      ?= $(AVR_TOOLS_PATH)/$(NM_NAME)
-REMOVE  ?= rm -rf
-MV      ?= mv -f
-CAT     ?= cat
-ECHO    ?= echo
-MKDIR   ?= mkdir -p
+CC      = $(AVR_TOOLS_PATH)/$(CC_NAME)
+CXX     = $(AVR_TOOLS_PATH)/$(CXX_NAME)
+AS      = $(AVR_TOOLS_PATH)/$(AS_NAME)
+OBJCOPY = $(AVR_TOOLS_PATH)/$(OBJCOPY_NAME)
+OBJDUMP = $(AVR_TOOLS_PATH)/$(OBJDUMP_NAME)
+AR      = $(AVR_TOOLS_PATH)/$(AR_NAME)
+SIZE    = $(AVR_TOOLS_PATH)/$(SIZE_NAME)
+NM      = $(AVR_TOOLS_PATH)/$(NM_NAME)
+REMOVE  = rm -rf
+MV      = mv -f
+CAT     = cat
+ECHO    = echo
+MKDIR   = mkdir -p
 
 # General arguments
 USER_LIBS      = $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(ARDUINO_LIBS)))
