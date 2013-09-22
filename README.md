@@ -76,7 +76,7 @@ To upload compiled files, `avrdude` is used. This Makefile tries to find `avrdud
 
 ## Colorgcc
 
-It is possible to use `[colorgcc](https://github.com/colorgcc/colorgcc)` with this makefile. Check out [this comment](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile#comment-1408) to find usage instructions.
+It is possible to use [`colorgcc`](https://github.com/colorgcc/colorgcc) with this makefile. Check out [this comment](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile#comment-1408) to find usage instructions.
 
 ## Versioning
 
