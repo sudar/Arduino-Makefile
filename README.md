@@ -74,6 +74,10 @@ To upload compiled files, `avrdude` is used. This Makefile tries to find `avrdud
       AVRDDUDE     = /usr/bin/avrdude
       AVRDUDE_CONF = /etc/avrdude.conf
 
+## Colorgcc
+
+It is possible to use `[colorgcc](https://github.com/colorgcc/colorgcc)` with this makefile. Check out [this comment](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile#comment-1408) to find usage instructions.
+
 ## Versioning
 
 The current version of the makefile is `0.12.0`. You can find the full history in the [HISTORY.md](HISTORY.md) file
