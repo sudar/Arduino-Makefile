@@ -3,6 +3,9 @@ A Makefile for Arduino Sketches
 
 The following is the rough list of changes that went into different versions. I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
+### 1.0.1 (2013-09-25)
+- Unconditionally add -D in avrdude options. See #114
+
 ### 1.0.0 (2013-09-22)
 - Add $OBJDIR to the list of configuration that gets printed. Fix issue #77
 - Add support for specifying optimization level. Fix issue #81

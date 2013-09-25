@@ -959,9 +959,13 @@ ifndef AVRDUDE
     AVRDUDE          = $(AVR_TOOLS_PATH)/avrdude
 endif
 
-# Default avrdude options. -V Do not verify, -q - suppress progress output
+# Default avrdude options
+# -V Do not verify
+# -q - suppress progress output
+# -D - Disable auto erase for flash memory 
+# (-D is needed for Mega boards. See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
 ifndef AVRDUDE_OPTS
-    AVRDUDE_OPTS = -q -V
+    AVRDUDE_OPTS = -q -V -D
 endif
 
 AVRDUDE_COM_OPTS = $(AVRDUDE_OPTS) -p $(MCU)
