@@ -1,7 +1,8 @@
 A Makefile for Arduino Sketches
 ===============================
 
-The following is the rough list of changes that went into different versions. I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
+The following is the rough list of changes that went into different versions.
+I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### 1.0.1 (2013-09-25)
 - Unconditionally add -D in avrdude options. See #114
@@ -161,4 +162,3 @@ Tweaked rules for the reset target on Philip Hands’ advice.
 - Tidied up the licensing, making it clear that it’s released under LGPL 2.1.
 - [Philip Hands](http://hands.com/~phil/) sent me some code to reset the Arduino by dropping DTR for 100ms, and I added it.
 - Tweaked the Makefile to handle version 0018 of the Arduino software which now includes main.cpp. Accordingly we don’t need to—and indeed must not—add main.cxx to the .pde sketch file. The paths seem to have changed a bit too.
-
