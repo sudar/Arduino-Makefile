@@ -1011,7 +1011,11 @@ ifndef AVRDUDE_ISP_FUSES_POST
     endif
 endif
 
-AVRDUDE_ISP_OPTS = -c $(ISP_PROG) -b $(AVRDUDE_ISP_BAUDRATE) -P $(call get_isp_port)
+AVRDUDE_ISP_OPTS = -c $(ISP_PROG) -b $(AVRDUDE_ISP_BAUDRATE)
+
+ifneq ($(strip $(ISP_PROG)),usbasp)
+    AVRDUDE_ISP_OPTS += -P $(call get_isp_port)
+endif
 
 ifndef ISP_EEPROM
     ISP_EEPROM  = 0
