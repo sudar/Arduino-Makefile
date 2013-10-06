@@ -241,10 +241,12 @@ endif
 
 ifneq ($(wildcard $(ARDMK_DIR)/arduino-mk/Common.mk),)
     # git checkout
+    ARDMK_FILE = $(ARDMK_DIR)/arduino-mk/arduino.mk
     include $(ARDMK_DIR)/arduino-mk/Common.mk
 else
     ifneq ($(wildcard $(ARDMK_DIR)/Common.mk),)
         # package install
+        ARDMK_FILE = $(ARDMK_DIR)/arduino.mk
         include $(ARDMK_DIR)/Common.mk
     endif
 endif
@@ -1190,7 +1192,7 @@ help:
   make burn_bootloader  - Burn bootloader and/or fuses\n\
   make help             - show this help\n\
 "
-	@$(ECHO) "Please refer to $(ARDMK_DIR)/arduino-mk/Arduino.mk for more details."
+	@$(ECHO) "Please refer to $(ARDMK_FILE) for more details."
 
 .PHONY: all upload raw_upload raw_eeprom error_on_caterina reset reset_stty ispload \
         clean depends size show_boards monitor disasm symbol_sizes generated_assembly \

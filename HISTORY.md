@@ -9,6 +9,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Ignore commented lines while parsing boards.txt file. See #124
 - In ISP mode, read baudrate and programmer from boards.txt. See #125
 - Add `burn_bootloader` target. See #85
+- Show correct path to `arduino.mk` file in help message. Fix #120
 
 ### 1.0.1 (2013-09-25)
 - Unconditionally add -D in avrdude options. See #114
