@@ -559,6 +559,14 @@ ifeq ($(strip $(NO_CORE)),)
         ISP_EXT_FUSE = $(call PARSE_BOARD,$(BOARD_TAG),bootloader.extended_fuses)
     endif
 
+    ifndef BOOTLOADER_PATH
+        BOOTLOADER_PATH = $(call PARSE_BOARD,$(BOARD_TAG),bootloader.path)
+    endif
+
+    ifndef BOOTLOADER_FILE
+        BOOTLOADER_FILE = $(call PARSE_BOARD,$(BOARD_TAG),bootloader.file)
+    endif
+
     ifndef ISP_LOCK_FUSE_POST
         ISP_LOCK_FUSE_POST = $(call PARSE_BOARD,$(BOARD_TAG),bootloader.lock_bits)
     endif
@@ -991,11 +999,17 @@ ifndef AVRDUDE_ISP_BAUDRATE
     endif
 endif
 
+# Fuse settings copied from Arduino IDE.
+# https://github.com/arduino/Arduino/blob/master/app/src/processing/app/debug/AvrdudeUploader.java#L254
+
 # Pre fuse settings
 ifndef AVRDUDE_ISP_FUSES_PRE
-
     ifneq ($(strip $(ISP_LOCK_FUSE_PRE)),)
         AVRDUDE_ISP_FUSES_PRE += -U lock:w:$(ISP_LOCK_FUSE_PRE):m
+    endif
+
+    ifneq ($(strip $(ISP_EXT_FUSE)),)
+        AVRDUDE_ISP_FUSES_PRE += -U efuse:w:$(ISP_EXT_FUSE):m
     endif
 
     ifneq ($(strip $(ISP_HIGH_FUSE)),)
@@ -1005,11 +1019,16 @@ ifndef AVRDUDE_ISP_FUSES_PRE
     ifneq ($(strip $(ISP_LOW_FUSE)),)
         AVRDUDE_ISP_FUSES_PRE += -U lfuse:w:$(ISP_LOW_FUSE):m
     endif
+endif
 
-    ifneq ($(strip $(ISP_EXT_FUSE)),)
-        AVRDUDE_ISP_FUSES_PRE += -U efuse:w:$(ISP_EXT_FUSE):m
+# Bootloader file settings
+# TODO: Handle relative bootloader file path as well
+ifndef AVRDUDE_ISP_BURN_BOOTLOADER
+    ifneq ($(strip $(BOOTLOADER_PATH)),)
+        ifneq ($(strip $(BOOTLOADER_FILE)),)
+            AVRDUDE_ISP_BURN_BOOTLOADER += -U flash:w:$(BOOTLOADER_PATH)/$(BOOTLOADER_FILE):i
+        endif
     endif
-
 endif
 
 # Post fuse settings
@@ -1102,12 +1121,17 @@ reset_stty:
 		$$STTYF $(call get_monitor_port) -hupcl
 
 ispload:	$(TARGET_EEP) $(TARGET_HEX) verify_size
-ifdef AVRDUDE_ISP_FUSES_PRE
-		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e $(AVRDUDE_ISP_FUSES_PRE)
-endif
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) \
 			$(AVRDUDE_ISPLOAD_OPTS)
-ifdef AVRDUDE_ISP_FUSES_POST
+
+burn_bootloader:
+ifneq ($(strip $(AVRDUDE_ISP_FUSES_PRE)),)
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e $(AVRDUDE_ISP_FUSES_PRE)
+endif
+ifneq ($(strip $(AVRDUDE_ISP_BURN_BOOTLOADER)),)
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) $(AVRDUDE_ISP_BURN_BOOTLOADER)
+endif
+ifneq ($(strip $(AVRDUDE_ISP_FUSES_POST)),)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) $(AVRDUDE_ISP_FUSES_POST)
 endif
 
@@ -1146,30 +1170,31 @@ generated_assembly: generate_assembly
 
 help:
 		@$(ECHO) "\nAvailable targets:\n\
-  make             - no upload\n\
-  make upload      - upload\n\
-  make clean       - remove all our dependencies\n\
-  make depends     - update dependencies\n\
-  make reset       - reset the Arduino by tickling DTR on the serial port\n\
-  make raw_upload  - upload without first resetting\n\
-  make show_boards - list all the boards defined in boards.txt\n\
-  make monitor     - connect to the Arduino's serial port\n\
-  make size        - show the size of the compiled output (relative to\n\
-                     resources, if you have a patched avr-size)\n\
-  make disasm      - generate a .lss file in build-cli that contains\n\
-                     disassembly of the compiled file interspersed\n\
-                     with your original source code.\n\
-  make verify_size - Verify that the size of the final file is less than\n\
-                     the capacity of the micro controller.\n\
-  make eeprom      - upload the eep file\n\
-  make raw_eeprom  - upload the eep file without first resetting\n\
-  make help        - show this help\n\
+  make                  - no upload\n\
+  make upload           - upload\n\
+  make clean            - remove all our dependencies\n\
+  make depends          - update dependencies\n\
+  make reset            - reset the Arduino by tickling DTR on the serial port\n\
+  make raw_upload       - upload without first resetting\n\
+  make show_boards      - list all the boards defined in boards.txt\n\
+  make monitor          - connect to the Arduino's serial port\n\
+  make size             - show the size of the compiled output (relative to\n\
+                          resources, if you have a patched avr-size)\n\
+  make disasm           - generate a .lss file in build-cli that contains\n\
+                          disassembly of the compiled file interspersed\n\
+                          with your original source code.\n\
+  make verify_size      - Verify that the size of the final file is less than\n\
+                          the capacity of the micro controller.\n\
+  make eeprom           - upload the eep file\n\
+  make raw_eeprom       - upload the eep file without first resetting\n\
+  make burn_bootloader  - Burn bootloader and/or fuses\n\
+  make help             - show this help\n\
 "
 	@$(ECHO) "Please refer to $(ARDMK_DIR)/arduino-mk/Arduino.mk for more details."
 
 .PHONY: all upload raw_upload raw_eeprom error_on_caterina reset reset_stty ispload \
         clean depends size show_boards monitor disasm symbol_sizes generated_assembly \
-        generate_assembly verify_size help
+        generate_assembly verify_size burn_bootloader help
 
 # added - in the beginning, so that we don't get an error if the file is not present
 -include $(DEPS)
