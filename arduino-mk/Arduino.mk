@@ -976,11 +976,19 @@ endif
 AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P $(call get_monitor_port)
 
 ifndef ISP_PROG
-    ISP_PROG   = stk500v1
+    ifneq ($(strip $(AVRDUDE_ARD_PROGRAMMER)),)
+        ISP_PROG = $(AVRDUDE_ARD_PROGRAMMER)
+    else
+        ISP_PROG = stk500v1
+    endif
 endif
 
 ifndef AVRDUDE_ISP_BAUDRATE
-    AVRDUDE_ISP_BAUDRATE = 19200
+    ifneq ($(strip $(AVRDUDE_ARD_BAUDRATE)),)
+        AVRDUDE_ISP_BAUDRATE = $(AVRDUDE_ARD_BAUDRATE)
+    else
+        AVRDUDE_ISP_BAUDRATE = 19200
+    endif
 endif
 
 # Pre fuse settings
