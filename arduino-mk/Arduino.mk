@@ -735,7 +735,7 @@ NM      = $(AVR_TOOLS_PATH)/$(NM_NAME)
 REMOVE  = rm -rf
 MV      = mv -f
 CAT     = cat
-ECHO    = echo
+ECHO    = printf
 MKDIR   = mkdir -p
 
 # General arguments
@@ -939,12 +939,12 @@ $(OBJDIR)/%.o: $(ARDUINO_CORE_PATH)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
 $(OBJDIR)/%.hex: $(OBJDIR)/%.elf $(COMMON_DEPS)
 	@$(MKDIR) $(dir $@)
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
-	@$(ECHO)
+	@$(ECHO) '\n'
 	$(call avr_size,$<,$@)
 ifneq ($(strip $(HEX_MAXIMUM_SIZE)),)
 	@if [ `$(SIZE) $@ | awk 'FNR == 2 {print $$2}'` -le $(HEX_MAXIMUM_SIZE) ]; then touch $@.sizeok; fi
 else
-	@$(ECHO) Maximum flash memory of $(BOARD_TAG) is not specified. Make sure the size of $@ is less than $(BOARD_TAG)\'s flash memory
+	@$(ECHO) "Maximum flash memory of $(BOARD_TAG) is not specified. Make sure the size of $@ is less than $(BOARD_TAG)\'s flash memory"
 	@touch $@.sizeok
 endif
 
@@ -1150,25 +1150,23 @@ monitor:
 		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
 
 disasm: $(OBJDIR)/$(TARGET).lss
-		@$(ECHO) The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss
+		@$(ECHO) "The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss"
 
 symbol_sizes: $(OBJDIR)/$(TARGET).sym
-		@$(ECHO) A symbol listing sorted by their size have been dumped to $(OBJDIR)/$(TARGET).sym
+		@$(ECHO) "A symbol listing sorted by their size have been dumped to $(OBJDIR)/$(TARGET).sym"
 
 verify_size:
 ifeq ($(strip $(HEX_MAXIMUM_SIZE)),)
-	@$(ECHO)
-	@$(ECHO) Maximum flash memory of $(BOARD_TAG) is not specified. Make sure the size of $(TARGET_HEX) is less than $(BOARD_TAG)\'s flash memory
-	@$(ECHO)
+	@$(ECHO) "\nMaximum flash memory of $(BOARD_TAG) is not specified. Make sure the size of $(TARGET_HEX) is less than $(BOARD_TAG)\'s flash memory\n\n"
 endif
 	@if [ ! -f $(TARGET_HEX).sizeok ]; then echo >&2 "\nThe size of the compiled binary file is greater than the $(BOARD_TAG)'s flash memory. \
 See http://www.arduino.cc/en/Guide/Troubleshooting#size for tips on reducing it."; false; fi
 
 generate_assembly: $(OBJDIR)/$(TARGET).s
-		@$(ECHO) Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s
+		@$(ECHO) "Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s"
 
 generated_assembly: generate_assembly
-		@$(ECHO) "generated_assembly" target is deprecated. Use "generate_assembly" target instead
+		@$(ECHO) "\"generated_assembly\" target is deprecated. Use \"generate_assembly\" target instead"
 
 help:
 		@$(ECHO) "\nAvailable targets:\n\
@@ -1192,7 +1190,7 @@ help:
   make burn_bootloader  - Burn bootloader and/or fuses\n\
   make help             - show this help\n\
 "
-	@$(ECHO) "Please refer to $(ARDMK_FILE) for more details."
+	@$(ECHO) "Please refer to $(ARDMK_FILE) for more details.\n"
 
 .PHONY: all upload raw_upload raw_eeprom error_on_caterina reset reset_stty ispload \
         clean depends size show_boards monitor disasm symbol_sizes generated_assembly \
