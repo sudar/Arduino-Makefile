@@ -877,10 +877,11 @@ $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
+USER_MAKEFILE := $(firstword $(MAKEFILE_LIST))
 ifdef COMMON_DEPS
-    COMMON_DEPS := $(COMMON_DEPS) Makefile
+    COMMON_DEPS := $(COMMON_DEPS) $(USER_MAKEFILE)
 else
-    COMMON_DEPS := Makefile
+    COMMON_DEPS := $(USER_MAKEFILE)
 endif
 
 # normal local sources
