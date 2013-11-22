@@ -880,9 +880,9 @@ $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 ifdef COMMON_DEPS
-    COMMON_DEPS := $(COMMON_DEPS) Makefile
+    COMMON_DEPS := $(COMMON_DEPS) $(MAKEFILE_LIST)
 else
-    COMMON_DEPS := Makefile
+    COMMON_DEPS := $(MAKEFILE_LIST)
 endif
 
 # normal local sources
