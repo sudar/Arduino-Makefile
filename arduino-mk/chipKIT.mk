@@ -72,9 +72,9 @@ endif
 
 AVR_TOOLS_DIR = $(ARDUINO_DIR)/hardware/pic32/compiler/pic32-tools
 
-AVRDUDE_DIR = $(ARDUINO_DIR)/hardware/tools
-AVRDUDE = $(AVRDUDE_DIR)/avrdude
-AVRDUDE_CONF = $(AVRDUDE_DIR)/avrdude.conf
+AVRDUDE_DIR = $(ARDUINO_DIR)/hardware/tools/avr
+AVRDUDE = $(AVRDUDE_DIR)/bin/avrdude
+AVRDUDE_CONF = $(AVRDUDE_DIR)/etc/avrdude.conf
 
 ALTERNATE_CORE = pic32
 ALTERNATE_CORE_PATH = $(MPIDE_DIR)/hardware/pic32
