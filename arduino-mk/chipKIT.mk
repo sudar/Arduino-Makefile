@@ -96,6 +96,7 @@ LDSCRIPT_FILE = $(ARDUINO_CORE_PATH)/$(LDSCRIPT)
 
 MCU_FLAG_NAME=mprocessor
 LDFLAGS  += -T$(ARDUINO_CORE_PATH)/$(LDSCRIPT)
+LDFLAGS  += -T$(ARDUINO_CORE_PATH)/chipKIT-application-COMMON.ld
 CPPFLAGS += -mno-smart-io -fno-short-double
 CFLAGS_STD =
 
