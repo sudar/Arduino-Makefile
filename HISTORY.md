@@ -11,6 +11,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Add `burn_bootloader` target. See #85
 - Show correct path to `arduino.mk` file in help message. Fix #120
 - Change echo for printf. Fix #129 (https://github.com/thomassigurdsen)
+- Add support for ChipKiT 2013. Fix #136 (https://github.com/peplin)
 
 ### 1.0.1 (2013-09-25)
 - Unconditionally add -D in avrdude options. See #114
