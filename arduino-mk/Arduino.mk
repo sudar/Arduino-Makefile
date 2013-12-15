@@ -1143,6 +1143,14 @@ ifneq ($(strip $(AVRDUDE_ISP_FUSES_POST)),)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) $(AVRDUDE_ISP_FUSES_POST)
 endif
 
+set_fuses:
+ifneq ($(strip $(AVRDUDE_ISP_FUSES_PRE)),)
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e $(AVRDUDE_ISP_FUSES_PRE)
+endif
+ifneq ($(strip $(AVRDUDE_ISP_FUSES_POST)),)
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) $(AVRDUDE_ISP_FUSES_POST)
+endif
+
 clean:
 		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR}
 
@@ -1193,7 +1201,8 @@ help:
                           the capacity of the micro controller.\n\
   make eeprom           - upload the eep file\n\
   make raw_eeprom       - upload the eep file without first resetting\n\
-  make burn_bootloader  - Burn bootloader and/or fuses\n\
+  make burn_bootloader  - burn bootloader and fuses\n\
+  make set_fuses        - set fuses without burning bootloader\n\
   make help             - show this help\n\
 "
 	@$(ECHO) "Please refer to $(ARDMK_FILE) for more details.\n"
