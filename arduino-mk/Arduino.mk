@@ -1048,7 +1048,7 @@ endif
 
 AVRDUDE_ISP_OPTS = -c $(ISP_PROG) -b $(AVRDUDE_ISP_BAUDRATE)
 
-ifneq ($(strip $(ISP_PROG)),usbasp)
+ifneq ($(strip $(ISP_PROG)),$(filter $(ISP_PROG), usbasp usbtiny))
     AVRDUDE_ISP_OPTS += -P $(call get_isp_port)
 endif
 
