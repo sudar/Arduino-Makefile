@@ -339,7 +339,7 @@ ifndef ARDUINO_SKETCHBOOK
         $(call show_config_variable,ARDUINO_SKETCHBOOK,[DEFAULT])
     endif
 else
-    $(call show_config_variable,ARDUINO_SKETCHBOOK)
+    $(call show_config_variable,ARDUINO_SKETCHBOOK,[USER])
 endif
 
 ########################################################################
@@ -851,6 +851,14 @@ ifneq (,$(strip $(SYS_LIB_NAMES)))
     $(foreach lib,$(SYS_LIB_NAMES),$(call show_config_info,  $(lib),[SYSTEM]))
 endif
 
+# either calculate parent dir from arduino dir, or user-defined path
+ifndef BOOTLOADER_PARENT
+    BOOTLOADER_PARENT = $(ARDUINO_DIR)/hardware/arduino/bootloaders
+    $(call show_config_variable,BOOTLOADER_PARENT,[COMPUTED],(from ARDUINO_DIR))
+else
+    $(call show_config_variable,BOOTLOADER_PARENT,[USER])
+endif
+
 # end of config output
 $(call show_separator)
 
@@ -1030,11 +1038,10 @@ ifndef AVRDUDE_ISP_FUSES_PRE
 endif
 
 # Bootloader file settings
-# TODO: Handle relative bootloader file path as well
 ifndef AVRDUDE_ISP_BURN_BOOTLOADER
     ifneq ($(strip $(BOOTLOADER_PATH)),)
         ifneq ($(strip $(BOOTLOADER_FILE)),)
-            AVRDUDE_ISP_BURN_BOOTLOADER += -U flash:w:$(BOOTLOADER_PATH)/$(BOOTLOADER_FILE):i
+            AVRDUDE_ISP_BURN_BOOTLOADER += -U flash:w:$(BOOTLOADER_PARENT)/$(BOOTLOADER_PATH)/$(BOOTLOADER_FILE):i
         endif
     endif
 endif
