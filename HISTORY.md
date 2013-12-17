@@ -17,6 +17,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Add option to set fuses without burning a bootloader. Fix #141 (https://github.com/sej7278)
 - Tweak: Don't append port details to avrdude for usbtiny. Fix #140 and #138 (https://github.com/PPvG)
 - Fix: Handle relative paths of bootloader file while burning bootloaders. Fix #126 and #142 (https://github.com/sej7278)
+- New: Add `CONTRIBUTING.md` explaining how to contribute to the project.
 
 ### 1.0.1 (2013-09-25)
 - Unconditionally add -D in avrdude options. See #114
