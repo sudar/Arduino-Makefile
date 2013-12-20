@@ -780,6 +780,13 @@ else
     $(call show_config_variable,OPTIMIZATION_LEVEL,[USER])
 endif
 
+ifndef DEBUG_FLAGS
+    DEBUG_FLAGS = -O0 -g
+endif
+
+# SoftwareSerial requires -Os (some delays are tuned for this optimization level)
+%SoftwareSerial.o : OPTIMIZATION_FLAGS = -Os
+
 ifndef MCU_FLAG_NAME
     MCU_FLAG_NAME = mmcu
     $(call show_config_variable,MCU_FLAG_NAME,[DEFAULT])
@@ -794,10 +801,12 @@ CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_V
         -fdata-sections
 
 ifdef DEBUG
-CPPFLAGS += -O0 -g
+OPTIMIZATION_FLAGS= $(DEBUG_FLAGS)
 else
-CPPFLAGS += -O$(OPTIMIZATION_LEVEL)
+OPTIMIZATION_FLAGS = -O$(OPTIMIZATION_LEVEL)
 endif
+
+CPPFLAGS += $(OPTIMIZATION_FLAGS)
 
 # USB IDs for the Caterina devices like leonardo or micro
 ifneq ($(CATERINA),)
