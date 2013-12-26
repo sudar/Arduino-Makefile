@@ -703,11 +703,11 @@ ifeq ($(strip $(NO_CORE)),)
 endif
 
 ########################################################################
-# Include file to use for old .pde files
+# Include Arduino Header file
 
 ifndef ARDUINO_HEADER
-    # We should check for Arduino version, if the file is .pde because a
-    # .pde file might be used in Arduino 1.0
+    # We should check for Arduino version, not just the file extension
+    # because, a .pde file can be used in Arduino 1.0 as well
     ifeq ($(shell expr $(ARDUINO_VERSION) '<' 100), 1)
         ARDUINO_HEADER=WProgram.h
     else
@@ -931,7 +931,7 @@ $(OBJDIR)/%.o: %.pde $(COMMON_DEPS) | $(OBJDIR)
 # the ino -> o file
 $(OBJDIR)/%.o: %.ino $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
-	$(CXX) -x c++ -include Arduino.h -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # generated assembly
 $(OBJDIR)/%.s: %.pde $(COMMON_DEPS) | $(OBJDIR)
@@ -940,7 +940,7 @@ $(OBJDIR)/%.s: %.pde $(COMMON_DEPS) | $(OBJDIR)
 
 $(OBJDIR)/%.s: %.ino $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
-	$(CXX) -x c++ -include Arduino.h -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 #$(OBJDIR)/%.lst: $(OBJDIR)/%.s
 #	$(AS) -$(MCU_FLAG_NAME)=$(MCU) -alhnd $< > $@
