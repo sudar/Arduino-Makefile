@@ -84,9 +84,16 @@ The current version of the makefile is `1.0.1`. You can find the full history in
 
 This project adheres to Semantic [Versioning 2.0](http://semver.org/).
 
+## License
+
+This makefile and the related documentation and examples are free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
+
 ## Contribution
 
-All contributions (even documentation) are welcome :) Open a pull request and I would be happy to merge them.
+All contributions (even documentation) are welcome :) Open a pull request and I would be happy to merge them. 
+Also checkout the [contribution guide](CONTRIBUTING.md) for more details.
 
 If you are looking for ideas to work on, then check out the following TODO items or the [issue tracker](https://github.com/sudar/Arduino-Makefile/issues/).
 
