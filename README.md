@@ -80,7 +80,7 @@ It is possible to use [`colorgcc`](https://github.com/colorgcc/colorgcc) with th
 
 ## Versioning
 
-The current version of the makefile is `1.0.1`. You can find the full history in the [HISTORY.md](HISTORY.md) file
+The current version of the makefile is `1.1.0`. You can find the full history in the [HISTORY.md](HISTORY.md) file
 
 This project adheres to Semantic [Versioning 2.0](http://semver.org/).
 
