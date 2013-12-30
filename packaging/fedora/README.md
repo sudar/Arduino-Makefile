@@ -1,6 +1,10 @@
 # How to compile an RPM
 
-From the top-level Arduino-Makefile directory you've checked out of github, run the following to create a compressed tarball using the naming conventions required by rpmbuild:
+First install the dependencies as root:
+
+    yum install arduino-core perl-Device-SerialPort help2man rpm-build
+
+From the top-level Arduino-Makefile directory you've checked out of github, run the following (as unprivileged user) to create a compressed tarball using the naming conventions required by rpmbuild:
 
     git archive --prefix=arduino-mk-1.1.0/ --format=tar -o ../arduino-mk-1.1.0.tar.gz -v HEAD | gzip
 
@@ -8,10 +12,10 @@ If you don't already have a rpmbuild setup (e.g. you've not installed the SRPM) 
 
     mkdir -p ~/rpmbuild/{SOURCES,SPECS}
 
-Then copy the tarball and specfile into place:
+Then copy the tarball and specfile into those directories:
 
     cp ../arduino-mk-1.1.0.tar.gz ~/rpmbuild/SOURCES/
-    cp package/arduino-mk.spec ~/rpmbuild/SPECS/
+    cp packaging/fedora/arduino-mk.spec ~/rpmbuild/SPECS/
 
 Then compile. This will create a binary and source RPM:
 
