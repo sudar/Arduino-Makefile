@@ -6,7 +6,7 @@ First install the dependencies as root:
 
 From the top-level Arduino-Makefile directory you've checked out of github, run the following (as unprivileged user) to create a compressed tarball using the naming conventions required by rpmbuild:
 
-    git archive --prefix=arduino-mk-1.1.0/ --format=tar -o ../arduino-mk-1.1.0.tar.gz -v HEAD | gzip
+    git archive HEAD --prefix=arduino-mk-1.1.0/ -o ../arduino-mk-1.1.0.tar.gz
 
 If you don't already have a rpmbuild setup (e.g. you've not installed the SRPM) you will need to create the directories:
 
