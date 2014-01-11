@@ -215,6 +215,7 @@
 #
 ########################################################################
 
+# Useful functions
 arduino_output =
 # When output is not suppressed and we're in the top-level makefile,
 # running for the first time (i.e., not after a restart after
@@ -227,35 +228,63 @@ ifndef ARDUINO_QUIET
     endif
 endif
 
+# Returns the first argument (typically a directory), if the file or directory
+# named by concatenating the first and optionally second argument
+# (directory and optional filename) exists
+dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
+
+# For message printing: pad the right side of the first argument with spaces to
+# the number of bytes indicated by the second argument.
+space_pad_to = $(shell echo $(1) "                                                      " | head -c$(2))
+
+# Call with some text, and a prefix tag if desired (like [AUTODETECTED]),
+show_config_info = $(call arduino_output,- $(call space_pad_to,$(2),20) $(1))
+
+# Call with the name of the variable, a prefix tag if desired (like [AUTODETECTED]),
+# and an explanation if desired (like (found in $$PATH)
+show_config_variable = $(call show_config_info,$(1) = $($(1)) $(3),$(2))
+
+# Just a nice simple visual separator
+show_separator = $(call arduino_output,-------------------------)
+
+$(call show_separator)
+$(call arduino_output,Arduino.mk Configuration:)
+
+########################################################################
+#
+# Detect OS
+ifeq ($(OS),Windows_NT)
+    CURRENT_OS = WINDOWS
+else
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+        CURRENT_OS = LINUX
+    endif
+    ifeq ($(UNAME_S),Darwin)
+        CURRENT_OS = MAC
+    endif
+endif
+$(call show_config_variable,CURRENT_OS,[AUTODETECTED])
+
 ########################################################################
 # Makefile distribution path
 
 ifndef ARDMK_DIR
     # presume it's a level above the path to our own file
     ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST))))/..)
-else
-    # show_config_variable macro is defined in Common.mk file and is not available yet. 
-    # Let's define a variable to know that user specified ARDMK_DIR
-    ARDMK_DIR_MSG = USER
-endif
-
-ifneq ($(wildcard $(ARDMK_DIR)/arduino-mk/Common.mk),)
-    # git checkout
-    ARDMK_FILE = $(ARDMK_DIR)/arduino-mk/arduino.mk
-    include $(ARDMK_DIR)/arduino-mk/Common.mk
-else
-    ifneq ($(wildcard $(ARDMK_DIR)/Common.mk),)
-        # package install
-        ARDMK_FILE = $(ARDMK_DIR)/arduino.mk
-        include $(ARDMK_DIR)/Common.mk
-    endif
-endif
-
-# show_config_variable macro is available now. So let's print config details for ARDMK_DIR
-ifndef ARDMK_DIR_MSG
     $(call show_config_variable,ARDMK_DIR,[COMPUTED],(relative to $(notdir $(lastword $(MAKEFILE_LIST)))))
 else
     $(call show_config_variable,ARDMK_DIR,[USER])
+endif
+
+ifneq ($(wildcard $(ARDMK_DIR)/arduino-mk/Arduino.mk),)
+    # git checkout
+    ARDMK_FILE = $(ARDMK_DIR)/arduino-mk/Arduino.mk
+else
+    ifneq ($(wildcard $(ARDMK_DIR)/Arduino.mk),)
+        # package install
+        ARDMK_FILE = $(ARDMK_DIR)/Arduino.mk
+    endif
 endif
 
 ifndef ARDMK_PATH
