@@ -29,9 +29,8 @@
 #
 # We need to worry about three different sorts of file:
 #
-# 1. Things which are included in this distribution e.g. ard-reset-arduino
-#    => ARDMK_DIR - Where the *.mk files are stored
-#    => ARDMK_PATH - Where the ard-reset-arduino script is stored
+# 1. The directory where the *.mk files are stored
+#    => ARDMK_DIR
 #
 # 2. Things which are always in the Arduino distribution e.g.
 #    boards.txt, libraries, &c.
@@ -54,7 +53,7 @@
 # On Linux, you might prefer:
 #
 #   ARDUINO_DIR   = /usr/share/arduino
-#   ARDMK_DIR     = /usr
+#   ARDMK_DIR     = /usr/share/arduino
 #   AVR_TOOLS_DIR = /usr
 #
 # You can either set these up in the Makefile, or put them in your
@@ -62,10 +61,6 @@
 #
 # If you don't specify these, we can try to guess, but that might not work
 # or work the way you want it to.
-#
-# If you don't install the ard-reset-arduino binary to /usr/local/bin, but
-# instead copy them to e.g. /home/mjo/arduino.mk/bin then set
-#   ARDMK_PATH = /home/mjo/arduino.mk/bin
 #
 # If you'd rather not see the configuration output, define ARDUINO_QUIET.
 #
@@ -112,8 +107,8 @@
 # submodule (or other similar arrangement), you might have lines like this
 # in your Makefile:
 #
-#        ARDMK_DIR := $(realpath ../../tools/Arduino-Makefile)
-#        include $(ARDMK_DIR)/arduino-mk/Arduino.mk
+#        ARDMK_DIR := $(realpath ../../tools/Arduino-Makefile/arduino-mk)
+#        include $(ARDMK_DIR)/Arduino.mk
 #
 # In any case, once this file has been created the typical workflow is just
 #
@@ -215,6 +210,7 @@
 #
 ########################################################################
 
+# Useful functions
 arduino_output =
 # When output is not suppressed and we're in the top-level makefile,
 # running for the first time (i.e., not after a restart after
@@ -227,42 +223,53 @@ ifndef ARDUINO_QUIET
     endif
 endif
 
+# Returns the first argument (typically a directory), if the file or directory
+# named by concatenating the first and optionally second argument
+# (directory and optional filename) exists
+dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
+
+# For message printing: pad the right side of the first argument with spaces to
+# the number of bytes indicated by the second argument.
+space_pad_to = $(shell echo $(1) "                                                      " | head -c$(2))
+
+# Call with some text, and a prefix tag if desired (like [AUTODETECTED]),
+show_config_info = $(call arduino_output,- $(call space_pad_to,$(2),20) $(1))
+
+# Call with the name of the variable, a prefix tag if desired (like [AUTODETECTED]),
+# and an explanation if desired (like (found in $$PATH)
+show_config_variable = $(call show_config_info,$(1) = $($(1)) $(3),$(2))
+
+# Just a nice simple visual separator
+show_separator = $(call arduino_output,-------------------------)
+
+$(call show_separator)
+$(call arduino_output,Arduino.mk Configuration:)
+
+########################################################################
+#
+# Detect OS
+ifeq ($(OS),Windows_NT)
+    CURRENT_OS = WINDOWS
+else
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+        CURRENT_OS = LINUX
+    endif
+    ifeq ($(UNAME_S),Darwin)
+        CURRENT_OS = MAC
+    endif
+endif
+$(call show_config_variable,CURRENT_OS,[AUTODETECTED])
+
 ########################################################################
 # Makefile distribution path
 
 ifndef ARDMK_DIR
-    # presume it's a level above the path to our own file
-    ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST))))/..)
-else
-    # show_config_variable macro is defined in Common.mk file and is not available yet. 
-    # Let's define a variable to know that user specified ARDMK_DIR
-    ARDMK_DIR_MSG = USER
-endif
-
-ifneq ($(wildcard $(ARDMK_DIR)/arduino-mk/Common.mk),)
-    # git checkout
-    ARDMK_FILE = $(ARDMK_DIR)/arduino-mk/arduino.mk
-    include $(ARDMK_DIR)/arduino-mk/Common.mk
-else
-    ifneq ($(wildcard $(ARDMK_DIR)/Common.mk),)
-        # package install
-        ARDMK_FILE = $(ARDMK_DIR)/arduino.mk
-        include $(ARDMK_DIR)/Common.mk
-    endif
-endif
-
-# show_config_variable macro is available now. So let's print config details for ARDMK_DIR
-ifndef ARDMK_DIR_MSG
+    # presume it's the same path to our own file
+    ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
     $(call show_config_variable,ARDMK_DIR,[COMPUTED],(relative to $(notdir $(lastword $(MAKEFILE_LIST)))))
 else
     $(call show_config_variable,ARDMK_DIR,[USER])
-endif
-
-ifndef ARDMK_PATH
-    ARDMK_PATH = $(ARDMK_DIR)/bin
-    $(call show_config_variable,ARDMK_PATH,[COMPUTED],(relative to ARDMK_DIR))
-else
-    $(call show_config_variable,ARDMK_PATH,[USER])
 endif
 
 ########################################################################
@@ -590,12 +597,19 @@ endif
 ########################################################################
 # Reset
 
+ARD_RESET_ARDUINO := $(shell which ard-reset-arduino)
+ifndef ARD_RESET_ARDUINO
+	# one level up from *.mk in bin directory when checked out from git
+	# or in $PATH when packaged
+	ARD_RESET_ARDUINO = $(ARDMK_DIR)/../bin/ard-reset-arduino
+endif
+
 ifndef RESET_CMD
     ifneq ($(CATERINA),)
-       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --caterina \
+       RESET_CMD = $(ARD_RESET_ARDUINO) --caterina \
           $(ARD_RESET_OPTS) $(call get_monitor_port)
     else
-       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino \
+       RESET_CMD = $(ARD_RESET_ARDUINO) \
           $(ARD_RESET_OPTS) $(call get_monitor_port)
     endif
 endif
@@ -1221,7 +1235,7 @@ help:
   make set_fuses        - set fuses without burning bootloader\n\
   make help             - show this help\n\
 "
-	@$(ECHO) "Please refer to $(ARDMK_FILE) for more details.\n"
+	@$(ECHO) "Please refer to Arduino.mk for more details.\n"
 
 .PHONY: all upload raw_upload raw_eeprom error_on_caterina reset reset_stty ispload \
         clean depends size show_boards monitor disasm symbol_sizes generated_assembly \
