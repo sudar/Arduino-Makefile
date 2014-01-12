@@ -15,17 +15,16 @@ On the Mac you might want to set:
     ARDUINO_DIR   = /Applications/Arduino.app/Contents/Resources/Java
     ARDMK_DIR     = /usr/local
 
-On Linux, you might prefer:
-
-    ARDUINO_DIR   = /usr/share/arduino
-    ARDMK_DIR     = /usr/share/arduino
-    ARDMK_PATH    = /usr/bin
-    AVR_TOOLS_DIR = /usr
-
 - `ARDUINO_DIR` - Path to Arduino installation
-- `ARDMK_DIR`   - Path where the `*.mk` are present. If you installed the package, then it is usually `/usr/share/arduino`
-- `ARDMK_PATH`  - Path where the `ard-reset-arduino` script is present. If you installed the package, then it is usually `/usr/bin`
-- `AVR_TOOLS_DIR` - Path where the avr tools chain binaries are present. If you are going to use the binaries that came with Arduino installation, then you don't have to set it.
+- `ARDMK_DIR`   - Path where the `*.mk` are present.
+
+On Linux, you shouldn't need to set anything other than your board type and port:
+
+    BOARD_TAG    = mega2560
+    MONITOR_PORT = /dev/ttyACM0
+
+- `BOARD_TAG` - Type of board, for a list see boards.txt or `make show_boards`
+- `MONITOR_PORT` - The port where your Arduino is plugged in, usually `/dev/ttyACM0` or `/dev/ttyUSB0`
 
 The Makefile also delegates resetting the board to a short Perl program.
 You'll need to install `Device::SerialPort` to use it though.
@@ -92,7 +91,7 @@ published by the Free Software Foundation; either version 2.1 of the License, or
 
 ## Contribution
 
-All contributions (even documentation) are welcome :) Open a pull request and I would be happy to merge them. 
+All contributions (even documentation) are welcome :) Open a pull request and I would be happy to merge them.
 Also checkout the [contribution guide](CONTRIBUTING.md) for more details.
 
 If you are looking for ideas to work on, then check out the following TODO items or the [issue tracker](https://github.com/sudar/Arduino-Makefile/issues/).
@@ -108,7 +107,7 @@ If you find an issue or have an idea for a feature then log them in the [issue t
 
 ## Credits
 
-This makefile was originally created by [Martin Oldfield](http://mjo.tc/atelier/2009/02/arduino-cli.html) and he maintained it till v0.10.2. 
+This makefile was originally created by [Martin Oldfield](http://mjo.tc/atelier/2009/02/arduino-cli.html) and he maintained it till v0.10.2.
 From May 2013, it is maintained by [Sudar](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile)
 
 ## Similar works

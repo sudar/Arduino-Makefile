@@ -1,16 +1,16 @@
 Name:			arduino-mk
 Version:		1.1.0
-Release:		1%{dist}
+Release:		2%{dist}
 Summary:		Program your Arduino from the command line
 Packager:		Simon John <git@the-jedi.co.uk>
-URL:            https://github.com/sudar/Arduino-Makefile
-Source:         %{name}-%{version}.tar.gz
+URL:            	https://github.com/sudar/Arduino-Makefile
+Source:         	%{name}-%{version}.tar.gz
 Group:			Development/Tools
 License:		LGPLv2+
 BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:		noarch
 Requires:		arduino-core, perl-Device-SerialPort
-BuildRequires:	arduino-core, perl-Device-SerialPort, help2man
+BuildRequires:		arduino-core, perl-Device-SerialPort, help2man
 
 %description
 Arduino is an open-source electronics prototyping platform based on 
@@ -51,5 +51,7 @@ rm -rf %{buildroot}
 %{_docdir}/%{name}/examples
 
 %changelog
+* Sat Jan 11 2014 Simon John <git@the-jedi.co.uk>
+- Updated release
 * Mon Dec 30 2013 Simon John <git@the-jedi.co.uk>
 - Initial release.
