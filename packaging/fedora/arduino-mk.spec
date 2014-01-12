@@ -1,5 +1,5 @@
 Name:			arduino-mk
-Version:		1.1.0
+Version:		1.2.0
 Release:		1%{dist}
 Summary:		Program your Arduino from the command line
 Packager:		Simon John <git@the-jedi.co.uk>
@@ -51,5 +51,7 @@ rm -rf %{buildroot}
 %{_docdir}/%{name}/examples
 
 %changelog
+* Sun Jan 12 2014 Simon John <git@the-jedi.co.uk>
+- Updated release.
 * Mon Dec 30 2013 Simon John <git@the-jedi.co.uk>
 - Initial release.
