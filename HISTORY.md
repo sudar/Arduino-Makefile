@@ -4,6 +4,9 @@ A Makefile for Arduino Sketches
 The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
+### 1.2.0 (2014-01-12)
+- Fixes #147
+
 ### 1.1.0 (2013-12-26)
 - Don't append port details to avrdude for usbasp. See #123
 - Ignore commented lines while parsing boards.txt file. See #124
