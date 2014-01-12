@@ -28,6 +28,8 @@ ifndef ARDMK_DIR
     ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
 endif
 
+include $(ARDMK_DIR)/Arduino.mk
+
 ifndef MPIDE_DIR
     AUTO_MPIDE_DIR := $(firstword \
         $(call dir_if_exists,/usr/share/mpide) \
@@ -51,7 +53,6 @@ ifndef MPIDE_PREFERENCES_PATH
        $(call show_config_variable,MPIDE_PREFERENCES_PATH,[autodetected])
     endif
 endif
-
 
 AVR_TOOLS_DIR = $(ARDUINO_DIR)/hardware/pic32/compiler/pic32-tools
 
@@ -92,5 +93,3 @@ LDFLAGS  += -T$(ARDUINO_CORE_PATH)/$(LDSCRIPT)
 LDFLAGS  += -T$(ARDUINO_CORE_PATH)/chipKIT-application-COMMON.ld
 CPPFLAGS += -mno-smart-io -fno-short-double
 CFLAGS_STD =
-
-include $(ARDMK_DIR)/Arduino.mk
