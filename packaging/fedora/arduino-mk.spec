@@ -1,5 +1,5 @@
 Name:			arduino-mk
-Version:		1.1.0
+Version:		1.2.0
 Release:		1%{dist}
 Summary:		Program your Arduino from the command line
 Packager:		Simon John <git@the-jedi.co.uk>
@@ -33,8 +33,8 @@ install -m 755 -d %{buildroot}/%{_docdir}/%{name}
 install -m 755 -d %{buildroot}/%{_docdir}/%{name}/examples
 for dir in `find examples -type d` ; do install -m 755 -d %{buildroot}/%{_docdir}/%{name}/$dir ; done
 for file in `find examples -type f ! -name .gitignore` ; do install -m 644 $file %{buildroot}/%{_docdir}/%{name}/$file ; done
-install -m 644 %{name}/*.mk %{buildroot}/%{_datadir}/arduino
-install -m 644 %{name}/licence.txt %{buildroot}/%{_docdir}/%{name}
+install -m 644 *.mk %{buildroot}/%{_datadir}/arduino
+install -m 644 licence.txt %{buildroot}/%{_docdir}/%{name}
 install -m 755 bin/ard-reset-arduino %{buildroot}/%{_bindir}/ard-reset-arduino
 help2man %{buildroot}/%{_bindir}/ard-reset-arduino -n "Reset Arduino board" -s 1 -m "Arduino CLI Reset" --version-string=%{version} -N -o %{buildroot}/%{_mandir}/man1/ard-reset-arduino.1
 
@@ -51,5 +51,7 @@ rm -rf %{buildroot}
 %{_docdir}/%{name}/examples
 
 %changelog
+* Mon Jan 13 2014 Simon John <git@the-jedi.co.uk>
+- Removed arduino-mk subdirectory
 * Mon Dec 30 2013 Simon John <git@the-jedi.co.uk>
 - Initial release.

@@ -27,23 +27,11 @@
 # The show_config_variable is unavailable before we include the common makefile,
 # so we defer logging the ARDMK_DIR info until it happens in Arduino.mk
 ifndef ARDMK_DIR
-    # presume it's a level above the path to our own file
-    ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST))))/..)
+    # presume it's the same path to our own file
+    ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
 endif
 
-ifndef ARDMK_PATH
-    ARDMK_PATH = $(ARDMK_DIR)/bin
-endif
-
-ifneq ($(wildcard $(ARDMK_DIR)/arduino-mk/Common.mk),)
-    # git checkout
-    include $(ARDMK_DIR)/arduino-mk/Common.mk
-else
-    ifneq ($(wildcard $(ARDMK_DIR)/Common.mk),) 
-        # package install
-        include $(ARDMK_DIR)/Common.mk
-    endif
-endif
+include $(ARDMK_DIR)/Common.mk
 
 ifndef MPIDE_DIR
     AUTO_MPIDE_DIR := $(firstword \
@@ -110,4 +98,4 @@ LDFLAGS  += -T$(ARDUINO_CORE_PATH)/chipKIT-application-COMMON.ld
 CPPFLAGS += -mno-smart-io -fno-short-double
 CFLAGS_STD =
 
-include $(ARDMK_DIR)/arduino-mk/Arduino.mk
+include $(ARDMK_DIR)/Arduino.mk

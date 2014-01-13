@@ -19,7 +19,7 @@
 #
 # Original Arduino adaptation by mellis, eighthave, oli.keller
 #
-# Current version: 1.1.0
+# Current version: 1.2.0
 #
 # Refer to HISTORY.md file for complete history of changes
 #
@@ -29,9 +29,8 @@
 #
 # We need to worry about three different sorts of file:
 #
-# 1. Things which are included in this distribution e.g. ard-reset-arduino
-#    => ARDMK_DIR - Where the *.mk files are stored
-#    => ARDMK_PATH - Where the ard-reset-arduino script is stored
+# 1. The directory where the *.mk files are stored
+#    => ARDMK_DIR
 #
 # 2. Things which are always in the Arduino distribution e.g.
 #    boards.txt, libraries, &c.
@@ -62,10 +61,6 @@
 #
 # If you don't specify these, we can try to guess, but that might not work
 # or work the way you want it to.
-#
-# If you don't install the ard-reset-arduino binary to /usr/local/bin, but
-# instead copy them to e.g. /home/mjo/arduino.mk/bin then set
-#   ARDMK_PATH = /home/mjo/arduino.mk/bin
 #
 # If you'd rather not see the configuration output, define ARDUINO_QUIET.
 #
@@ -113,7 +108,7 @@
 # in your Makefile:
 #
 #        ARDMK_DIR := $(realpath ../../tools/Arduino-Makefile)
-#        include $(ARDMK_DIR)/arduino-mk/Arduino.mk
+#        include $(ARDMK_DIR)/Arduino.mk
 #
 # In any case, once this file has been created the typical workflow is just
 #
@@ -231,38 +226,22 @@ endif
 # Makefile distribution path
 
 ifndef ARDMK_DIR
-    # presume it's a level above the path to our own file
-    ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST))))/..)
+    # presume it's the same path to our own file
+    ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
 else
-    # show_config_variable macro is defined in Common.mk file and is not available yet. 
+    # show_config_variable macro is defined in Common.mk file and is not available yet.
     # Let's define a variable to know that user specified ARDMK_DIR
     ARDMK_DIR_MSG = USER
 endif
 
-ifneq ($(wildcard $(ARDMK_DIR)/arduino-mk/Common.mk),)
-    # git checkout
-    ARDMK_FILE = $(ARDMK_DIR)/arduino-mk/arduino.mk
-    include $(ARDMK_DIR)/arduino-mk/Common.mk
-else
-    ifneq ($(wildcard $(ARDMK_DIR)/Common.mk),)
-        # package install
-        ARDMK_FILE = $(ARDMK_DIR)/arduino.mk
-        include $(ARDMK_DIR)/Common.mk
-    endif
-endif
+# include Common.mk now we know where it is
+include $(ARDMK_DIR)/Common.mk
 
 # show_config_variable macro is available now. So let's print config details for ARDMK_DIR
 ifndef ARDMK_DIR_MSG
     $(call show_config_variable,ARDMK_DIR,[COMPUTED],(relative to $(notdir $(lastword $(MAKEFILE_LIST)))))
 else
     $(call show_config_variable,ARDMK_DIR,[USER])
-endif
-
-ifndef ARDMK_PATH
-    ARDMK_PATH = $(ARDMK_DIR)/bin
-    $(call show_config_variable,ARDMK_PATH,[COMPUTED],(relative to ARDMK_DIR))
-else
-    $(call show_config_variable,ARDMK_PATH,[USER])
 endif
 
 ########################################################################
@@ -591,12 +570,16 @@ endif
 # Reset
 
 ifndef RESET_CMD
+	ARD_RESET_ARDUINO := $(shell which ard-reset-arduino)
+	ifndef ARD_RESET_ARDUINO
+		# same level as *.mk in bin directory when checked out from git
+		# or in $PATH when packaged
+		ARD_RESET_ARDUINO = $(ARDMK_DIR)/bin/ard-reset-arduino
+	endif
     ifneq ($(CATERINA),)
-       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino --caterina \
-          $(ARD_RESET_OPTS) $(call get_monitor_port)
+       RESET_CMD = $(ARD_RESET_ARDUINO) --caterina $(ARD_RESET_OPTS) $(call get_monitor_port)
     else
-       RESET_CMD = $(ARDMK_PATH)/ard-reset-arduino \
-          $(ARD_RESET_OPTS) $(call get_monitor_port)
+       RESET_CMD = $(ARD_RESET_ARDUINO) $(ARD_RESET_OPTS) $(call get_monitor_port)
     endif
 endif
 
@@ -995,7 +978,7 @@ endif
 # Default avrdude options
 # -V Do not verify
 # -q - suppress progress output
-# -D - Disable auto erase for flash memory 
+# -D - Disable auto erase for flash memory
 # (-D is needed for Mega boards. See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
 ifndef AVRDUDE_OPTS
     AVRDUDE_OPTS = -q -V -D
@@ -1221,7 +1204,7 @@ help:
   make set_fuses        - set fuses without burning bootloader\n\
   make help             - show this help\n\
 "
-	@$(ECHO) "Please refer to $(ARDMK_FILE) for more details.\n"
+	@$(ECHO) "Please refer to $(ARDMK_DIR)/Arduino.mk for more details.\n"
 
 .PHONY: all upload raw_upload raw_eeprom error_on_caterina reset reset_stty ispload \
         clean depends size show_boards monitor disasm symbol_sizes generated_assembly \
