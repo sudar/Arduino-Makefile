@@ -4,7 +4,7 @@ A Makefile for Arduino Sketches
 The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
-### 1.2.0 (2014-01-12)
+### 1.2.0 (2014-01-14)
 - Add: Add RPM SPECfile and new `package` directory to store package instructions and files (https://github.com/sej7278)
 - Fix: Remove use of arduino-mk subdirectory in git. Fix issue #151, #152 and #147 (https://github.com/sej7278)
 - Fix: Remove `arduino-mk` directory from all examples. Fix #154
