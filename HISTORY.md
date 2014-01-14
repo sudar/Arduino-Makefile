@@ -3,6 +3,8 @@ A Makefile for Arduino Sketches
 
 The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
+### 1.2.0 (2014-01-12)
+- Fix: Remove use of arduino-mk subdirectory in git. Fix issue #151, #152 and #147 (https://github.com/sej7278)
 
 ### 1.1.0 (2013-12-26)
 - Don't append port details to avrdude for usbasp. See #123
@@ -19,7 +21,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Handle relative paths of bootloader file while burning bootloaders. Fix #126 and #142 (https://github.com/sej7278)
 - New: Add `CONTRIBUTING.md` explaining how to contribute to the project.
 - New: Force -Os optimization for SoftwareSerial. Add `OPTIMIZATION_FLAGS` and `DEBUG_FLAGS`. (https://github.com/mahoy)
-- Fix: Use `ARDUINO_HEADER` variable instead of hardcoded file names. Fix #131 
+- Fix: Use `ARDUINO_HEADER` variable instead of hardcoded file names. Fix #131
 
 ### 1.0.1 (2013-09-25)
 - Unconditionally add -D in avrdude options. See #114
@@ -108,7 +110,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 
 ###   0.10 17.ix.12   M J Oldfield
 - Added installation notes for Fedora (ex Rickard Lindberg).
-- Changed size target so that it looks at the ELF object, 
+- Changed size target so that it looks at the ELF object,
     not the hexfile (ex Jared Szechy and Scott Howard).
 - Fixed ARDUNIO typo in README.md (ex Kalin Kozhuharov).
 - Tweaked OBJDIR handling (ex Matthias Urlichs and Scott Howard).
@@ -128,7 +130,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Autodetect ARDMK_DIR based on location of this file
 - Added support for utility directory within SYS and USER libraries
 
-### 0.9.3 13.vi.2012 
+### 0.9.3 13.vi.2012
 
 - Auto detect ARDUINO_DIR, Arduino version (https://github.com/rpavlik/)
 - Categorize libs into user and system (https://github.com/rpavlik/)
@@ -137,12 +139,12 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Changed bytes option for the head shell command, so that it works in Mac as well
 - Auto detect Serial Baud rate from sketch if possible
 
-### 0.9.2 06.vi.2012 
+### 0.9.2 06.vi.2012
 
 - Allow user to choose source files (LOCAL_*_SRCS flags) (https://github.com/Gaftech)
 - Modified "make size" behavior: using --mcu option and targeting .elf file instead of .hex file.(https://github.com/Gaftech)
 
-### 0.9.1 06.vi.2012 
+### 0.9.1 06.vi.2012
 
 - Corrected the ubuntu package names
 - Prevent the *file-not-found* error if the depends.mk file is not needed
