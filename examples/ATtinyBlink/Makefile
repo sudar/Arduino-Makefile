@@ -8,6 +8,6 @@ ALTERNATE_CORE = attiny
 BOARD_TAG    = attiny85-8
 ISP_PORT = /dev/ttyACM*
 
-include $(ARDMK_DIR)/arduino-mk/Arduino.mk
+include $(ARDMK_DIR)/Arduino.mk
 
 # !!! Important. You have to use make ispload to upload when using ISP programmer
