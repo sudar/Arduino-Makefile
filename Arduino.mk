@@ -583,6 +583,12 @@ ifndef RESET_CMD
     endif
 endif
 
+ifneq ($(CATERINA),)
+    ERROR_ON_CATERINA = $(error On $(BOARD_TAG), raw_xxx operation is not supported)
+else
+    ERROR_ON_CATERINA =
+endif
+
 ########################################################################
 # Local sources
 
@@ -1198,7 +1204,7 @@ help:
   make set_fuses        - set fuses without burning bootloader\n\
   make help             - show this help\n\
 "
-	@$(ECHO) "Please refer to Arduino.mk for more details.\n"
+	@$(ECHO) "Please refer to $(ARDMK_DIR)/Arduino.mk for more details.\n"
 
 .PHONY: all upload raw_upload raw_eeprom error_on_caterina reset reset_stty ispload \
         clean depends size show_boards monitor disasm symbol_sizes generated_assembly \
