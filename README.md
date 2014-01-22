@@ -22,7 +22,7 @@ On Linux, you shouldn't need to set anything other than your board type and port
     MONITOR_PORT = /dev/ttyACM0
 
 - `BOARD_TAG` - Type of board, for a list see boards.txt or `make show_boards`
-- `MONITOR_PORT` - The port where your Arduino is plugged in, usually `/dev/ttyACM0` or `/dev/ttyUSB0`
+- `MONITOR_PORT` - The port where your Arduino is plugged in, usually `/dev/ttyACM0` or `/dev/ttyUSB0` in Linux or Mac OS X and `com3`, `com4`, etc. in Windows.
 - `ARDUINO_DIR` - Path to Arduino installation
 - `ARDMK_DIR`   - Path where the `*.mk` are present. If you installed the package, then it is usually `/usr/share/arduino`
 - `AVR_TOOLS_DIR` - Path where the avr tools chain binaries are present. If you are going to use the binaries that came with Arduino installation, then you don't have to set it.

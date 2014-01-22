@@ -812,8 +812,21 @@ SIZEFLAGS     ?= --mcu=$(MCU) -C
 # for backwards compatibility, grab ARDUINO_PORT if the user has it set
 MONITOR_PORT ?= $(ARDUINO_PORT)
 
+ifeq ($(CURRENT_OS), WINDOWS)
+    # Expect MONITOR_PORT to be '1' or 'com1' for COM1 in Windows. Split it up
+    # into the two styles required: /dev/ttyS* for ard-reset-arduino and com*
+    # for avrdude. This also could work with /dev/com* device names and be more
+    # consistent, but the /dev/com* is not recommended by Cygwin and doesn't
+    # always show up.
+    COM_PORT_ID = $(subst com,,$(MONITOR_PORT))
+    COM_STYLE_MONITOR_PORT = com$(COM_PORT_ID)
+    DEVICE_PATH = /dev/ttyS$(shell awk 'BEGIN{ print $(COM_PORT_ID) - 1 }')
+else
+    DEVICE_PATH = $(MONITOR_PORT)
+endif
+
 # Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
-get_monitor_port = $(if $(wildcard $(MONITOR_PORT)),$(firstword $(wildcard $(MONITOR_PORT))),$(error Arduino port $(MONITOR_PORT) not found!))
+get_monitor_port = $(if $(wildcard $(DEVICE_PATH)),$(firstword $(wildcard $(DEVICE_PATH))),$(error Arduino port $(DEVICE_PATH) not found!))
 
 # Returns the ISP port (first wildcard expansion) if it exists, otherwise it errors.
 get_isp_port = $(if $(wildcard $(ISP_PORT)),$(firstword $(wildcard $(ISP_PORT))),$(error ISP port $(ISP_PORT) not found!))
@@ -989,7 +1002,15 @@ ifdef AVRDUDE_CONF
     AVRDUDE_COM_OPTS += -C $(AVRDUDE_CONF)
 endif
 
-AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P $(call get_monitor_port)
+AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P
+ifeq ($(CURRENT_OS), WINDOWS)
+    # get_monitor_port checks to see if the monitor port exists, assuming it is
+    # a file. In Windows, avrdude needs the port in the format 'com1' which is
+    # not a file, so we have to add the COM-style port directly.
+    AVRDUDE_ARD_OPTS += $(COM_STYLE_MONITOR_PORT)
+else
+    AVRDUDE_ARD_OPTS += $(call get_monitor_port)
+endif
 
 ifndef ISP_PROG
     ifneq ($(strip $(AVRDUDE_ARD_PROGRAMMER)),)
