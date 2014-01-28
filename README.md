@@ -23,7 +23,8 @@ On Linux, you shouldn't need to set anything other than your board type and port
 
 - `BOARD_TAG` - Type of board, for a list see boards.txt or `make show_boards`
 - `MONITOR_PORT` - The port where your Arduino is plugged in, usually `/dev/ttyACM0` or `/dev/ttyUSB0`
-- `ARDUINO_DIR` - Path to Arduino installation
+- `ARDUINO_DIR` - Path to Arduino installation. In Cygwin in Windows this path must be
+  relative, not absolute (e.g. "../../arduino" and not "/c/cygwin/Arduino").
 - `ARDMK_DIR`   - Path where the `*.mk` are present. If you installed the package, then it is usually `/usr/share/arduino`
 - `AVR_TOOLS_DIR` - Path where the avr tools chain binaries are present. If you are going to use the binaries that came with Arduino installation, then you don't have to set it.
 
