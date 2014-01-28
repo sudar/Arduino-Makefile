@@ -10,7 +10,6 @@ F_CPU = 8000000L
 
 ISP_PROG   = stk500v1
 AVRDUDE_ISP_BAUDRATE = 19200
-ISP_PORT = /dev/ttyACM*
 
 include $(ARDMK_DIR)/Arduino.mk
 
