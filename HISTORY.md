@@ -18,10 +18,6 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Remove use of arduino-mk subdirectory in git. Fix issue #151, #152 and #147 (https://github.com/sej7278)
 - Fix: Remove `arduino-mk` directory from all examples. Fix #154
 
-### 1.2.0 (2014-01-12)
-- Add: Add RPM SPECfile and new `package` directory to store package instructions and files (https://github.com/sej7278)
-- Fix: Remove use of arduino-mk subdirectory in git. Fix issue #151, #152 and #147 (https://github.com/sej7278)
-
 ### 1.1.0 (2013-12-26)
 - Don't append port details to avrdude for usbasp. See #123
 - Ignore commented lines while parsing boards.txt file. See #124
