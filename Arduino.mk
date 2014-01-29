@@ -570,7 +570,7 @@ endif
 # Reset
 
 ifndef RESET_CMD
-	ARD_RESET_ARDUINO := $(shell which ard-reset-arduino)
+	ARD_RESET_ARDUINO := $(shell which ard-reset-arduino 2> /dev/null)
 	ifndef ARD_RESET_ARDUINO
 		# same level as *.mk in bin directory when checked out from git
 		# or in $PATH when packaged
