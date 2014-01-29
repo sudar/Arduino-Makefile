@@ -10,6 +10,8 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Don't hard code MONITOR_PORT in examples, for more flexible testing. (Issue #157) (https://github.com/peplin)
 - Tweak: Silence the stderr output from call to `which`. (Issue #158) (https://github.com/peplin)
 - Fix: Override complete compiler tool paths for chipKIT. (Issue #159) (https://github.com/peplin)
+- New: The makefile is compatible with Windows 
+- New: Update `README.md` file about usage and Windows compatibility
 
 ### 1.2.0 (2014-01-14)
 - Add: Add RPM SPECfile and new `package` directory to store package instructions and files (https://github.com/sej7278)
