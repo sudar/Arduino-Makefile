@@ -57,20 +57,12 @@ ifndef MPIDE_PREFERENCES_PATH
     endif
 endif
 
-
-AVR_TOOLS_DIR = $(ARDUINO_DIR)/hardware/pic32/compiler/pic32-tools
-
-# The same as in Arduino, the Linux distribution contains avrdude and
-# avrdude.conf in a different location.
 ifeq ($(CURRENT_OS),LINUX)
-    AVRDUDE_DIR = $(ARDUINO_DIR)/hardware/tools
-    AVRDUDE = $(AVRDUDE_DIR)/avrdude
-    AVRDUDE_CONF = $(AVRDUDE_DIR)/avrdude.conf
-else
-    AVRDUDE_DIR = $(ARDUINO_DIR)/hardware/tools/avr
-    AVRDUDE = $(AVRDUDE_DIR)/bin/avrdude
-    AVRDUDE_CONF = $(AVRDUDE_DIR)/etc/avrdude.conf
+    BUNDLED_AVR_TOOLS_DIR = $(call dir_if_exists,$(MPIDE_DIR)/hardware/tools)
 endif
+
+PIC32_TOOLS_DIR = $(ARDUINO_DIR)/hardware/pic32/compiler/pic32-tools
+PIC32_TOOLS_PATH = $(PIC32_TOOLS_DIR)/bin
 
 ALTERNATE_CORE = pic32
 ALTERNATE_CORE_PATH = $(MPIDE_DIR)/hardware/pic32
@@ -88,6 +80,17 @@ AR_NAME = pic32-ar
 OBJDUMP_NAME = pic32-objdump
 OBJCOPY_NAME = pic32-objcopy
 SIZE_NAME = pic32-size
+NM_NAME = pic32-nm
+
+OVERRIDE_EXECUTABLES = 1
+CC      = $(PIC32_TOOLS_PATH)/$(CC_NAME)
+CXX     = $(PIC32_TOOLS_PATH)/$(CXX_NAME)
+AS      = $(PIC32_TOOLS_PATH)/$(AS_NAME)
+OBJCOPY = $(PIC32_TOOLS_PATH)/$(OBJCOPY_NAME)
+OBJDUMP = $(PIC32_TOOLS_PATH)/$(OBJDUMP_NAME)
+AR      = $(PIC32_TOOLS_PATH)/$(AR_NAME)
+SIZE    = $(PIC32_TOOLS_PATH)/$(SIZE_NAME)
+NM      = $(PIC32_TOOLS_PATH)/$(NM_NAME)
 
 LDSCRIPT = $(call PARSE_BOARD,$(BOARD_TAG),ldscript)
 LDSCRIPT_FILE = $(ARDUINO_CORE_PATH)/$(LDSCRIPT)

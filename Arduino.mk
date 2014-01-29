@@ -354,7 +354,8 @@ endif
 
 ifndef AVR_TOOLS_DIR
 
-    BUNDLED_AVR_TOOLS_DIR := $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/avr)
+    BUNDLED_AVR_TOOLS_DIR ?= $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/avr)
+
     ifdef BUNDLED_AVR_TOOLS_DIR
         AVR_TOOLS_DIR     = $(BUNDLED_AVR_TOOLS_DIR)
         $(call show_config_variable,AVR_TOOLS_DIR,[BUNDLED],(in Arduino distribution))
@@ -708,15 +709,20 @@ TARGET_EEP = $(OBJDIR)/$(TARGET).eep
 TARGETS    = $(OBJDIR)/$(TARGET).*
 CORE_LIB   = $(OBJDIR)/libcore.a
 
-# Names of executables
-CC      = $(AVR_TOOLS_PATH)/$(CC_NAME)
-CXX     = $(AVR_TOOLS_PATH)/$(CXX_NAME)
-AS      = $(AVR_TOOLS_PATH)/$(AS_NAME)
-OBJCOPY = $(AVR_TOOLS_PATH)/$(OBJCOPY_NAME)
-OBJDUMP = $(AVR_TOOLS_PATH)/$(OBJDUMP_NAME)
-AR      = $(AVR_TOOLS_PATH)/$(AR_NAME)
-SIZE    = $(AVR_TOOLS_PATH)/$(SIZE_NAME)
-NM      = $(AVR_TOOLS_PATH)/$(NM_NAME)
+# Names of executables - chipKIT needs to override all to set paths to PIC32
+# tools, and we can't use "?=" assignment because these are already implicitly
+# defined by Make (e.g. $(CC) == cc).
+ifndef OVERRIDE_EXECUTABLES
+    CC      = $(AVR_TOOLS_PATH)/$(CC_NAME)
+    CXX     = $(AVR_TOOLS_PATH)/$(CXX_NAME)
+    AS      = $(AVR_TOOLS_PATH)/$(AS_NAME)
+    OBJCOPY = $(AVR_TOOLS_PATH)/$(OBJCOPY_NAME)
+    OBJDUMP = $(AVR_TOOLS_PATH)/$(OBJDUMP_NAME)
+    AR      = $(AVR_TOOLS_PATH)/$(AR_NAME)
+    SIZE    = $(AVR_TOOLS_PATH)/$(SIZE_NAME)
+    NM      = $(AVR_TOOLS_PATH)/$(NM_NAME)
+endif
+
 REMOVE  = rm -rf
 MV      = mv -f
 CAT     = cat
