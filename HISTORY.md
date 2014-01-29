@@ -7,6 +7,9 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 ### 1.3.0 (2014-01-29)
 - Fix: Use more reliable serial device naming in Windows. Fix issue #139 and #155 (https://github.com/peplin)
 - Fix: Document that ARDUINO_DIR must be a relative path in Windows. Fix issue #156 (https://github.com/peplin)
+- Tweak: Don't hard code MONITOR_PORT in examples, for more flexible testing. (Issue #157) (https://github.com/peplin)
+- Tweak: Silence the stderr output from call to `which`. (Issue #158) (https://github.com/peplin)
+- Fix: Override complete compiler tool paths for chipKIT. (Issue #159) (https://github.com/peplin)
 
 ### 1.2.0 (2014-01-14)
 - Add: Add RPM SPECfile and new `package` directory to store package instructions and files (https://github.com/sej7278)
