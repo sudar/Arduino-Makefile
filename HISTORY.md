@@ -4,6 +4,9 @@ A Makefile for Arduino Sketches
 The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
+### 1.3.1 (2014-02-01)
+- Fix: BUNDLED_AVR_TOOLS_DIR is now set properly when using only arduino-core and not the whole arduino package. (https://github.com/sej7278)
+
 ### 1.3.0 (2014-01-29)
 - Fix: Use more reliable serial device naming in Windows. Fix issue #139 and #155 (https://github.com/peplin)
 - Fix: Document that ARDUINO_DIR must be a relative path in Windows. Fix issue #156 (https://github.com/peplin)

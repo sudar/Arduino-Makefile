@@ -354,7 +354,7 @@ endif
 
 ifndef AVR_TOOLS_DIR
 
-    BUNDLED_AVR_TOOLS_DIR ?= $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/avr)
+    BUNDLED_AVR_TOOLS_DIR := $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/avr)
 
     ifdef BUNDLED_AVR_TOOLS_DIR
         AVR_TOOLS_DIR     = $(BUNDLED_AVR_TOOLS_DIR)
