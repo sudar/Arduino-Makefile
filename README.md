@@ -5,6 +5,7 @@ This is a very simple Makefile which knows how to build Arduino sketches. It def
 ## Features
 
 - Very robust
+- Highly customizable
 - Supports all official AVR-based Arduino boards
 - Supports chipKIT
 - Works on all three major OS (Mac, Linux, Windows)
@@ -90,6 +91,8 @@ On Windows (using cygwin), you might want to set:
   relative, not absolute (e.g. "../../arduino" and not "/c/cygwin/Arduino").
 - `ARDMK_DIR`   - Path where the `*.mk` are present. If you installed the package, then it is usually `/usr/share/arduino`
 - `AVR_TOOLS_DIR` - Path where the avr tools chain binaries are present. If you are going to use the binaries that came with Arduino installation, then you don't have to set it.
+
+The list of all variables that can be overridden is available at [arduino-mk-vars.md](arduino-mk-vars.md) file.
 
 ## Including Libraries
 

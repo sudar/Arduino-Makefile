@@ -1,6 +1,6 @@
 # Contributing To Arduino Makefile
 
-Community made patches, localisations, bug reports, documentation and contributions are always welcome and are crucial to the success of this project.
+Community made patches, localizations, bug reports, documentation and contributions are always welcome and are crucial to the success of this project.
 
 When contributing please ensure you follow the guidelines below so that we can keep on top of things.
 
@@ -20,6 +20,7 @@ Submit a ticket for your issue, assuming one does not already exist.
 - Fork the repository on GitHub
 - Make the changes to your forked repository
 - Update the [changelog file](HISTORY.md) and add a note about your change. If possible prefix it with either Fix, Tweak or New
+- If you are adding or changing the behavior of any variable, then update the corresponding documentation in the [arduino-mk-vars.md](arduino-mk-vars.md) file as well
 - When committing, reference your issue (if present) and include a note about the fix
     - If possible (and if makes sense) do atomic commits
     - Try to follow [this guideline](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) while choosing the git commit message

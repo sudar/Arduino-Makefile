@@ -6,6 +6,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 
 ### 1.3.1 (2014-02-01)
 - Fix: BUNDLED_AVR_TOOLS_DIR is now set properly when using only arduino-core and not the whole arduino package. (https://github.com/sej7278)
+- New: Document all variables that can be overridden. (https://github.com/sej7278)
 
 ### 1.3.0 (2014-01-29)
 - Fix: Use more reliable serial device naming in Windows. Fix issue #139 and #155 (https://github.com/peplin)

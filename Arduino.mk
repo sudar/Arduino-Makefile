@@ -4,7 +4,7 @@
 # System part (i.e. project independent)
 #
 # Copyright (C) 2012 Sudar <http://sudarmuthu.com>, based on
-# - M J Oldfield work: https://github.com/mjoldfield/Arduino-Makefile
+# M J Oldfield work: https://github.com/mjoldfield/Arduino-Makefile
 #
 # Copyright (C) 2010,2011,2012 Martin Oldfield <m@mjo.tc>, based on
 # work that is copyright Nicholas Zambetti, David A. Mellis & Hernando
@@ -53,7 +53,7 @@
 # On Linux, you might prefer:
 #
 #   ARDUINO_DIR   = /usr/share/arduino
-#   ARDMK_DIR     = /usr
+#   ARDMK_DIR     = /usr/share/arduino
 #   AVR_TOOLS_DIR = /usr
 #
 # You can either set these up in the Makefile, or put them in your
@@ -185,9 +185,9 @@
 # ALTERNATE_CORE, assuming your core is in your ~/sketchbook/hardware
 # directory. For example:
 #
-# ISP_PORT           = /dev/ttyACM0
-# BOARD_TAG          = attiny85
-# ALTERNATE_CORE     = attiny-master
+# ISP_PORT          = /dev/ttyACM0
+# BOARD_TAG         = attiny85
+# ALTERNATE_CORE    = attiny-master
 #
 # To use the more complex arduino-tiny and TinyCore2 cores, you must
 # also set ARDUINO_CORE_PATH and ARDUINO_VAR_PATH to the core
