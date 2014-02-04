@@ -1184,7 +1184,7 @@ size:	$(TARGET_HEX)
 		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
 
 show_boards:
-		@cat $(BOARDS_TXT) | grep -E "^[[:alnum:]]" | cut -d . -f 1 | uniq
+		@$(CAT) $(BOARDS_TXT) | grep -E "^[[:alnum:]]" | cut -d . -f 1 | uniq
 
 monitor:
 		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
@@ -1208,6 +1208,9 @@ generate_assembly: $(OBJDIR)/$(TARGET).s
 generated_assembly: generate_assembly
 		@$(ECHO) "\"generated_assembly\" target is deprecated. Use \"generate_assembly\" target instead"
 
+help_vars:
+		@$(CAT) $(ARDMK_DIR)/arduino-mk-vars.md
+
 help:
 		@$(ECHO) "\nAvailable targets:\n\
   make                  - no upload\n\
@@ -1229,6 +1232,7 @@ help:
   make raw_eeprom       - upload the eep file without first resetting\n\
   make burn_bootloader  - burn bootloader and fuses\n\
   make set_fuses        - set fuses without burning bootloader\n\
+  make help_vars        - print all variables that can be overridden\n\
   make help             - show this help\n\
 "
 	@$(ECHO) "Please refer to $(ARDMK_DIR)/Arduino.mk for more details.\n"
