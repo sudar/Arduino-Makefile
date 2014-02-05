@@ -1,5 +1,5 @@
 Name:			arduino-mk
-Version:		1.3.1
+Version:		1.3.2
 Release:		1%{dist}
 Summary:		Program your Arduino from the command line
 Packager:		Simon John <git@the-jedi.co.uk>
@@ -33,7 +33,7 @@ install -m 755 -d %{buildroot}/%{_docdir}/%{name}
 install -m 755 -d %{buildroot}/%{_docdir}/%{name}/examples
 for dir in `find examples -type d` ; do install -m 755 -d %{buildroot}/%{_docdir}/%{name}/$dir ; done
 for file in `find examples -type f ! -name .gitignore` ; do install -m 644 $file %{buildroot}/%{_docdir}/%{name}/$file ; done
-install -m 644 *.mk %{buildroot}/%{_datadir}/arduino
+install -m 644 *.mk arduino-mk-vars.md %{buildroot}/%{_datadir}/arduino
 install -m 644 licence.txt %{buildroot}/%{_docdir}/%{name}
 install -m 755 bin/ard-reset-arduino %{buildroot}/%{_bindir}/ard-reset-arduino
 help2man %{buildroot}/%{_bindir}/ard-reset-arduino -n "Reset Arduino board" -s 1 -m "Arduino CLI Reset" --version-string=%{version} -N -o %{buildroot}/%{_mandir}/man1/ard-reset-arduino.1
@@ -46,11 +46,14 @@ rm -rf %{buildroot}
 %{_bindir}/ard-reset-arduino
 %{_mandir}/man1/ard-reset-arduino.1*
 %{_datadir}/arduino/*.mk
+%{_datadir}/arduino/arduino-mk-vars.md
 %doc %{_docdir}/%{name}/licence.txt
 %docdir %{_docdir}/%{name}/examples
 %{_docdir}/%{name}/examples
 
 %changelog
+* Tue Feb 04 2014 Simon John <git@the-jedi.co.uk>
+- Added arduino-mk-vars.md to the files to be installed/packaged.
 * Sat Feb 01 2014 Simon John <git@the-jedi.co.uk>
 - Updated version.
 * Mon Jan 13 2014 Simon John <git@the-jedi.co.uk>

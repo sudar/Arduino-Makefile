@@ -4,6 +4,9 @@ A Makefile for Arduino Sketches
 The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
+### 1.3.2 (in development)
+- Fix: Add arduino-mk-vars.md file to RPM SPECfile. (https://github.com/sej7278)
+
 ### 1.3.1 (2014-02-04)
 - Fix: BUNDLED_AVR_TOOLS_DIR is now set properly when using only arduino-core and not the whole arduino package. (https://github.com/sej7278)
 - New: Document all variables that can be overridden. (https://github.com/sej7278)
