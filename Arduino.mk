@@ -19,7 +19,7 @@
 #
 # Original Arduino adaptation by mellis, eighthave, oli.keller
 #
-# Current version: 1.3.1
+# Current version: 1.3.2
 #
 # Refer to HISTORY.md file for complete history of changes
 #
@@ -629,6 +629,7 @@ endif
 ifeq ($(strip $(NO_CORE)),)
     ifdef ARDUINO_CORE_PATH
         CORE_C_SRCS     = $(wildcard $(ARDUINO_CORE_PATH)/*.c)
+        CORE_C_SRCS    += $(wildcard $(ARDUINO_CORE_PATH)/avr-libc/*.c)
         CORE_CPP_SRCS   = $(wildcard $(ARDUINO_CORE_PATH)/*.cpp)
 
         ifneq ($(strip $(NO_CORE_MAIN_CPP)),)
