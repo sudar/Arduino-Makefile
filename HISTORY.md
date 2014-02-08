@@ -7,6 +7,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 ### 1.3.2 (in development)
 - Fix: Add arduino-mk-vars.md file to RPM SPECfile. (https://github.com/sej7278)
 - Fix: Add avr-libc/malloc.c and realloc.c to included core files. Fixes issue #163 (https://github.com/sej7278)
+- Fix: Add "gpio" to the list of isp that don't have a port. (Issue #164, #165) (@sej7278)
 
 ### 1.3.1 (2014-02-04)
 - Fix: BUNDLED_AVR_TOOLS_DIR is now set properly when using only arduino-core and not the whole arduino package. (https://github.com/sej7278)
