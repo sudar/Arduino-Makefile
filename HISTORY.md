@@ -9,6 +9,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Add avr-libc/malloc.c and realloc.c to included core files. Fixes issue #163 (https://github.com/sej7278)
 - Fix: Add "gpio" to the list of isp that don't have a port. (Issue #165, #166) (https://github.com/sej7278)
 - Fix: Add "-D__PROG_TYPES_COMPAT__" to the avr-g++ compiler flags to match IDE. (https://github.com/sej7278)
+- New: Create `Makefile-example-mk`, a *real life* `Makefile` example, to be used as a reference. (https://github.com/tinyladi)
 
 ### 1.3.1 (2014-02-04)
 - Fix: BUNDLED_AVR_TOOLS_DIR is now set properly when using only arduino-core and not the whole arduino package. (https://github.com/sej7278)
@@ -21,7 +22,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Don't hard code MONITOR_PORT in examples, for more flexible testing. (Issue #157) (https://github.com/peplin)
 - Tweak: Silence the stderr output from call to `which`. (Issue #158) (https://github.com/peplin)
 - Fix: Override complete compiler tool paths for chipKIT. (Issue #159) (https://github.com/peplin)
-- New: The makefile is compatible with Windows 
+- New: The makefile is compatible with Windows
 - New: Update `README.md` file about usage and Windows compatibility
 
 ### 1.2.0 (2014-01-14)
