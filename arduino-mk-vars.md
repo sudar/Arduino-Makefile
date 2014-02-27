@@ -129,6 +129,24 @@ Defaults to 'libraries' directory within user's sketchbook.
 
 Optional.
 
+### OBJDIR
+
+**Description:**
+
+Directory where binaries and compiled files are put.
+
+Defaults to `build-$(BOARD_TAG)` in your `Makefile` directory.
+
+**Example:**
+
+```Makefile
+OBJDIR = /path/to/my/project-directory/bin
+```
+
+**Status:** *Optional*
+
+----
+
 ### ALTERNATE_CORE
 Non-standard core for Arduino-unsupported chips like the ATtiny.
 
