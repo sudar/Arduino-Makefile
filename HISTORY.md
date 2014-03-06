@@ -5,6 +5,10 @@ The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### 1.3.2 (in development)
+- Tweak: Reference `Makefile-example.mk` in `README.md` (https://github.com/tinyladi)
+- New: Create `Makefile-example-mk`, a *real life* `Makefile` example, to be used as a reference. (https://github.com/tinyladi)
+- Tweak: Add `OBJDIR` to arduino-mk-vars.md. (https://github.com/tinyladi)
+- Tweak: *Beautify* `arduino-mk-vars.md` with code blocks. (https://github.com/tinyladi)
 - Fix: Add arduino-mk-vars.md file to RPM SPECfile. (https://github.com/sej7278)
 - Fix: Add avr-libc/malloc.c and realloc.c to included core files. Fixes issue #163 (https://github.com/sej7278)
 - Fix: Add "gpio" to the list of isp that don't have a port. (Issue #165, #166) (https://github.com/sej7278)
@@ -21,7 +25,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Don't hard code MONITOR_PORT in examples, for more flexible testing. (Issue #157) (https://github.com/peplin)
 - Tweak: Silence the stderr output from call to `which`. (Issue #158) (https://github.com/peplin)
 - Fix: Override complete compiler tool paths for chipKIT. (Issue #159) (https://github.com/peplin)
-- New: The makefile is compatible with Windows 
+- New: The makefile is compatible with Windows
 - New: Update `README.md` file about usage and Windows compatibility
 
 ### 1.2.0 (2014-01-14)

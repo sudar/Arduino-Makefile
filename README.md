@@ -61,7 +61,9 @@ On other systems:
 
 ## Usage
 
-You can also find more [detailed instructions in this guide](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile) or also checkout the sample makefiles inside the examples/ folder
+You can also find more [detailed instructions in this guide](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile).
+
+You can also checkout the sample makefiles inside the `examples/` folder or take a look at a *real* [Makefile-example](examples/MakefileExample/Makefile-example.mk).
 
 Download a copy of this repo some where in your system or install it through a package.
 

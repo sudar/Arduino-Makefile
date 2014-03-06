@@ -1,510 +1,1062 @@
-# Documentation of variables 
+# Documentation of variables
 
 The following are the different variables that can be overwritten in the user makefiles.
 
-- [Global variables](#global-variables)
-- [Installation/Directory variables](#installationdirectory-variables)
-- [Arduino IDE variables](#arduino-ide-variables)
-- [Sketch related variables](#sketch-related-variables)
-- [ISP programming variables](#isp-programming-variables)
-- [Compiler/Executable variables](#compilerexecutable-variables)
-- [Avrdude setting variables](#avrdude-setting-variables)
-- [Bootloader variables](#bootloader-variables)
-- [ChipKIT variables](#chipkit-variables)
+*	[Global variables](#global-variables)
+*	[Installation/Directory variables](#installationdirectory-variables)
+*	[Arduino IDE variables](#arduino-ide-variables)
+*	[Sketch related variables](#sketch-related-variables)
+*	[ISP programming variables](#isp-programming-variables)
+*	[Compiler/Executable variables](#compilerexecutable-variables)
+*	[Avrdude setting variables](#avrdude-setting-variables)
+*	[Bootloader variables](#bootloader-variables)
+*	[ChipKIT variables](#chipkit-variables)
 
 ## Global variables
 
 ### ARDUINO_QUIET
+
+**Description:**
+
 Suppress printing of Arduino-Makefile configuration.
 
-Defaults to unset/disabled.
+Defaults to `0` (unset/disabled).
 
-*Example*: 1
+**Example:**
 
-Optional.
+```Makefile
+ARDUINO_QUIET = 1
+```
+
+**Requirement:** *Optional*
+
+----
 
 ## Installation/Directory variables
 
 ### ARDMK_DIR
+
+**Description:**
+
 Directory where the `*.mk` files are stored.
 
-Usually can be auto-detected as `AUTO_ARDUINO_DIR` (parent of Arduino.mk).
+Usually can be auto-detected as `AUTO_ARDUINO_DIR` (parent of `Arduino.mk`).
 
-*Example*: /usr/share/arduino
+**Example:**
 
-Optional.
+```Makefile
+ARDMK_DIR = /usr/share/arduino
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### AVR_TOOLS_DIR
-Directory where tools such as avrdude, avr-g++, avr-gcc etc. are stored in the bin/ subdirectory.
+
+**Description:**
+
+Directory where tools such as `avrdude`, `avr-g++`, `avr-gcc`, etc. are stored in the `bin/` subdirectory.
 
 Usually can be auto-detected from `$PATH` as `SYSTEMPATH_AVR_TOOLS_DIR` or as `BUNDLED_AVR_TOOLS_DIR` within the Arduino distribution.
 
-*Example*: /usr or /usr/share/arduino/hardware/tools/avr
+**Example:**
 
-Optional.
+```Makefile
+AVR_TOOLS_DIR = /usr
+# or
+AVR_TOOLS_DIR = /usr/share/arduino/hardware/tools/avr
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### RESET_CMD
+
+**Description:**
+
 Command to reset the MCU.
 
-Defaults to ard-reset-arduino with the extra --caterina flag for atmega32u4 boards.
+Defaults to `ard-reset-arduino` with the extra `--caterina` flag for atmega32u4 boards.
 
-*Example*: ~/gertduino/reset
+**Example:**
 
-Optional.
+```Makefile
+RESET_CMD = ~/gertduino/reset
+```
+
+**Requirement:** *Optional*
+
+----
 
 ## Arduino IDE variables
 
 ### ARDUINO_DIR
+
+**Description:**
+
 Directory where the Arduino IDE and/or core files are stored.
 
-*Example*: /usr/share/arduino (Linux) or /Applications/Arduino.app/Contents/Resources/Java (OSX)
+**Example:**
 
-Optional.
+```Makefile
+# Linux
+ARDUINO_DIR = /usr/share/arduino
+# Mac OS X
+ARDUINO_DIR = /Applications/Arduino.app/Contents/Resources/Java
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### ARDUINO_VERSION
+
+**Description:**
+
 Version string for Arduino IDE and/or core.
 
-Usually can be auto-detected as `AUTO_ARDUINO_VERSION` from /usr/share/arduino/lib/version.txt
+Usually can be auto-detected as `AUTO_ARDUINO_VERSION` from `/usr/share/arduino/lib/version.txt`
 
-*Example*: 105
+**Example:**
 
-Optional.
+```Makefile
+ARDUINO_VERSION = 105
+```
 
-### ARDUINO_SKETCHBOOK
-Path to sketchbook directory.
+**Requirement:** *Optional*
 
-Usually can be auto-detected from the Arduino preferences.txt file or the default ~/sketchbook
+----
 
-*Example*: ~/sketches
+### ARDUINO_VERSION
 
-Optional.
+**Description:**
+
+Path to `sketchbook` directory.
+
+Usually can be auto-detected from the Arduino `preferences.txt` file or the default `~/sketchbook`
+
+**Example:**
+
+```Makefile
+ARDUINO_VERSION = ~/sketches
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### ARDUINO_PREFERENCES_PATH
-Path to Arduino preferences.txt file.
 
-Usually can be auto-detected as `AUTO_ARDUINO_PREFERENCES` from the defaults ~/.arduino/preferences.txt (Linux) or ~/Library/Arduino/preferences.txt (OSX)
+**Description:**
 
-*Example*: ~/sketches/preferences.txt
+Path to Arduino `preferences.txt` file.
 
-Optional.
+Usually can be auto-detected as `AUTO_ARDUINO_PREFERENCES` from the defaults:
+
+*	on Linux : `~/.arduino/preferences.txt`
+*	on Mac OS X : `~/Library/Arduino/preferences.txt`
+
+**Example:**
+
+```Makefile
+ARDUINO_PREFERENCES_PATH = ~/sketches/preferences.txt
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### ARDUINO_CORE_PATH
+
+**Description:**
+
 Path to standard Arduino core files.
 
-*Example*: /usr/share/arduino/hardware/arduino/cores/arduino
+**Example:**
 
-Optional.
+```Makefile
+ARDUINO_CORE_PATH = /usr/share/arduino/hardware/arduino/cores/arduino
+```
+
+**Requirement:** *Optional*
+
+----
 
 ## Sketch related variables
 
 ### ARDUINO_LIBS
+
+**Description:**
+
 Any libraries you intend to include.
 
-Usually can be auto-detected from the sketch. Separated by spaces. If the library has a /utility folder (like SD or Wire library), then the utility folder should also be specified.
+Usually can be auto-detected from the sketch. Separated by spaces. If the library has a `/utility` folder (like `SD` or `Wire` library), then the utility folder should also be specified.
 
-*Example*: SD SD/utility Wire Wire/utility
+**Example:**
 
-Optional.
+```Makefile
+ARDUINO_LIBS = SD SD/utility Wire Wire/utility
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### BOARD_TAG
-Device type as listed in boards.txt or `make show_boards`.
 
-*Example*: uno or mega2560
+**Description:**
 
-Mandatory.
+Device type as listed in `boards.txt` or `make show_boards`.
+
+**Example:**
+
+```Makefile
+BOARD_TAG = uno or mega2560
+```
+
+**Requirement:** *Mandatory*
+
+----
 
 ### MONITOR_PORT
+
+**Description:**
+
 Path to serial (USB) device used for uploading/serial comms.
 
-*Example*: /dev/ttyUSB0 or /dev/ttyACM0 (Linux) or /dev/cu.usb* (OSX) or com3 (Windows)
+**Example:**
 
-Mandatory.
+```Makefile
+# Linux
+MONITOR_PORT = /dev/ttyUSB0
+# or
+MONITOR_PORT = /dev/ttyACM0
+# Mac OS X
+MONITOR_PORT = /dev/cu.usb*
+# Windows
+MONITOR_PORT = com3
+```
+
+**Requirement:** *Mandatory*
+
+----
 
 ### USER_LIB_PATH
+
+**Description:**
+
 Directory where additional libraries are stored.
 
-Defaults to 'libraries' directory within user's sketchbook.
+Defaults to `libraries` directory within user's sketchbook.
 
-*Example*: ~/sketchbook/libraries (Linux)
+**Example:**
 
-Optional.
+```Makefile
+# Linux
+USER_LIB_PATH = ~/sketchbook/libraries
+# For a random project on *nix
+USER_LIB_PATH = /path/to/my/project
+```
+
+**Requirement:** *Optional*
+
+----
+
+### OBJDIR
+
+**Description:**
+
+Directory where binaries and compiled files are put.
+
+Defaults to `build-$(BOARD_TAG)` in your `Makefile` directory.
+
+**Example:**
+
+```Makefile
+OBJDIR = /path/to/my/project-directory/bin
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### ALTERNATE_CORE
+
+**Description:**
+
 Non-standard core for Arduino-unsupported chips like the ATtiny.
 
-*Example*: attiny-master or arduino-tiny or tiny2
+**Example:**
 
-Optional.
+```Makefile
+# HLT core
+ALTERNATE_CORE = attiny-master
+# tiny core
+ALTERNATE_CORE = arduino-tiny
+# tiny core 2
+ALTERNATE_CORE = tiny2
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### ARDUINO_VAR_PATH
+
+**Description:**
+
 Path to non-standard core's variant files.
 
-*Example*: ~/sketchbook/hardware/arduino-tiny/cores/tiny
+**Example:**
 
-Optional.
+```Makefile
+ARDUINO_VAR_PATH = ~/sketchbook/hardware/arduino-tiny/cores/tiny
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### VARIANT
+
+**Description:**
+
 Variant of a standard board design.
 
-Usually can be auto-detected as build.variant from boards.txt
+Usually can be auto-detected as `build.variant` from `boards.txt`.
 
-*Example*: leonardo
+**Example:**
 
-Optional.
+```Makefile
+VARIANT = leonardo
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### USB_VID
-Override USB VID for atmega32u4 boards.
 
-Usually can be auto-detected as build.vid from boards.txt
+**Description:**
 
-*Example*: 0x2341
+Override `USB VID` for atmega32u4 boards.
 
-Optional.
+Usually can be auto-detected as `build.vid` from `boards.txt`
+
+**Example:**
+
+```Makefile
+USB_VID = 0x2341
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### USB_PID
-Override USB PID for atmega32u4 boards.
 
-Usually can be auto-detected as build.pid from boards.txt
+**Description:**
 
-*Example*: 0x8039
+Override `USB PID` for atmega32u4 boards.
 
-Optional.
+Usually can be auto-detected as `build.pid` from `boards.txt`
+
+**Example:**
+
+```Makefile
+USB_PID = 0x8039
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### F_CPU
+
+**Description:**
+
 CPU speed in Hz
 
-Usually can be auto-detected as build.f_cpu from boards.txt
+Usually can be auto-detected as `build.f_cpu` from `boards.txt`
 
-*Example*: 8000000L
+**Example:**
 
-Optional.
+```Makefile
+F_CPU = 8000000L
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### HEX_MAXIMUM_SIZE
+
+**Description:**
+
 Maximum hex file size
 
-Usually can be auto-detected as upload.maximum_size from boards.txt
+Usually can be auto-detected as `upload.maximum_size` from `boards.txt`
 
-*Example*: 14336
+**Example:**
 
-Optional.
+```Makefile
+HEX_MAXIMUM_SIZE = 14336
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### MCU
+
+**Description:**
+
 Microcontroller model.
 
-Usually can be auto-detected as build.mcu from boards.txt
+Usually can be auto-detected as `build.mcu` from `boards.txt`
 
-*Example*: atmega32u4
+**Example:**
 
-Optional.
+```Makefile
+MCU = atmega32u4
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### MCU_FLAG_NAME
+
+**Description:**
+
 Override default MCU flags.
 
-Defaults to mmcu
+Defaults to `mmcu`
 
-*Example*: mprocessor
+**Example:**
 
-Optional.
+```Makefile
+MCU_FLAG_NAME = mprocessor
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### MONITOR_BAUDRATE
+
+**Description:**
+
 Baudrate of the serial monitor.
 
-Defaults to 9600 if it can't find it in the sketch Serial.begin()
+Defaults to `9600` if it can't find it in the sketch `Serial.begin()`
 
-*Example*: 57600
+**Example:**
 
-Optional.
+```Makefile
+MONITOR_BAUDRATE = 57600
+```
+
+**Requirement:** *Optional*
+
+----
 
 ## ISP programming variables
 
 ### ISP_PROG
+
+**Description:**
+
 Type of ISP. Either a USB device or ArduinoISP protocol.
 
-*Example*: usbasp or usbtiny or stk500v2 or stk500v1
+**Example:**
 
-Optional.
+```Makefile
+ISP_PROG = usbasp
+# or
+ISP_PROG = usbtiny
+# or
+ISP_PROG = stk500v2
+# or
+ISP_PROG = stk500v1
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### ISP_PORT
+
+**Description:**
+
 Device path to ArduinoISP. Not needed for hardware ISP's.
 
-*Example*: /dev/ttyACM0 (Linux)
+**Example:**
 
-Optional.
+```Makefile
+# Linux
+ISP_PORT = /dev/ttyACM0
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### ISP_LOCK_FUSE_PRE
+
+**Description:**
+
 Bootloader unlock bits.
 
-Usually can be auto-detected from boards.txt
+Usually can be auto-detected from `boards.txt`
 
-*Example*: 0x3f
+**Example:**
 
-Optional.
+```Makefile
+ISP_LOCK_FUSE_PRE = 0x3f
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### ISP_LOCK_FUSE_POST
+
+**Description:**
+
 Bootloader lock bits.
 
-Usually can be auto-detected from boards.txt
+Usually can be auto-detected from `boards.txt`
 
-*Example*: 0xcf
+**Example:**
 
-Optional.
+```Makefile
+ISP_LOCK_FUSE_POST = 0xcf
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### ISP_HIGH_FUSE
-SP_LOW_FUSE/ISP_EXT_FUSE - high/low/extended fuse bits.
 
-Usually can be auto-detected from boards.txt
+**Description:**
 
-*Example*: 0xdf or 0xff or 0x01
+`ISP_LOW_FUSE/ISP_EXT_FUSE` - high/low/extended fuse bits.
 
-Optional.
+Usually can be auto-detected from `boards.txt`
+
+**Example:**
+
+```Makefile
+ISP_HIGH_FUSE = 0xdf # or 0xff or 0x01
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### ISP_EEPROM
+
+**Description:**
+
 Whether to upload the EEPROM file or not.
 
-Defaults to 0
+Defaults to `0`
 
-*Example*: 1
+**Example:**
 
-Optional.
+```Makefile
+ISP_EEPROM = 1
+```
+
+**Requirement:** *Optional*
+
+----
 
 ## Compiler/Executable variables
 
 ### CC_NAME
+
+**Description:**
+
 C compiler.
 
-Defaults to avr-gcc
+Defaults to `avr-gcc`
 
-*Example*: pic32-gcc
+**Example:**
 
-Optional.
+```Makefile
+CC_NAME = pic32-gcc
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### CXX_NAME
+
+**Description:**
+
 C++ compiler.
 
-Defaults to avr-g++
+Defaults to `avr-g++`
 
-*Example*: pic32-g++
+**Example:**
 
-Optional.
+```Makefile
+CXX_NAME = pic32-g++
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### OBJCOPY_NAME
+
+**Description:**
+
 Objcopy utility.
 
-Defaults to avr-objcopy
+Defaults to `avr-objcopy`
 
-*Example*: pic32-objcopy
+**Example:**
 
-Optional.
+```Makefile
+OBJCOPY_NAME = pic32-objcopy
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### OBJDUMP_NAME
+
+**Description:**
+
 Objdump utility.
 
-Defaults to avr-objdump
+Defaults to `avr-objdump`
 
-*Example*: pic32-objdump
+**Example:**
 
-Optional.
+```Makefile
+OBJDUMP_NAME = pic32-objdump
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### AR_NAME
+
+**Description:**
+
 Archive utility.
 
-Defaults to avr-ar
+Defaults to `avr-ar`
 
-*Example*: pic32-ar
+**Example:**
 
-Optional.
+```Makefile
+AR_NAME = pic32-ar
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### SIZE_NAME
+
+**Description:**
+
 Size utility.
 
-Defaults to avr-size
+Defaults to `avr-size`
 
-*Example*: pic32-size
+**Example:**
 
-Optional.
+```Makefile
+SIZE_NAME = pic32-size
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### NM_NAME
+
+**Description:**
+
 Nm utility.
 
-Defaults to avr-nm
+Defaults to `avr-nm`
 
-*Example*: pic32-nm
+**Example:**
 
-Optional.
+```Makefile
+NM_NAME = pic32-nm
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### OPTIMIZATION_LEVEL
-Linker's -O flag
 
-Defaults to s, which shouldn't really be changed as it breaks SoftwareSerial and usually results in bigger hex files.
+**Description:**
 
-*Example*: 3
+Linker's `-O` flag
 
-Optional.
+Defaults to `s`, which shouldn't really be changed as it breaks `SoftwareSerial` and usually results in bigger hex files.
+
+**Example:**
+
+```Makefile
+OPTIMIZATION_LEVEL = 3
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### CFLAGS_STD
+
+**Description:**
+
 Flags to pass to the C compiler.
 
-Defaults to -std=gnu99
+Defaults to `-std=gnu99`
 
-*Example*: <unset as per chipKIT.mk>
+**Example:**
 
-Optional.
+```Makefile
+<unset as per chipKIT.mk>
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### OVERRIDE_EXECUTABLES
+
+**Description:**
+
 Override the default build tools.
 
-If set to 1 each tool (CC, CXX, AS, OBJCOPY, OBJDUMP, AR, SIZE, NM) must have its path explicitly defined. See chipKIT.mk
+If set to `1`, each tool (`CC`, `CXX`, `AS`, `OBJCOPY`, `OBJDUMP`, `AR`, `SIZE`, `NM`) must have its path explicitly defined. See `chipKIT.mk`.
 
-*Example*: 1
+**Example:**
 
-Optional.
+```Makefile
+OVERRIDE_EXECUTABLES = 1
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### MONITOR_CMD
+
+**Description:**
+
 Command to run the serial monitor.
 
-Defaults to screen
+Defaults to `screen`
 
-*Example*: minicom
+**Example:**
 
-Optional.
+```Makefile
+MONITOR_CMD = minicom
+```
+
+**Requirement:** *Optional*
+
+----
 
 ## Avrdude setting variables
 
 ### AVRDUDE
-Path to avrdude utility
 
-Usually can be auto-detected within the parent of `AVR_TOOLS_DIR` or in the $PATH
+**Description:**
 
-*Example*: /usr/bin/avrdude
+Path to `avrdude` utility
 
-Optional.
+Usually can be auto-detected within the parent of `AVR_TOOLS_DIR` or in the `$PATH`
+
+**Example:**
+
+```Makefile
+AVRDUDE = /usr/bin/avrdude
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### AVRDUDE_CONF
-Path to avrdude.conf file
 
-Usually can be auto-detected within the parent of `AVR_TOOLS_DIR` 
+**Description:**
 
-*Example*: /etc/avrdude.conf or /usr/share/arduino/hardware/tools/avrdude.conf
+Path to `avrdude.conf` file
 
-Optional.
+Usually can be auto-detected within the parent of `AVR_TOOLS_DIR`
+
+**Example:**
+
+```Makefile
+AVRDUDE_CONF = /etc/avrdude.conf
+# or
+AVRDUDE_CONF = /usr/share/arduino/hardware/tools/avrdude.conf
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### AVR_TOOLS_PATH
-Directory where tools such as avrdude, avr-g++, avr-gcc etc. are stored.
 
-Usually can be auto-detected from AVR_TOOLS_DIR/bin
+**Description:**
 
-*Example*: /usr/bin or /usr/share/arduino/hardware/tools/avr/bin
+Directory where tools such as `avrdude`, `avr-g++`, `avr-gcc` etc. are stored.
 
-Optional.
+Usually can be auto-detected from `AVR_TOOLS_DIR/bin`
+
+**Example:**
+
+```Makefile
+AVR_TOOLS_PATH = /usr/bin
+# or
+AVR_TOOLS_PATH = /usr/share/arduino/hardware/tools/avr/bin
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### ARDUINO_LIB_PATH
+
+**Description:**
+
 Directory where the standard Arduino libraries are stored.
 
-Defaults to ARDUINO_DIR/libraries
+Defaults to `ARDUINO_DIR/libraries`
 
-*Example*: /usr/share/arduino/libraries (Linux)
+**Example:**
 
-Optional.
+```Makefile
+# Linux
+ARDUINO_LIB_PATH = /usr/share/arduino/libraries
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### ARDUINO_CORE_PATH
+
+**Description:**
+
 Directory where the standard Arduino cores are stored.
 
-Defaults to ARDUINO_DIR/hardware/arduino/cores/arduino
+Defaults to `ARDUINO_DIR/hardware/arduino/cores/arduino`
 
-*Example*: /usr/share/arduino/hardware/arduino/cores/robot
+**Example:**
 
-Optional.
+```Makefile
+ARDUINO_CORE_PATH = /usr/share/arduino/hardware/arduino/cores/robot
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### ALTERNATE_CORE_PATH
+
+**Description:**
+
 Path to non-standard cores.
 
-Defaults to ARDUINO_SKETCHBOOK/hardware/ALTERNATE_CORE
+Defaults to `ARDUINO_SKETCHBOOK/hardware/ALTERNATE_CORE`
 
-*Example*: ~/sketchbook/hardware/arduino-tiny/cores/tiny
+**Example:**
 
-Optional.
+```Makefile
+ALTERNATE_CORE_PATH = ~/sketchbook/hardware/arduino-tiny/cores/tiny
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### BOARDS_TXT
-Path to boards.txt
 
-Defaults to ARDUINO_DIR/hardware/arduino/boards.txt
+**Description:**
 
-*Example*: ~/sketchbook/hardware/boards.txt or /usr/share/arduino/hardware/arduino/boards.txt (Linux)
+Path to `boards.txt`
 
-Optional.
+Defaults to `ARDUINO_DIR/hardware/arduino/boards.txt`
+
+**Example:**
+
+```Makefile
+BOARD_TXT = ~/sketchbook/hardware/boards.txt
+# or
+BOARD_TXT = /usr/share/arduino/hardware/arduino/boards.txt
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### AVRDUDE_ARD_BAUDRATE
+
+**Description:**
+
 Upload speed
 
-Usually can be auto-detected as upload.speed from boards.txt
+Usually can be auto-detected as `upload.speed` from `boards.txt`
 
-*Example*: 19200
+**Example:**
 
-Optional.
+```Makefile
+AVRDUDE_ARD_BAUDRATE = 19200
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### AVRDUDE_ARD_PROGRAMMER
+
+**Description:**
+
 Upload protocol
 
-Usually can be auto-detected as upload.protocol from boards.txt
+Usually can be auto-detected as `upload.protocol` from `boards.txt`
 
-*Example*: stk500v1
+**Example:**
 
-Optional.
+```Makefile
+AVRDUDE_ARD_PROGRAMMER = stk500v1
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### AVRDUDE_ISP_BAUDRATE
-ISP speed if different to upload.speed
 
-Defaults to same as `AVRDUDE_ARD_BAUDRATE` or 19200
+**Description:**
 
-*Example*: 19200
+ISP speed if different to `upload.speed`
 
-Optional.
+Defaults to same as `AVRDUDE_ARD_BAUDRATE` or `19200`
+
+**Example:**
+
+```Makefile
+AVRDUDE_ISP_BAUDRATE = 19200
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### AVRDUDE_OPTS
-Options to pass to avrdude.
 
-Defaults to '-q -V -D' (quiet, don't verify, don't auto-erase). User values are not ANDed to the defaults, you have to set each option you require.
+**Description:**
 
-*Example*: -v
+Options to pass to `avrdude`.
 
-Optional.
+Defaults to `-q -V -D` (quiet, don't verify, don't auto-erase). User values are not *ANDed* to the defaults, you have to set each option you require.
+
+**Example:**
+
+```Makefile
+AVRDUDE_OPTS = -v
+```
+
+**Requirement:** *Optional*
+
+----
 
 ## Bootloader variables
 
 ### BOOTLOADER_FILE
+
+**Description:**
+
 File for bootloader.
 
-Usually can be auto-detected as bootloader.file from boards.txt
+Usually can be auto-detected as `bootloader.file` from `boards.txt`
 
-*Example*: optiboot_atmega328.hex
+**Example:**
 
-Optional.
+```Makefile
+BOOTLOADER_FILE = optiboot_atmega328.hex
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### BOOTLOADER_PATH
+
+**Description:**
+
 Path to bootloader file.
 
-Usually can be auto-detected as a relative bootloader.path from boards.txt
+Usually can be auto-detected as a relative `bootloader.path` from `boards.txt`
 
-*Example*: optiboot or arduino:atmega or /usr/share/arduino/hardware/arduino/bootloaders/caterina/Caterina-Esplora.hex
+**Example:**
 
-Optional.
+```Makefile
+BOOTLOADER_PATH = optiboot
+# or
+BOOTLOADER_PATH = arduino:atmega
+# or
+BOOTLOADER_PATH = /usr/share/arduino/hardware/arduino/bootloaders/caterina/Caterina-Esplora.hex
+```
+
+**Requirement:** *Optional*
+
+----
 
 ## ChipKIT variables
 
 ### MPIDE_DIR
+
+**Description:**
+
 Path to chipKIT MP IDE
 
-Usually can be auto-detected as `AUTO_MPIDE_DIR` from the defaults /usr/share/mpide (Linux) or /Applications/Mpide.app/Contents/Resources/Java (OSX)
+Usually can be auto-detected as `AUTO_MPIDE_DIR` from the defaults `/usr/share/mpide` (Linux) or `/Applications/Mpide.app/Contents/Resources/Java` (OSX)
 
-*Example*: ~/mpide
+**Example:**
 
-Optional.
+```Makefile
+MPIDE_DIR = ~/mpide
+```
+
+**Requirement:** *Optional*
+
+----
 
 ### MPIDE_PREFERENCES_PATH
-Path to chipKIT preferences.txt file.
 
-Usually can be auto-detected as `AUTO_MPIDE_PREFERENCES_PATH` from the defaults ~/.mpide/preferences.txt (Linux) or ~/Library/Mpide/preferences.txt (OSX)
+**Description:**
 
-*Example*: ~/chipkit/preferences.txt
+Path to chipKIT `preferences.txt` file.
 
-Optional.
+Usually can be auto-detected as `AUTO_MPIDE_PREFERENCES_PATH` from the defaults `~/.mpide/preferences.txt` (Linux) or `~/Library/Mpide/preferences.txt` (OSX)
+
+**Example:**
+
+```Makefile
+MPIDE_PREFERENCES_PATH = ~/chipkit/preferences.txt
+```
+
+**Requirement:** *Optional*
