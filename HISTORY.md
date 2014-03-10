@@ -12,6 +12,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Create `Makefile-example-mk`, a *real life* `Makefile` example, to be used as a reference. (https://github.com/tinyladi)
 - Tweak: Add `OBJDIR` to `arduino-mk-vars.md` (https://github.com/tinyladi)
 - Tweak: *Beautify* `arduino-mk-vars.md` with code blocks. (https://github.com/tinyladi)
+- Fix: AVR tools paths for chipKIT in Linux. (https://github.com/peplin)
 
 ### 1.3.1 (2014-02-04)
 - Fix: BUNDLED_AVR_TOOLS_DIR is now set properly when using only arduino-core and not the whole arduino package. (https://github.com/sej7278)
