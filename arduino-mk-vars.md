@@ -776,6 +776,25 @@ MONITOR_CMD = minicom
 
 ----
 
+### PRE_BUILD_HOOK
+
+**Description:**
+
+Path to shell script to be executed before build. Could be used to automatically
+bump revision number for example.
+
+Defaults to `pre-build-hook.sh`
+
+**Example:**
+
+```Makefile
+PRE_BUILD_HOOK = ~/bin/bump-revision.sh
+```
+
+**Requirement:** *Optional*
+
+----
+
 ## Avrdude setting variables
 
 ### AVRDUDE

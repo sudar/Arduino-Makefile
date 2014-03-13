@@ -465,6 +465,10 @@ else
     $(call show_config_variable,USER_LIB_PATH,[USER])
 endif
 
+ifndef PRE_BUILD_HOOK
+    PRE_BUILD_HOOK = pre-build-hook.sh
+endif
+
 ########################################################################
 # boards.txt parsing
 
@@ -1102,8 +1106,11 @@ all: 		$(TARGET_EEP) $(TARGET_HEX)
 # prerequisite" (e.g., put "| $(OBJDIR)" at the end of the prerequisite
 # list) to prevent remaking the target when any file in the directory
 # changes.
-$(OBJDIR):
+$(OBJDIR): pre-build
 		$(MKDIR) $(OBJDIR)
+
+pre-build:
+		$(call runscript_if_exists,$(PRE_BUILD_HOOK))
 
 $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 		$(CC) $(LDFLAGS) -o $@ $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS) -lc -lm
@@ -1113,6 +1120,7 @@ $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 
 error_on_caterina:
 		$(ERROR_ON_CATERINA)
+
 
 # Use submake so we can guarantee the reset happens
 # before the upload, even with make -j
@@ -1240,7 +1248,7 @@ help:
 
 .PHONY: all upload raw_upload raw_eeprom error_on_caterina reset reset_stty ispload \
         clean depends size show_boards monitor disasm symbol_sizes generated_assembly \
-        generate_assembly verify_size burn_bootloader help
+        generate_assembly verify_size burn_bootloader help pre-build
 
 # added - in the beginning, so that we don't get an error if the file is not present
 -include $(DEPS)
