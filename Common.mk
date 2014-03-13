@@ -4,6 +4,14 @@
 # (directory and optional filename) exists
 dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
 
+# Run a shell script if it exists. Stops make on error.
+runscript_if_exists =                                                          \
+    $(if $(wildcard $(1)),                                                     \
+         $(if $(findstring 0,                                                  \
+                  $(lastword $(shell $(abspath $(wildcard $(1))); echo $$?))), \
+              $(info Info: $(1) success),                                      \
+              $(error ERROR: $(1) failed)))
+
 # For message printing: pad the right side of the first argument with spaces to
 # the number of bytes indicated by the second argument.
 space_pad_to = $(shell echo $(1) "                                                      " | head -c$(2))
