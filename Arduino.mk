@@ -467,6 +467,9 @@ endif
 
 ifndef PRE_BUILD_HOOK
     PRE_BUILD_HOOK = pre-build-hook.sh
+    $(call show_config_variable,PRE_BUILD_HOOK,[DEFAULT])
+else
+    $(call show_config_variable,PRE_BUILD_HOOK,[USER])
 endif
 
 ########################################################################
