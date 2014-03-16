@@ -1110,7 +1110,7 @@ $(OBJDIR): pre-build
 		$(MKDIR) $(OBJDIR)
 
 pre-build:
-		$(call runscript_if_exists,$(PRE_BUILD_HOOK))
+		$(call runscript_if_exists,$(CURDIR)/$(PRE_BUILD_HOOK))
 
 $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 		$(CC) $(LDFLAGS) -o $@ $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS) -lc -lm

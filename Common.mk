@@ -5,7 +5,7 @@
 dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
 
 # Run a shell script if it exists.
-runscript_if_exists = $(if $(wildcard $(1)), $(shell sh $(1)))
+runscript_if_exists = $(if $(wildcard $(1)), $(shell $(1)))
 
 # For message printing: pad the right side of the first argument with spaces to
 # the number of bytes indicated by the second argument.
