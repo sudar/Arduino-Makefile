@@ -7,7 +7,7 @@ or [Ubuntu](https://launchpad.net/ubuntu/+source/arduino-mk) or use apt.
 First install the dependencies for building/running the package, as root:
 
     apt-get build-dep arduino-mk
-    apt-get install arduino-core libdevice-serialport-perl help2man build-essential dpkg-dev fakeroot perl-doc devscripts
+    apt-get install arduino-core build-essential dpkg-dev fakeroot devscripts python-serial
 
 Fetch the Debian source:
 
