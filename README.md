@@ -34,30 +34,36 @@ package and can be installed using `apt-get` or `aptitude`.
 You need to have the Arduino IDE. You can either install it through the
 installer or download the distribution zip file and extract it.
 
-The Makefile also delegates resetting the board to a short Perl program.
-You'll need to install `Device::SerialPort` to use it though.
+The Makefile also delegates resetting the board to a short Python program.
+You'll need to install `pySerial` to use it though.
 
 On Debian or Ubuntu:
 
-       apt-get install libdevice-serialport-perl
+       apt-get install python-serial
 
 On Fedora:
 
-       yum install perl-Device-SerialPort
+       yum install pyserial
 
 On openSUSE:
 
-      zypper install perl-Device-SerialPort
+      zypper install python-serial
 
 On Mac using MacPorts:
 
-      sudo port install p5-device-serialport
+      sudo port install py27-serial
 
-      and use /opt/local/bin/perl5 instead of /usr/bin/perl
+On Windows:
+
+       pySerial can be downloaded from PyPi
 
 On other systems:
 
-       cpan Device::SerialPort
+       pip install pyserial
+
+        or
+
+       easy_install -U pyserial
 
 ## Usage
 
