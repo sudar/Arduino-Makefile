@@ -15,6 +15,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: AVR tools paths for chipKIT in Linux. (https://github.com/peplin)
 - Fix: Consider usb or usb:... to be a valid ISP_PORT (https://github.com/geoffholden)
 - Add: Add phony target to run pre-build hook script (https://github.com/jrid)
+- Fix: Add BOOTLOADER_PARENT to `arduino-mk-vars.md` and fixed BOOTLOADER_PATH example. (https://github.com/sej7278)
 
 ### 1.3.1 (2014-02-04)
 - Fix: BUNDLED_AVR_TOOLS_DIR is now set properly when using only arduino-core and not the whole arduino package. (https://github.com/sej7278)
