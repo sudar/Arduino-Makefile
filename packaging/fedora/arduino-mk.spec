@@ -9,8 +9,8 @@ Group:			Development/Tools
 License:		LGPLv2+
 BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:		noarch
-Requires:		arduino-core, perl-Device-SerialPort
-BuildRequires:	arduino-core, perl-Device-SerialPort, help2man
+Requires:		arduino-core pyserial
+BuildRequires:	arduino-core pyserial
 
 %description
 Arduino is an open-source electronics prototyping platform based on 
@@ -27,7 +27,6 @@ Arduino platform.
 %install
 mkdir -p %{buildroot}/%{_datadir}/arduino
 mkdir -p %{buildroot}/%{_bindir}
-mkdir -p %{buildroot}/%{_mandir}/man1
 mkdir -p %{buildroot}/%{_docdir}/%{name}/examples
 install -m 755 -d %{buildroot}/%{_docdir}/%{name}
 install -m 755 -d %{buildroot}/%{_docdir}/%{name}/examples
@@ -36,7 +35,6 @@ for file in `find examples -type f ! -name .gitignore` ; do install -m 644 $file
 install -m 644 *.mk arduino-mk-vars.md %{buildroot}/%{_datadir}/arduino
 install -m 644 licence.txt %{buildroot}/%{_docdir}/%{name}
 install -m 755 bin/ard-reset-arduino %{buildroot}/%{_bindir}/ard-reset-arduino
-help2man %{buildroot}/%{_bindir}/ard-reset-arduino -n "Reset Arduino board" -s 1 -m "Arduino CLI Reset" --version-string=%{version} -N -o %{buildroot}/%{_mandir}/man1/ard-reset-arduino.1
 
 %clean
 rm -rf %{buildroot}
@@ -44,7 +42,6 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root,-)
 %{_bindir}/ard-reset-arduino
-%{_mandir}/man1/ard-reset-arduino.1*
 %{_datadir}/arduino/*.mk
 %{_datadir}/arduino/arduino-mk-vars.md
 %doc %{_docdir}/%{name}/licence.txt
@@ -52,6 +49,8 @@ rm -rf %{buildroot}
 %{_docdir}/%{name}/examples
 
 %changelog
+* Mon Mar 24 2014 Simon John <git@the-jedi.co.uk>
+- Replaced perl/help2man with pyserial for reset script.
 * Tue Feb 04 2014 Simon John <git@the-jedi.co.uk>
 - Added arduino-mk-vars.md to the files to be installed/packaged.
 * Sat Feb 01 2014 Simon John <git@the-jedi.co.uk>
