@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+from __future__ import print_function
+
 import serial
 import os.path
 import argparse
@@ -13,7 +15,7 @@ parser.add_argument('port', nargs=1, help='Serial device e.g. /dev/ttyACM0')
 args = parser.parse_args()
 
 if args.caterina:
-    if args.verbose: print 'Forcing reset using 1200bps open/close on port %s' % args.port[0]
+    if args.verbose: print('Forcing reset using 1200bps open/close on port %s' % args.port[0])
     ser = serial.Serial(args.port[0], 57600)
     ser.close()
     ser.open()
@@ -24,12 +26,12 @@ if args.caterina:
     sleep(1)
 
     while not os.path.exists(args.port[0]):
-        if args.verbose: print 'Waiting for %s to come back' % args.port[0]
+        if args.verbose: print('Waiting for %s to come back' % args.port[0])
         sleep(1)
 
-    if args.verbose: print '%s has come back after reset' % args.port[0]
+    if args.verbose: print('%s has come back after reset' % args.port[0])
 else:
-    if args.verbose: print 'Setting DTR high on %s for %ss' % (args.port[0],args.period)
+    if args.verbose: print('Setting DTR high on %s for %ss' % (args.port[0], args.period))
     ser = serial.Serial(args.port[0], 115200)
     ser.setDTR(False)
     sleep(args.period)
