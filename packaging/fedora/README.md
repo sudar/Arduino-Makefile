@@ -2,7 +2,7 @@
 
 First install the dependencies as root:
 
-    yum install arduino-core rpm-build pyserial
+    yum install arduino-core rpm-build pyserial python3-pyserial
 
 From the top-level Arduino-Makefile directory you've checked out of github, run the following (as unprivileged user) to create a compressed tarball using the naming conventions required by rpmbuild:
 
