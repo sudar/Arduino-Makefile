@@ -10,7 +10,7 @@ License:		LGPLv2+
 BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:		noarch
 Requires:		arduino-core pyserial
-BuildRequires:	arduino-core pyserial python3-pyserial
+BuildRequires:	arduino-core
 
 %description
 Arduino is an open-source electronics prototyping platform based on 
@@ -49,6 +49,8 @@ rm -rf %{buildroot}
 %{_docdir}/%{name}/examples
 
 %changelog
+* Fri Apr 04 2014 Simon John <git@the-jedi.co.uk>
+- Removed BuildRequires of python3/pyserial.
 * Wed Apr 02 2014 Simon John <git@the-jedi.co.uk>
 - Added BuildRequires of python3-pyserial. Need to look into Requires.
 * Mon Mar 24 2014 Simon John <git@the-jedi.co.uk>
