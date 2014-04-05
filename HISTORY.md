@@ -18,6 +18,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Add BOOTLOADER_PARENT to `arduino-mk-vars.md` and fixed BOOTLOADER_PATH example. (https://github.com/sej7278)
 - Tweak: Replace perl reset script with Python script. (https://github.com/sej7278)
 - Tweak: Made choice of Python2/3 interpreter up to the OS. (https://github.com/peplin)
+- Tweak: Simplified packaging dependencies. (https://github.com/sej7278)
 
 ### 1.3.1 (2014-02-04)
 - Fix: BUNDLED_AVR_TOOLS_DIR is now set properly when using only arduino-core and not the whole arduino package. (https://github.com/sej7278)

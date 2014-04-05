@@ -4,10 +4,10 @@ Use these instructions to build your own Deb package from your local sources.
 For the latest official packages go to [Debian](http://packages.debian.org/arduino-mk)
 or [Ubuntu](https://launchpad.net/ubuntu/+source/arduino-mk) or use apt.
 
-First install the dependencies for building/running the package, as root:
+First install the dependencies as root:
 
     apt-get build-dep arduino-mk
-    apt-get install arduino-core build-essential dpkg-dev fakeroot devscripts python-serial python3-serial
+    apt-get install arduino-core build-essential dpkg-dev fakeroot devscripts
 
 Fetch the Debian source:
 
