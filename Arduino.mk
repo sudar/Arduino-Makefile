@@ -56,6 +56,24 @@
 #   ARDMK_DIR     = /usr/share/arduino
 #   AVR_TOOLS_DIR = /usr
 #
+# On Windows declare this environmental variables using the windows
+# configuration options. Control Panel > System > Advanced system settings
+# Also take into account that when you set them you have to add '\' on
+# all spaces and special characters.
+# ARDUINO_DIR and AVR_TOOLS_DIR have to be relative and not absolute.
+# This are just examples, you have to adapt this variables accordingly to
+# your system.
+#
+#   ARDUINO_DIR   =../../../../../Arduino
+#   AVR_TOOLS_DIR =../../../../../Arduino/hardware/tools/avr
+#   ARDMK_DIR     = /cygdrive/c/Users/"YourUser"/Arduino-Makefile
+#
+# On Windows it is highly recommended that you create a symbolic link directory
+# for avoiding using the normal directories name of windows such as
+# c:\Program Files (x86)\Arduino
+# For this use the command mklink on the console.
+#
+#
 # You can either set these up in the Makefile, or put them in your
 # environment e.g. in your .bashrc
 #
@@ -395,6 +413,15 @@ ifndef AVR_TOOLS_DIR
 
 else
     $(call show_config_variable,AVR_TOOLS_DIR,[USER])
+
+    # Check in Windows as Cygwin is being used, that the configuration file for the AVRDUDE is set
+    # Check if it works on MAC
+    ifeq ($(CURRENT_OS),WINDOWS)
+        ifndef AVRDUDE_CONF
+            AVRDUDE_CONF  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
+        endif
+    endif
+
 endif #ndef AVR_TOOLS_DIR
 
 ifndef AVR_TOOLS_PATH
