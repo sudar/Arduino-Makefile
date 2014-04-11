@@ -4,7 +4,7 @@ A Makefile for Arduino Sketches
 The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
-### 1.3.2 (in development)
+### 1.3.2 (2014-04-11)
 - Fix: Add arduino-mk-vars.md file to RPM SPECfile. (https://github.com/sej7278)
 - Fix: Add avr-libc/malloc.c and realloc.c to included core files. Fixes issue #163 (https://github.com/sej7278)
 - Fix: Add "gpio" to the list of isp that don't have a port. (Issue #165, #166) (https://github.com/sej7278)
