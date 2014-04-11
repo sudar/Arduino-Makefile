@@ -27,6 +27,7 @@ Arduino platform.
 %install
 mkdir -p %{buildroot}/%{_datadir}/arduino
 mkdir -p %{buildroot}/%{_bindir}
+mkdir -p %{buildroot}/%{_mandir}/man1
 mkdir -p %{buildroot}/%{_docdir}/%{name}/examples
 install -m 755 -d %{buildroot}/%{_docdir}/%{name}
 install -m 755 -d %{buildroot}/%{_docdir}/%{name}/examples
@@ -35,6 +36,7 @@ for file in `find examples -type f ! -name .gitignore` ; do install -m 644 $file
 install -m 644 *.mk arduino-mk-vars.md %{buildroot}/%{_datadir}/arduino
 install -m 644 licence.txt %{buildroot}/%{_docdir}/%{name}
 install -m 755 bin/ard-reset-arduino %{buildroot}/%{_bindir}/ard-reset-arduino
+install -m 644 ard-reset-arduino.1 %{buildroot}/%{_mandir}/man1
 
 %clean
 rm -rf %{buildroot}
@@ -42,6 +44,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root,-)
 %{_bindir}/ard-reset-arduino
+%{_mandir}/man1/ard-reset-arduino.1*
 %{_datadir}/arduino/*.mk
 %{_datadir}/arduino/arduino-mk-vars.md
 %doc %{_docdir}/%{name}/licence.txt
@@ -49,6 +52,8 @@ rm -rf %{buildroot}
 %{_docdir}/%{name}/examples
 
 %changelog
+* Sat Apr 12 2014 Simon John <git@the-jedi.co.uk>
+- Put manpage back.
 * Fri Apr 04 2014 Simon John <git@the-jedi.co.uk>
 - Removed BuildRequires of python3/pyserial.
 * Wed Apr 02 2014 Simon John <git@the-jedi.co.uk>
