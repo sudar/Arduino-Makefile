@@ -4,11 +4,8 @@
 ard-reset-arduino \- Reset Arduino board
 
 .SH SYNOPSIS
-$ ard-reset-arduino /dev/ttyACM0
-.PP
-$ ard-reset-arduino --verbose --period=0.1 /dev/cu.usb*
-.PP
-$ ard-reset-arduino --verbose --caterina /dev/ttyUSB0
+.B ard-reset-arduino
+[OPTION]... [PORT]
 
 .SH DESCRIPTION
 To reset Arduinos, we either pulse the DTR line or open the USB port 
@@ -24,20 +21,22 @@ Specify the DTR pulse width in seconds.
 .B --caterina
 Reset a Leonardo, Micro, Robot, LilyPadUSB or similar 32u4-based device.
 
+.SH EXAMPLES
+ard-reset-arduino /dev/ttyACM0
+.PP
+ard-reset-arduino --verbose --period=0.1 /dev/cu.usb*
+.PP
+ard-reset-arduino --verbose --caterina /dev/ttyUSB0
+
 .SH BUGS
 There are no known bugs in this application. Please report problems 
 to the author. Patches are welcome.
 
 .SH AUTHOR
-Martin Oldfield, ex-atelier@mjo.tc
-.PP
-Support for Leonardo/Micro added by sej7278, https://github.com/sej7278
-.PP
-Thanks to Daniele Vergini who suggested this to me, and supplied a
-command line version.
+Simon John, git@the-jedi.co.uk
 
 .SH LICENSE
-Copyright (c) 2012, Martin Oldfield. All rights reserved.
+Copyright (c) 2014, Simon John. All rights reserved.
 .PP
 This file is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published
