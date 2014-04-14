@@ -4,15 +4,28 @@ A Makefile for Arduino Sketches
 The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
-### 1.3.2 (in development)
-- Tweak: Reference `Makefile-example.mk` in `README.md` (https://github.com/tinyladi)
-- New: Create `Makefile-example-mk`, a *real life* `Makefile` example, to be used as a reference. (https://github.com/tinyladi)
-- Tweak: Add `OBJDIR` to arduino-mk-vars.md. (https://github.com/tinyladi)
-- Tweak: *Beautify* `arduino-mk-vars.md` with code blocks. (https://github.com/tinyladi)
+### 1.3.4 (In development)
+- Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
+
+### 1.3.3 (2014-04-12)
+- Fix: Make a new manpage for ard-reset-arduino. Fixes issue #188 (https://github.com/sej7278)
+
+### 1.3.2 (2014-04-11)
 - Fix: Add arduino-mk-vars.md file to RPM SPECfile. (https://github.com/sej7278)
 - Fix: Add avr-libc/malloc.c and realloc.c to included core files. Fixes issue #163 (https://github.com/sej7278)
 - Fix: Add "gpio" to the list of isp that don't have a port. (Issue #165, #166) (https://github.com/sej7278)
 - Fix: Add "-D__PROG_TYPES_COMPAT__" to the avr-g++ compiler flags to match IDE. (https://github.com/sej7278)
+- New: Create `Makefile-example-mk`, a *real life* `Makefile` example, to be used as a reference. (https://github.com/tinyladi)
+- Tweak: Add `OBJDIR` to `arduino-mk-vars.md` (https://github.com/tinyladi)
+- Tweak: *Beautify* `arduino-mk-vars.md` with code blocks. (https://github.com/tinyladi)
+- Fix: AVR tools paths for chipKIT in Linux. (https://github.com/peplin)
+- Fix: Consider usb or usb:... to be a valid ISP_PORT (https://github.com/geoffholden)
+- Add: Add phony target to run pre-build hook script (https://github.com/jrid)
+- Fix: Add BOOTLOADER_PARENT to `arduino-mk-vars.md` and fixed BOOTLOADER_PATH example. (https://github.com/sej7278)
+- Tweak: Replace perl reset script with Python script. (https://github.com/sej7278)
+- Tweak: Made choice of Python2/3 interpreter up to the OS. (https://github.com/peplin)
+- Tweak: Simplified packaging dependencies. (https://github.com/sej7278)
+- Tweak: Tweak AVRDUDE conf detection in windows. (https://github.com/EAGMnor)
 
 ### 1.3.1 (2014-02-04)
 - Fix: BUNDLED_AVR_TOOLS_DIR is now set properly when using only arduino-core and not the whole arduino package. (https://github.com/sej7278)

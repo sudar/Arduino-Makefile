@@ -1,147 +1,38 @@
-#!/usr/bin/env perl
+#!/usr/bin/env python
 
-use strict;
-use warnings;
+from __future__ import print_function
+import serial
+import os.path
+import argparse
+from time import sleep
 
-use Device::SerialPort;
-use Getopt::Long;
-use Pod::Usage;
+parser = argparse.ArgumentParser(description='Reset an Arduino')
+parser.add_argument('--caterina', action='store_true', help='Reset a Leonardo, Micro, Robot or LilyPadUSB.')
+parser.add_argument('--verbose', action='store_true', help="Watch what's going on on STDERR.")
+parser.add_argument('--period', default=0.1, help='Specify the DTR pulse width in seconds.')
+parser.add_argument('port', nargs=1, help='Serial device e.g. /dev/ttyACM0')
+args = parser.parse_args()
 
-my %Opt =
-  (
-   period => 0.1,
-  );
+if args.caterina:
+    if args.verbose: print('Forcing reset using 1200bps open/close on port %s' % args.port[0])
+    ser = serial.Serial(args.port[0], 57600)
+    ser.close()
+    ser.open()
+    ser.close()
+    ser.setBaudrate(1200)
+    ser.open()
+    ser.close()
+    sleep(1)
 
-GetOptions(\%Opt,
-       "period=f",   # width of reset pulse in seconds
-       "verbose!",
-       "help!",
-       "info!",
-       "caterina!",
-      );
+    while not os.path.exists(args.port[0]):
+        if args.verbose: print('Waiting for %s to come back' % args.port[0])
+        sleep(1)
 
-if ($Opt{help} || $Opt{info})
-  {
-    usage();
-  }
-
-die "No Arduinos found!\n"
-  unless @ARGV;
-
-foreach my $dev (@ARGV)
-  {
-    my $p = Device::SerialPort->new($dev)
-      or die "Unable to open $dev: $!\n";
-
-    if ($Opt{caterina})
-    {
-        $p->baudrate(1200);
-        $p->write_settings;
-        $p->close;
-
-        print STDERR "Forcing reset using 1200bps open/close on port $dev\n"
-            if $Opt{verbose};
-
-        # wait for it to come back
-        sleep 1;
-        while( ! -e $dev ) {
-            print STDERR "Waiting for $dev to come back\n"
-                if $Opt{verbose};
-            sleep 1;
-        }
-
-        print STDERR "$dev has come back after reset\n"
-            if $Opt{verbose};
-    }
-    else
-    {
-    my $dt = $Opt{period};
-
-    print STDERR "Setting DTR high for ${dt}s on $dev\n"
-      if $Opt{verbose};
-
-    die "Invalid pulse width ($dt), "
-      unless $dt > 0.0;
-
-    $p->pulse_dtr_on($dt * 1000.0);
-    }
-  }
-
-## here endeth the main
-
-sub usage
-  {
-    pod2usage(-verbose => 2);
-  }
-
-__END__
-
-=head1 NAME
-
-ard-reset-arduino - Reset an Arduino
-
-=head1 USAGE
-
-    $ ard-reset-arduino /dev/cu.usb*
-
-    $ ard-reset-arduino --verbose --period=0.1 /dev/cu.usb*
-
-    $ ard-reset-arduino --verbose --caterina /dev/ttyUSB0
-
-=head1 DESCRIPTION
-
-To reset (most) Arduinos, it's enough to just pulse the DTR line.
-
-You can do that from the shell with stty, but there's an interesting
-diversity of command flags. This little program gives a uniform interface
-at the cost of requiring C<Device::SerialPort>.
-
-=head1 OPTIONS
-
-=over
-
-=item --verbose
-
-Watch what's going on on STDERR.
-
-=item --period=0.25
-
-Specify the DTR pulse width in seconds.
-
-=item --caterina
-
-Reset a Leonardo, Micro, Robot or LilyPadUSB.
-
-=back
-
-=head1 BUGS AND LIMITATIONS
-
-There are no known bugs in this application.
-
-Please report problems to the author.
-
-Patches are welcome.
-
-=head1 AUTHOR
-
-Martin Oldfield, ex-atelier@mjo.tc
-
-Support for Leonardo/Micro added by sej7278, https://github.com/sej7278
-
-Thanks to Daniele Vergini who suggested this to me, and supplied
-a command line version.
-
-=head1 LICENCE AND COPYRIGHT
-
-Copyright (c) 2012, Martin Oldfield. All rights reserved.
-
-This file is free software; you can redistribute it and/or modify it
-under the terms of the GNU Lesser General Public License as published
-by the Free Software Foundation; either version 2.1 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-
+    if args.verbose: print('%s has come back after reset' % args.port[0])
+else:
+    if args.verbose: print('Setting DTR high on %s for %ss' % (args.port[0],args.period))
+    ser = serial.Serial(args.port[0], 115200)
+    ser.setDTR(False)
+    sleep(args.period)
+    ser.setDTR(True)
+    ser.close()

@@ -776,6 +776,25 @@ MONITOR_CMD = minicom
 
 ----
 
+### PRE_BUILD_HOOK
+
+**Description:**
+
+Path to shell script to be executed before build. Could be used to automatically
+bump revision number for example.
+
+Defaults to `pre-build-hook.sh`
+
+**Example:**
+
+```Makefile
+PRE_BUILD_HOOK = ~/bin/bump-revision.sh
+```
+
+**Requirement:** *Optional*
+
+----
+
 ## Avrdude setting variables
 
 ### AVRDUDE
@@ -1007,7 +1026,7 @@ BOOTLOADER_FILE = optiboot_atmega328.hex
 
 **Description:**
 
-Path to bootloader file.
+Relative path to bootloader directory.
 
 Usually can be auto-detected as a relative `bootloader.path` from `boards.txt`
 
@@ -1017,11 +1036,31 @@ Usually can be auto-detected as a relative `bootloader.path` from `boards.txt`
 BOOTLOADER_PATH = optiboot
 # or
 BOOTLOADER_PATH = arduino:atmega
-# or
-BOOTLOADER_PATH = /usr/share/arduino/hardware/arduino/bootloaders/caterina/Caterina-Esplora.hex
 ```
 
 **Requirement:** *Optional*
+
+----
+
+### BOOTLOADER_PARENT
+
+**Description:**
+
+Absolute path to bootloader file's parent directory.
+
+Defaults to `/usr/share/arduino/hardware/arduino/bootloaders` (Linux)
+
+**Example:**
+
+```Makefile
+BOOTLOADER_PARENT = ~/sketchbook/hardware/promicro/bootloaders
+BOOTLOADER_PATH  = caterina
+BOOTLOADER_FILE  = Caterina-promicro16.hex
+```
+
+Would result in an absolute path to the bootloader hex file of `~/sketchbook/hardware/promicro/bootloaders/caterina/Caterina-promicro16.hex`
+
+**Requirement:** *Optional, unless BOOTLOADER_FILE and/or BOOTLOADER_PATH are user-defined*
 
 ----
 

@@ -19,7 +19,7 @@
 #
 # Original Arduino adaptation by mellis, eighthave, oli.keller
 #
-# Current version: 1.3.2
+# Current version: 1.3.3
 #
 # Refer to HISTORY.md file for complete history of changes
 #
@@ -55,6 +55,24 @@
 #   ARDUINO_DIR   = /usr/share/arduino
 #   ARDMK_DIR     = /usr/share/arduino
 #   AVR_TOOLS_DIR = /usr
+#
+# On Windows declare this environmental variables using the windows
+# configuration options. Control Panel > System > Advanced system settings
+# Also take into account that when you set them you have to add '\' on
+# all spaces and special characters.
+# ARDUINO_DIR and AVR_TOOLS_DIR have to be relative and not absolute.
+# This are just examples, you have to adapt this variables accordingly to
+# your system.
+#
+#   ARDUINO_DIR   =../../../../../Arduino
+#   AVR_TOOLS_DIR =../../../../../Arduino/hardware/tools/avr
+#   ARDMK_DIR     = /cygdrive/c/Users/"YourUser"/Arduino-Makefile
+#
+# On Windows it is highly recommended that you create a symbolic link directory
+# for avoiding using the normal directories name of windows such as
+# c:\Program Files (x86)\Arduino
+# For this use the command mklink on the console.
+#
 #
 # You can either set these up in the Makefile, or put them in your
 # environment e.g. in your .bashrc
@@ -395,6 +413,15 @@ ifndef AVR_TOOLS_DIR
 
 else
     $(call show_config_variable,AVR_TOOLS_DIR,[USER])
+
+    # Check in Windows as Cygwin is being used, that the configuration file for the AVRDUDE is set
+    # Check if it works on MAC
+    ifeq ($(CURRENT_OS),WINDOWS)
+        ifndef AVRDUDE_CONF
+            AVRDUDE_CONF  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
+        endif
+    endif
+
 endif #ndef AVR_TOOLS_DIR
 
 ifndef AVR_TOOLS_PATH
@@ -463,6 +490,13 @@ ifndef USER_LIB_PATH
     $(call show_config_variable,USER_LIB_PATH,[DEFAULT],(in user sketchbook))
 else
     $(call show_config_variable,USER_LIB_PATH,[USER])
+endif
+
+ifndef PRE_BUILD_HOOK
+    PRE_BUILD_HOOK = pre-build-hook.sh
+    $(call show_config_variable,PRE_BUILD_HOOK,[DEFAULT])
+else
+    $(call show_config_variable,PRE_BUILD_HOOK,[USER])
 endif
 
 ########################################################################
@@ -668,7 +702,7 @@ endif
 ifeq ($(strip $(NO_CORE)),)
     ifndef MONITOR_BAUDRATE
         ifeq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 1)
-            SPEED = $(shell egrep -h 'Serial.begin\([0-9]+\)' $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS) | sed -e 's/[^0-9]//g'| head -n1)
+            SPEED = $(shell egrep -h 'Serial.begin *\([0-9]+\)' $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS) | sed -e 's/[^0-9]//g'| head -n1)
             MONITOR_BAUDRATE = $(findstring $(SPEED),300 1200 2400 4800 9600 14400 19200 28800 38400 57600 115200)
         endif
 
@@ -836,7 +870,7 @@ endif
 get_monitor_port = $(if $(wildcard $(DEVICE_PATH)),$(firstword $(wildcard $(DEVICE_PATH))),$(error Arduino port $(DEVICE_PATH) not found!))
 
 # Returns the ISP port (first wildcard expansion) if it exists, otherwise it errors.
-get_isp_port = $(if $(wildcard $(ISP_PORT)),$(firstword $(wildcard $(ISP_PORT))),$(error ISP port $(ISP_PORT) not found!))
+get_isp_port = $(if $(wildcard $(ISP_PORT)),$(firstword $(wildcard $(ISP_PORT))),$(if $(findstring Xusb,X$(ISP_PORT)),$(ISP_PORT),$(error ISP port $(ISP_PORT) not found!)))
 
 # Command for avr_size: do $(call avr_size,elffile,hexfile)
 ifneq (,$(findstring AVR,$(shell $(SIZE) --help)))
@@ -1075,8 +1109,12 @@ endif
 
 AVRDUDE_ISP_OPTS = -c $(ISP_PROG) -b $(AVRDUDE_ISP_BAUDRATE)
 
-ifneq ($(strip $(ISP_PROG)),$(filter $(ISP_PROG), usbasp usbtiny gpio))
-    AVRDUDE_ISP_OPTS += -P $(call get_isp_port)
+ifndef $(ISP_PORT)
+    ifneq ($(strip $(ISP_PROG)),$(filter $(ISP_PROG), usbasp usbtiny gpio))
+        AVRDUDE_ISP_OPTS += -P $(call get_isp_port)
+    endif
+else
+	AVRDUDE_ISP_OPTS += -P $(call get_isp_port)
 endif
 
 ifndef ISP_EEPROM
@@ -1102,8 +1140,11 @@ all: 		$(TARGET_EEP) $(TARGET_HEX)
 # prerequisite" (e.g., put "| $(OBJDIR)" at the end of the prerequisite
 # list) to prevent remaking the target when any file in the directory
 # changes.
-$(OBJDIR):
+$(OBJDIR): pre-build
 		$(MKDIR) $(OBJDIR)
+
+pre-build:
+		$(call runscript_if_exists,$(PRE_BUILD_HOOK))
 
 $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 		$(CC) $(LDFLAGS) -o $@ $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS) -lc -lm
@@ -1113,6 +1154,7 @@ $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
 
 error_on_caterina:
 		$(ERROR_ON_CATERINA)
+
 
 # Use submake so we can guarantee the reset happens
 # before the upload, even with make -j
@@ -1240,7 +1282,7 @@ help:
 
 .PHONY: all upload raw_upload raw_eeprom error_on_caterina reset reset_stty ispload \
         clean depends size show_boards monitor disasm symbol_sizes generated_assembly \
-        generate_assembly verify_size burn_bootloader help
+        generate_assembly verify_size burn_bootloader help pre-build
 
 # added - in the beginning, so that we don't get an error if the file is not present
 -include $(DEPS)

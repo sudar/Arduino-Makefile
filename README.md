@@ -34,30 +34,38 @@ package and can be installed using `apt-get` or `aptitude`.
 You need to have the Arduino IDE. You can either install it through the
 installer or download the distribution zip file and extract it.
 
-The Makefile also delegates resetting the board to a short Perl program.
-You'll need to install `Device::SerialPort` to use it though.
+The Makefile also delegates resetting the board to a short Python program.
+You'll need to install `pySerial` to use it though.
 
 On Debian or Ubuntu:
 
-       apt-get install libdevice-serialport-perl
+       apt-get install python-serial
 
 On Fedora:
 
-       yum install perl-Device-SerialPort
+       yum install pyserial
 
 On openSUSE:
 
-      zypper install perl-Device-SerialPort
+      zypper install python-serial
 
 On Mac using MacPorts:
 
-      sudo port install p5-device-serialport
+      sudo port install py27-serial
 
-      and use /opt/local/bin/perl5 instead of /usr/bin/perl
+On Windows:
+
+You need to install Cygwin and its packages for Make, Perl and the next Serial library.
+
+       pySerial can be downloaded from PyPi
 
 On other systems:
 
-       cpan Device::SerialPort
+       pip install pyserial
+
+        or
+
+       easy_install -U pyserial
 
 ## Usage
 
@@ -87,12 +95,32 @@ On Windows (using cygwin), you might want to set:
     MONITOR_PORT  = com3
     BOARD_TAG     = mega2560
 
+It is recommended in Windows that you create a symbolic link directory for avoiding problem with folder naming conventions on Windows. Specially if your your Arduino folder is in:
+
+c:\Program Files (x86)\Arduino
+
+You will get problem for the special characters on the folder name. More details about this can be found on https://github.com/sudar/Arduino-Makefile/issues/94
+
+For creating a symbolic link you have to use the command “mklink” on Windows, e.g.
+
+mklink /d c:\Arduino c:\Program Files (x86)\Arduino
+
+At the end the variables end up being.
+
+ARDUINO_DIR=../../../../../Arduino
+
+Instead of
+
+ARDUINO_DIR=../../../../../Program\ Files\ \(x86\)/Arduino
+
+
+
 - `BOARD_TAG` - Type of board, for a list see boards.txt or `make show_boards`
 - `MONITOR_PORT` - The port where your Arduino is plugged in, usually `/dev/ttyACM0` or `/dev/ttyUSB0` in Linux or Mac OS X and `com3`, `com4`, etc. in Windows.
 - `ARDUINO_DIR` - Path to Arduino installation. In Cygwin in Windows this path must be
   relative, not absolute (e.g. "../../arduino" and not "/c/cygwin/Arduino").
 - `ARDMK_DIR`   - Path where the `*.mk` are present. If you installed the package, then it is usually `/usr/share/arduino`
-- `AVR_TOOLS_DIR` - Path where the avr tools chain binaries are present. If you are going to use the binaries that came with Arduino installation, then you don't have to set it.
+- `AVR_TOOLS_DIR` - Path where the avr tools chain binaries are present. If you are going to use the binaries that came with Arduino installation, then you don't have to set it. Otherwise set it realtive and not absolute.
 
 The list of all variables that can be overridden is available at [arduino-mk-vars.md](arduino-mk-vars.md) file.
 
@@ -124,7 +152,7 @@ It is possible to use [`colorgcc`](https://github.com/colorgcc/colorgcc) with th
 
 ## Versioning
 
-The current version of the makefile is `1.3.1`. You can find the full history in the [HISTORY.md](HISTORY.md) file
+The current version of the makefile is `1.3.3`. You can find the full history in the [HISTORY.md](HISTORY.md) file
 
 This project adheres to Semantic [Versioning 2.0](http://semver.org/).
 

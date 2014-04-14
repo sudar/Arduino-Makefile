@@ -1,5 +1,5 @@
 Name:			arduino-mk
-Version:		1.3.2
+Version:		1.3.3
 Release:		1%{dist}
 Summary:		Program your Arduino from the command line
 Packager:		Simon John <git@the-jedi.co.uk>
@@ -9,8 +9,8 @@ Group:			Development/Tools
 License:		LGPLv2+
 BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:		noarch
-Requires:		arduino-core, perl-Device-SerialPort
-BuildRequires:	arduino-core, perl-Device-SerialPort, help2man
+Requires:		arduino-core pyserial
+BuildRequires:	arduino-core
 
 %description
 Arduino is an open-source electronics prototyping platform based on 
@@ -36,7 +36,7 @@ for file in `find examples -type f ! -name .gitignore` ; do install -m 644 $file
 install -m 644 *.mk arduino-mk-vars.md %{buildroot}/%{_datadir}/arduino
 install -m 644 licence.txt %{buildroot}/%{_docdir}/%{name}
 install -m 755 bin/ard-reset-arduino %{buildroot}/%{_bindir}/ard-reset-arduino
-help2man %{buildroot}/%{_bindir}/ard-reset-arduino -n "Reset Arduino board" -s 1 -m "Arduino CLI Reset" --version-string=%{version} -N -o %{buildroot}/%{_mandir}/man1/ard-reset-arduino.1
+install -m 644 ard-reset-arduino.1 %{buildroot}/%{_mandir}/man1
 
 %clean
 rm -rf %{buildroot}
@@ -52,6 +52,14 @@ rm -rf %{buildroot}
 %{_docdir}/%{name}/examples
 
 %changelog
+* Sat Apr 12 2014 Simon John <git@the-jedi.co.uk>
+- Put manpage back.
+* Fri Apr 04 2014 Simon John <git@the-jedi.co.uk>
+- Removed BuildRequires of python3/pyserial.
+* Wed Apr 02 2014 Simon John <git@the-jedi.co.uk>
+- Added BuildRequires of python3-pyserial. Need to look into Requires.
+* Mon Mar 24 2014 Simon John <git@the-jedi.co.uk>
+- Replaced perl/help2man with pyserial for reset script.
 * Tue Feb 04 2014 Simon John <git@the-jedi.co.uk>
 - Added arduino-mk-vars.md to the files to be installed/packaged.
 * Sat Feb 01 2014 Simon John <git@the-jedi.co.uk>
