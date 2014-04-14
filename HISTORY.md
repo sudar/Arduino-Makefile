@@ -4,6 +4,9 @@ A Makefile for Arduino Sketches
 The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
+### 1.3.4 (In development)
+- Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
+
 ### 1.3.3 (2014-04-12)
 - Fix: Make a new manpage for ard-reset-arduino. Fixes issue #188 (https://github.com/sej7278)
 
