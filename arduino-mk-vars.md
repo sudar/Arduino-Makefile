@@ -129,7 +129,7 @@ ARDUINO_VERSION = 105
 
 ----
 
-### ARDUINO_VERSION
+### ARDUINO_SKETCHBOOK
 
 **Description:**
 
@@ -140,7 +140,7 @@ Usually can be auto-detected from the Arduino `preferences.txt` file or the defa
 **Example:**
 
 ```Makefile
-ARDUINO_VERSION = ~/sketches
+ARDUINO_SKETCHBOOK = ~/sketches
 ```
 
 **Requirement:** *Optional*
