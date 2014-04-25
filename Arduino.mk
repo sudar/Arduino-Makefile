@@ -784,12 +784,16 @@ SYS_INCLUDES        = $(patsubst %,-I%,$(SYS_LIBS))
 USER_INCLUDES       = $(patsubst %,-I%,$(USER_LIBS))
 LIB_C_SRCS          = $(wildcard $(patsubst %,%/*.c,$(SYS_LIBS)))
 LIB_CPP_SRCS        = $(wildcard $(patsubst %,%/*.cpp,$(SYS_LIBS)))
+LIB_AS_SRCS         = $(wildcard $(patsubst %,%/*.S,$(SYS_LIBS)))
 USER_LIB_CPP_SRCS   = $(wildcard $(patsubst %,%/*.cpp,$(USER_LIBS)))
 USER_LIB_C_SRCS     = $(wildcard $(patsubst %,%/*.c,$(USER_LIBS)))
+USER_LIB_AS_SRCS    = $(wildcard $(patsubst %,%/*.S,$(USER_LIBS)))
 LIB_OBJS            = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(LIB_C_SRCS)) \
-                      $(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS))
+                      $(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS)) \
+                      $(patsubst $(ARDUINO_LIB_PATH)/%.S,$(OBJDIR)/libs/%.o,$(LIB_AS_SRCS))
 USER_LIB_OBJS       = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(USER_LIB_CPP_SRCS)) \
-                      $(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(USER_LIB_C_SRCS))
+                      $(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(USER_LIB_C_SRCS)) \
+                      $(patsubst $(USER_LIB_PATH)/%.S,$(OBJDIR)/libs/%.o,$(USER_LIB_AS_SRCS))
 
 # Dependency files
 DEPS                = $(LOCAL_OBJS:.o=.d) $(LIB_OBJS:.o=.d) $(USER_LIB_OBJS:.o=.d) $(CORE_OBJS:.o=.d)
@@ -925,6 +929,10 @@ $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
+$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.S
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+
 $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.cpp
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
@@ -932,6 +940,10 @@ $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.cpp
 $(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+
+$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.S
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
 ifdef COMMON_DEPS
     COMMON_DEPS := $(COMMON_DEPS) $(MAKEFILE_LIST)
