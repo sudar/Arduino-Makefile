@@ -7,6 +7,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 ### 1.3.4 (In development)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
 - Add: Add support for compiling assembler code. (Issue #195) (https://github.com/hrobeers)
+- Add: Try to guess port from wildcards if not specified. (Issue #197) (https://github.com/tuzz)
 
 ### 1.3.3 (2014-04-12)
 - Fix: Make a new manpage for ard-reset-arduino. Fixes issue #188 (https://github.com/sej7278)
