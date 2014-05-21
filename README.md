@@ -21,7 +21,7 @@ in the build process. Changes in `*.h` files lead to recompilation of sources wh
 ### Through package
 
 If you're using FreeBSD, Debian or Ubuntu, you can find this in the `arduino-mk`
-package and can be installed using `apt-get` or `aptitude`.
+package which can be installed using `apt-get` or `aptitude`.
 
 ### From source
 
@@ -55,7 +55,7 @@ On Mac using MacPorts:
 
 On Windows:
 
-You need to install Cygwin and its packages for Make, Perl and the next Serial library.
+You need to install Cygwin and its packages for Make, Perl and the following Serial library.
 
        pySerial can be downloaded from PyPi
 
@@ -71,7 +71,7 @@ On other systems:
 
 You can also find more [detailed instructions in this guide](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile).
 
-You can also checkout the sample makefiles inside the `examples/` folder or take a look at a *real* [Makefile-example](examples/MakefileExample/Makefile-example.mk).
+You can also checkout the sample makefiles inside the `examples/` directory, e.g. [Makefile-example](examples/MakefileExample/Makefile-example.mk).
 
 Download a copy of this repo some where in your system or install it through a package.
 
@@ -95,23 +95,23 @@ On Windows (using cygwin), you might want to set:
     MONITOR_PORT  = com3
     BOARD_TAG     = mega2560
 
-It is recommended in Windows that you create a symbolic link directory for avoiding problem with folder naming conventions on Windows. Specially if your your Arduino folder is in:
+It is recommended in Windows that you create a symbolic link to avoid problems with file naming conventions on Windows. For example, if your your Arduino directory is in:
 
-c:\Program Files (x86)\Arduino
+    c:\Program Files (x86)\Arduino
 
-You will get problem for the special characters on the folder name. More details about this can be found on https://github.com/sudar/Arduino-Makefile/issues/94
+You will get problems with the special characters on the directory name. More details about this can be found in [issue #94](https://github.com/sudar/Arduino-Makefile/issues/94)
 
-For creating a symbolic link you have to use the command “mklink” on Windows, e.g.
+To create a symbolic link, you can use the command “mklink” on Windows, e.g.
 
-mklink /d c:\Arduino c:\Program Files (x86)\Arduino
+    mklink /d c:\Arduino c:\Program Files (x86)\Arduino
 
-At the end the variables end up being.
+After which, the variables should be:
 
-ARDUINO_DIR=../../../../../Arduino
+    ARDUINO_DIR=../../../../../Arduino
 
-Instead of
+Instead of:
 
-ARDUINO_DIR=../../../../../Program\ Files\ \(x86\)/Arduino
+    ARDUINO_DIR=../../../../../Program\ Files\ \(x86\)/Arduino
 
 
 
@@ -132,10 +132,10 @@ You can specify space separated list of libraries that are needed for your sketc
 
 The libraries will be searched in the following places in the following order.
 
-- `/libraries` folder inside your sketchbook folder. Sketchbook folder will be auto detected from your Arduino preference file. You can also manually set it through `ARDUINO_SKETCHBOOK`.
-- `/libraries` folder inside your Arduino folder, which is read from `ARDUINO_DIR`.
+- `/libraries` directory inside your sketchbook directory. Sketchbook directory will be auto detected from your Arduino preference file. You can also manually set it through `ARDUINO_SKETCHBOOK`.
+- `/libraries` directory inside your Arduino directory, which is read from `ARDUINO_DIR`.
 
-The libraries inside user folder will take precedence over libraries present in Arduino core folder.
+The libraries inside user directories will take precedence over libraries present in Arduino core directory.
 
 The makefile can autodetect the libraries that are included from your sketch and can include them automatically. But it can't detect libraries that are included from other libraries. (see [issue #93](https://github.com/sudar/Arduino-Makefile/issues/93))
 
