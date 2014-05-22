@@ -1251,7 +1251,7 @@ size:	$(TARGET_HEX)
 		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
 
 show_boards:
-		@$(CAT) $(BOARDS_TXT) | grep -E "^[[:alnum:]]" | cut -d . -f 1 | uniq
+		@$(CAT) $(BOARDS_TXT) | grep -E "^[[:alnum:]]+.name" | sort -u | sed 's/.name=/:/' | column -s: -t
 
 monitor:
 		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
