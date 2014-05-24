@@ -24,12 +24,16 @@ Then compile. This will create a binary and source RPM:
 
 Fedora's AVR compilers use ccache, so you may have to override some of the paths to the AVR tools in your sketch's Makefile, for example:
 
-    OVERRIDE_EXECUTABLES = 1
-    CC                   = /usr/lib64/ccache/$(CC_NAME)
-    CXX                  = /usr/lib64/ccache/$(CXX_NAME)
-    AS                   = /usr/bin/$(AS_NAME)
-    OBJCOPY              = /usr/bin/$(OBJCOPY_NAME)
-    OBJDUMP              = /usr/bin/$(OBJDUMP_NAME)
-    AR                   = /usr/bin/$(AR_NAME)
-    SIZE                 = /usr/bin/$(SIZE_NAME)
-    NM                   = /usr/bin/$(NM_NAME)
+```Makefile
+OVERRIDE_EXECUTABLES = 1
+CC      = /usr/lib64/ccache/$(CC_NAME)
+CXX     = /usr/lib64/ccache/$(CXX_NAME)
+AS      = /usr/bin/$(AS_NAME)
+OBJCOPY = /usr/bin/$(OBJCOPY_NAME)
+OBJDUMP = /usr/bin/$(OBJDUMP_NAME)
+AR      = /usr/bin/$(AR_NAME)
+SIZE    = /usr/bin/$(SIZE_NAME)
+NM      = /usr/bin/$(NM_NAME)
+```
+
+Or if you don't want to use ccache, then just set ```AVR_TOOLS_PATH=/usr``` and none of the above will be necessary.
