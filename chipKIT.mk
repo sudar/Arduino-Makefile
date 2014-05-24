@@ -47,6 +47,12 @@ else
     $(call show_config_variable,MPIDE_DIR,[USER])
 endif
 
+ifeq ($(CURRENT_OS),WINDOWS)
+    ifneq ($(shell echo $(ARDUINO_DIR) | egrep '^(/|[a-zA-Z]:\\)'),)
+        echo $(error On Windows, MPIDE_DIR must be a relative path)
+    endif
+endif
+
 ifndef MPIDE_PREFERENCES_PATH
     AUTO_MPIDE_PREFERENCES_PATH := $(firstword \
         $(call dir_if_exists,$(HOME)/.mpide/preferences.txt) \
