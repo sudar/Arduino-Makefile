@@ -95,6 +95,11 @@ On Windows (using cygwin), you might want to set:
     MONITOR_PORT  = com3
     BOARD_TAG     = mega2560
 
+On Arduino 1.5.x installs, you should set the architecture to either `avr` or `sam` and if using a submenu CPU, then also set that:
+
+	ARCHITECTURE  = avr
+    BOARD_SUB     = atmega168
+
 It is recommended in Windows that you create a symbolic link to avoid problems with file naming conventions on Windows. For example, if your your Arduino directory is in:
 
     c:\Program Files (x86)\Arduino
