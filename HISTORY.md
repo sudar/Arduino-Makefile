@@ -12,7 +12,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Add: List board name as well as tag in `make show_boards`. (Issue #204) (https://github.com/sej7278)
 - Fix: Add missing newlines at end of some echo's (Issue #207) (https://github.com/sej7278)
 - Fix: Add missing/reorder/reword targets in `make help` (https://github.com/sej7278)
-
+- New: Automake.mk is now compatible with Flymake mode
 ### 1.3.3 (2014-04-12)
 - Fix: Make a new manpage for ard-reset-arduino. Fixes issue #188 (https://github.com/sej7278)
 
