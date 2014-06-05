@@ -651,18 +651,23 @@ ifeq ($(words $(LOCAL_SRCS)), 0)
     $(error At least one source file (*.ino, *.pde, *.cpp, *c, *cc, *.S) is needed)
 endif
 
-ifeq ($(strip $(NO_CORE)),)
+# CHK_SOURCES is used by flymake
+# flymake creates a tmp file in the same directory as the file under edition
+# we must skip the verification in this particular case
+ifeq ($(strip $(CHK_SOURCES)),)
+    ifeq ($(strip $(NO_CORE)),)
 
-    # Ideally, this should just check if there are more than one file
-    ifneq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 1)
-        ifeq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 0)
-            $(call show_config_info,No .pde or .ino files found. If you are compiling .c or .cpp files then you need to explicitly include Arduino header files)
-        else
-            #TODO: Support more than one file. https://github.com/sudar/Arduino-Makefile/issues/49
-            $(error Need exactly one .pde or .ino file. This makefile doesn't support multiple .ino/.pde files yet)
+        # Ideally, this should just check if there are more than one file
+        ifneq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 1)
+            ifeq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 0)
+                $(call show_config_info,No .pde or .ino files found. If you are compiling .c or .cpp files then you need to explicitly include Arduino header files)
+            else
+                #TODO: Support more than one file. https://github.com/sudar/Arduino-Makefile/issues/49
+                $(error Need exactly one .pde or .ino file. This makefile doesn't support multiple .ino/.pde files yet)
+            endif
         endif
-    endif
 
+    endif
 endif
 
 # core sources
