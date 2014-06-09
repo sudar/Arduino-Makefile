@@ -153,7 +153,7 @@ It is possible to use [`colorgcc`](https://github.com/colorgcc/colorgcc) with th
 
 ## Emacs/Flymake support
 
-On-the-fly syntax checking in Emacs using the Flymake](http://www.emacswiki.org/emacs/FlyMake) minor mode is now possible.
+On-the-fly syntax checking in Emacs using the [Flymake](http://www.emacswiki.org/emacs/FlyMake) minor mode is now possible.
 
 First, the flymake mode must be configured to recognize ino files :
   
