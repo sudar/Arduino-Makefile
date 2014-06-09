@@ -150,6 +150,30 @@ To upload compiled files, `avrdude` is used. This Makefile tries to find `avrdud
 
 It is possible to use [`colorgcc`](https://github.com/colorgcc/colorgcc) with this makefile. Check out [this comment](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile#comment-1408) to find usage instructions.
 
+
+## Emacs/Flymake support
+
+On-the-fly syntax checking in Emacs using the Flymake](http://www.emacswiki.org/emacs/FlyMake) minor mode is now possible.
+
+First, the flymake mode must be configured to recognize ino files :
+  
+Edit the flymake configuration :
+    M-x customize-option RET
+    flymake-allowed-file-name-masks RET
+
+Add the line :
+
+      ("\\.ino\\'" flymake-simple-make-init)
+
+Then click on "Apply and Save" button
+
+Then, the following line must be added to the project Makefile :
+
+     check-syntax:
+	     $(CXX_NAME) -c -include Arduino.h   -x c++ $(CXXFLAGS)   $(CPPFLAGS)  -fsyntax-only $(CHK_SOURCES)
+
+
+
 ## Versioning
 
 The current version of the makefile is `1.3.3`. You can find the full history in the [HISTORY.md](HISTORY.md) file
