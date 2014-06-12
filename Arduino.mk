@@ -651,18 +651,23 @@ ifeq ($(words $(LOCAL_SRCS)), 0)
     $(error At least one source file (*.ino, *.pde, *.cpp, *c, *cc, *.S) is needed)
 endif
 
-ifeq ($(strip $(NO_CORE)),)
+# CHK_SOURCES is used by flymake
+# flymake creates a tmp file in the same directory as the file under edition
+# we must skip the verification in this particular case
+ifeq ($(strip $(CHK_SOURCES)),)
+    ifeq ($(strip $(NO_CORE)),)
 
-    # Ideally, this should just check if there are more than one file
-    ifneq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 1)
-        ifeq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 0)
-            $(call show_config_info,No .pde or .ino files found. If you are compiling .c or .cpp files then you need to explicitly include Arduino header files)
-        else
-            #TODO: Support more than one file. https://github.com/sudar/Arduino-Makefile/issues/49
-            $(error Need exactly one .pde or .ino file. This makefile doesn't support multiple .ino/.pde files yet)
+        # Ideally, this should just check if there are more than one file
+        ifneq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 1)
+            ifeq ($(words $(LOCAL_PDE_SRCS) $(LOCAL_INO_SRCS)), 0)
+                $(call show_config_info,No .pde or .ino files found. If you are compiling .c or .cpp files then you need to explicitly include Arduino header files)
+            else
+                #TODO: Support more than one file. https://github.com/sudar/Arduino-Makefile/issues/49
+                $(error Need exactly one .pde or .ino file. This makefile doesn't support multiple .ino/.pde files yet)
+            endif
         endif
-    endif
 
+    endif
 endif
 
 # core sources
@@ -1257,10 +1262,10 @@ monitor:
 		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
 
 disasm: $(OBJDIR)/$(TARGET).lss
-		@$(ECHO) "The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss"
+		@$(ECHO) "The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss\n\n"
 
 symbol_sizes: $(OBJDIR)/$(TARGET).sym
-		@$(ECHO) "A symbol listing sorted by their size have been dumped to $(OBJDIR)/$(TARGET).sym"
+		@$(ECHO) "A symbol listing sorted by their size have been dumped to $(OBJDIR)/$(TARGET).sym\n\n"
 
 verify_size:
 ifeq ($(strip $(HEX_MAXIMUM_SIZE)),)
@@ -1270,37 +1275,43 @@ endif
 See http://www.arduino.cc/en/Guide/Troubleshooting#size for tips on reducing it."; false; fi
 
 generate_assembly: $(OBJDIR)/$(TARGET).s
-		@$(ECHO) "Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s"
+		@$(ECHO) "Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s\n\n"
 
 generated_assembly: generate_assembly
-		@$(ECHO) "\"generated_assembly\" target is deprecated. Use \"generate_assembly\" target instead"
+		@$(ECHO) "\"generated_assembly\" target is deprecated. Use \"generate_assembly\" target instead\n\n"
 
 help_vars:
 		@$(CAT) $(ARDMK_DIR)/arduino-mk-vars.md
 
 help:
 		@$(ECHO) "\nAvailable targets:\n\
-  make                  - no upload\n\
-  make upload           - upload\n\
-  make clean            - remove all our dependencies\n\
-  make depends          - update dependencies\n\
-  make reset            - reset the Arduino by tickling DTR on the serial port\n\
-  make raw_upload       - upload without first resetting\n\
-  make show_boards      - list all the boards defined in boards.txt\n\
-  make monitor          - connect to the Arduino's serial port\n\
-  make size             - show the size of the compiled output (relative to\n\
-                          resources, if you have a patched avr-size)\n\
-  make disasm           - generate a .lss file in build-cli that contains\n\
-                          disassembly of the compiled file interspersed\n\
-                          with your original source code.\n\
-  make verify_size      - Verify that the size of the final file is less than\n\
-                          the capacity of the micro controller.\n\
-  make eeprom           - upload the eep file\n\
-  make raw_eeprom       - upload the eep file without first resetting\n\
-  make burn_bootloader  - burn bootloader and fuses\n\
-  make set_fuses        - set fuses without burning bootloader\n\
-  make help_vars        - print all variables that can be overridden\n\
-  make help             - show this help\n\
+  make                   - compile the code\n\
+  make upload            - upload\n\
+  make ispload           - upload using an ISP\n\
+  make raw_upload        - upload without first resetting\n\
+  make eeprom            - upload the eep file\n\
+  make raw_eeprom        - upload the eep file without first resetting\n\
+  make clean             - remove all our dependencies\n\
+  make depends           - update dependencies\n\
+  make reset             - reset the Arduino by tickling DTR or changing baud\n\
+                           rate on the serial port.\n\
+  make show_boards       - list all the boards defined in boards.txt\n\
+  make monitor           - connect to the Arduino's serial port\n\
+  make size              - show the size of the compiled output (relative to\n\
+                           resources, if you have a patched avr-size).\n\
+  make verify_size       - verify that the size of the final file is less than\n\
+                           the capacity of the micro controller.\n\
+  make symbol_sizes      - generate a .sym file containing symbols and their\n\
+                           sizes.\n\
+  make disasm            - generate a .lss file that contains disassembly\n\
+                           of the compiled file interspersed with your\n\
+                           original source code.\n\
+  make generate_assembly - generate a .s file containing the compiler\n\
+                           generated assembly of the main sketch.\n\
+  make burn_bootloader   - burn bootloader and fuses\n\
+  make set_fuses         - set fuses without burning bootloader\n\
+  make help_vars         - print all variables that can be overridden\n\
+  make help              - show this help\n\
 "
 	@$(ECHO) "Please refer to $(ARDMK_DIR)/Arduino.mk for more details.\n"
 
