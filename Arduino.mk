@@ -299,7 +299,7 @@ ifndef ARDUINO_VERSION
     # Remove all the decimals, and right-pad with zeros, and finally grab the first 3 bytes.
     # Works for 1.0 and 1.0.1
     VERSION_FILE := $(ARDUINO_DIR)/lib/version.txt
-    AUTO_ARDUINO_VERSION := $(shell [ -e $(VERSION_FILE) ] && cat $(VERSION_FILE) | sed -e 's/^[0-9]://g' -e 's/[.]//g' -e 's/$$/0000/' | head -c3)
+    AUTO_ARDUINO_VERSION := $(shell [ -e "$(VERSION_FILE)" ] && cat "$(VERSION_FILE)" | sed -e 's/^[0-9]://g' -e 's/[.]//g' -e 's/$$/0000/' | head -c3)
     ifdef AUTO_ARDUINO_VERSION
         ARDUINO_VERSION = $(AUTO_ARDUINO_VERSION)
         $(call show_config_variable,ARDUINO_VERSION,[AUTODETECTED])
@@ -331,7 +331,7 @@ ifndef ARDUINO_SKETCHBOOK
 
     ifneq ($(ARDUINO_PREFERENCES_PATH),)
         ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
-                                          $(ARDUINO_PREFERENCES_PATH) | \
+                                          "$(ARDUINO_PREFERENCES_PATH)" | \
                                      sed -e 's/sketchbook.path=//' )
     endif
 
@@ -520,7 +520,7 @@ endif
 
 ifndef PARSE_BOARD
     # result = $(call READ_BOARD_TXT, 'boardname', 'parameter')
-    PARSE_BOARD = $(shell grep -v "^\#" $(BOARDS_TXT) | grep $(1).$(2) | cut -d = -f 2 )
+    PARSE_BOARD = $(shell grep -v "^\#" "$(BOARDS_TXT)" | grep $(1).$(2) | cut -d = -f 2 )
 endif
 
 # If NO_CORE is set, then we don't have to parse boards.txt file
@@ -752,7 +752,6 @@ endif
 TARGET_HEX = $(OBJDIR)/$(TARGET).hex
 TARGET_ELF = $(OBJDIR)/$(TARGET).elf
 TARGET_EEP = $(OBJDIR)/$(TARGET).eep
-TARGETS    = $(OBJDIR)/$(TARGET).*
 CORE_LIB   = $(OBJDIR)/libcore.a
 
 # Names of executables - chipKIT needs to override all to set paths to PIC32
@@ -1255,13 +1254,13 @@ ifneq ($(strip $(AVRDUDE_ISP_FUSES_POST)),)
 endif
 
 clean:
-		$(REMOVE) $(LOCAL_OBJS) $(CORE_OBJS) $(LIB_OBJS) $(CORE_LIB) $(TARGETS) $(DEPS) $(USER_LIB_OBJS) ${OBJDIR}
+		$(REMOVE) ./$(OBJDIR)
 
 size:	$(TARGET_HEX)
 		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
 
 show_boards:
-		@$(CAT) $(BOARDS_TXT) | grep -E "^[[:alnum:]]+.name" | sort -uf | sed 's/.name=/:/' | column -s: -t
+		@$(CAT) "$(BOARDS_TXT)" | grep -E "^[[:alnum:]]+.name" | sort -uf | sed 's/.name=/:/' | column -s: -t
 
 monitor:
 		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
@@ -1286,7 +1285,7 @@ generated_assembly: generate_assembly
 		@$(ECHO) "\"generated_assembly\" target is deprecated. Use \"generate_assembly\" target instead\n\n"
 
 help_vars:
-		@$(CAT) $(ARDMK_DIR)/arduino-mk-vars.md
+		@$(CAT) "$(ARDMK_DIR)/arduino-mk-vars.md"
 
 help:
 		@$(ECHO) "\nAvailable targets:\n\
