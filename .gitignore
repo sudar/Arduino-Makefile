@@ -1,3 +1,10 @@
 *.o
 build-cli
 /.project
+Makefile.in
+aclocal.m4
+config.guess
+config.sub
+configure
+install-sh
+missing

@@ -228,6 +228,16 @@
 #
 ########################################################################
 
+ifneq ($(shell which arduino-mk-tool),)
+    # use defaults as set by installation.
+    # When using this file without installing it, those variables must be set manually.
+    ARDMK_DIR ?= `arduino-mk-tool ARDMK_DIR`
+    ARDUINO_DIR ?= `arduino-mk-tool ARDUINO_DIR`
+    AVR_TOOLS_DIR ?= `arduino-mk-tool AVR_TOOLS_DIR`
+    AVRDUDE ?= `arduino-mk-tool AVRDUDE`
+    MONITOR_PORT ?= `arduino-mk-tool MONITOR_PORT`
+endif
+
 arduino_output =
 # When output is not suppressed and we're in the top-level makefile,
 # running for the first time (i.e., not after a restart after

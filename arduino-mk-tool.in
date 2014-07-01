@@ -1,0 +1,42 @@
+#!/bin/sh
+# @configure_input@
+########################################################################
+#
+# Makefile for compiling Arduino sketches from command line
+# System part (i.e. project independent)
+# arduino-mk-tool, for finding system details when installed to system
+#
+# Copyright (C) 2014 Bas Wijnen <wijnen@debian.org>
+#
+# This file is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as
+# published by the Free Software Foundation; either version 2.1 of the
+# License, or (at your option) any later version.
+#
+########################################################################
+
+prefix=@prefix@
+
+case "$1" in
+	'')
+		echo '@ARDMK_DIR@/Arduino.mk'
+		;;
+	ARDMK_DIR)
+		echo '@ARDMK_DIR@'
+		;;
+	ARDUINO_DIR)
+		echo '@ARDUINO_DIR@'
+		;;
+	AVR_TOOLS_DIR)
+		echo '@AVR_TOOLS_DIR@'
+		;;
+	AVRDUDE)
+		echo '@AVRDUDE@'
+		;;
+	MONITOR_PORT)
+		echo '@MONITOR_PORT@'
+		;;
+	*)
+		echo >&2 "usage: $0 [<ARDUINO_DIR|AVR_TOOLS_DIR|AVRDUDE|MONITOR_PORT>]"
+		exit 1
+esac
