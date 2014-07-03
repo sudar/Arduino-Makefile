@@ -5,6 +5,7 @@ The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### 1.3.4 (In development)
+- Add: Add "Advanced Usage" and reference to the Bare-Arduino-Project in the README. (Issue #220) (https://github.com/ladislas)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
 - Add: Add support for compiling assembler code. (Issue #195) (https://github.com/hrobeers)
 - Add: Try to guess port from wildcards if not specified. (Issue #197) (https://github.com/tuzz)
@@ -25,9 +26,9 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Add avr-libc/malloc.c and realloc.c to included core files. Fixes issue #163 (https://github.com/sej7278)
 - Fix: Add "gpio" to the list of isp that don't have a port. (Issue #165, #166) (https://github.com/sej7278)
 - Fix: Add "-D__PROG_TYPES_COMPAT__" to the avr-g++ compiler flags to match IDE. (https://github.com/sej7278)
-- New: Create `Makefile-example-mk`, a *real life* `Makefile` example, to be used as a reference. (https://github.com/tinyladi)
-- Tweak: Add `OBJDIR` to `arduino-mk-vars.md` (https://github.com/tinyladi)
-- Tweak: *Beautify* `arduino-mk-vars.md` with code blocks. (https://github.com/tinyladi)
+- New: Create `Makefile-example-mk`, a *real life* `Makefile` example, to be used as a reference. (https://github.com/ladislas)
+- Tweak: Add `OBJDIR` to `arduino-mk-vars.md` (https://github.com/ladislas)
+- Tweak: *Beautify* `arduino-mk-vars.md` with code blocks. (https://github.com/ladislas)
 - Fix: AVR tools paths for chipKIT in Linux. (https://github.com/peplin)
 - Fix: Consider usb or usb:... to be a valid ISP_PORT (https://github.com/geoffholden)
 - Add: Add phony target to run pre-build hook script (https://github.com/jrid)
@@ -64,7 +65,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Show correct path to `arduino.mk` file in help message. Fix #120
 - Change echo for printf. Fix #129 (https://github.com/thomassigurdsen)
 - Add support for ChipKiT 2013. Fix #136 (https://github.com/peplin)
-- Auto detect and include libraries specified in `USER_LIB_PATH`. Fix #135 (https://github.com/tinyladi)
+- Auto detect and include libraries specified in `USER_LIB_PATH`. Fix #135 (https://github.com/ladislas)
 - Use `MAKEFILE_LIST` to get the name of the make file. Fix #130 (https://github.com/cantora)
 - New: Add option to set fuses without burning a bootloader. Fix #141 (https://github.com/sej7278)
 - Tweak: Don't append port details to avrdude for usbtiny. Fix #140 and #138 (https://github.com/PPvG)
