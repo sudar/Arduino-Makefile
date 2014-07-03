@@ -13,6 +13,9 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Add missing newlines at end of some echo's (Issue #207) (https://github.com/sej7278)
 - Fix: Add missing/reorder/reword targets in `make help` (https://github.com/sej7278)
 - New: Arduino.mk is now compatible with Flymake mode (https://github.com/rbarzic)
+- Fix: MONITOR_PORT detection (Issue #213, #215) (https://github.com/sej7278)
+- Tweak: Audited regexes/quoting/wildcards (Issue #192) (https://github.com/sej7278)
+- New: Build core objects in subdirectory (Issue #82) (https://github.com/sej7278)
 
 ### 1.3.3 (2014-04-12)
 - Fix: Make a new manpage for ard-reset-arduino. Fixes issue #188 (https://github.com/sej7278)
