@@ -69,6 +69,8 @@ On other systems:
 
 ## Usage
 
+### Standard Usage
+
 You can also find more [detailed instructions in this guide](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile).
 
 You can also checkout the sample makefiles inside the `examples/` directory, e.g. [Makefile-example](examples/MakefileExample/Makefile-example.mk).
@@ -113,8 +115,6 @@ Instead of:
 
     ARDUINO_DIR=../../../../../Program\ Files\ \(x86\)/Arduino
 
-
-
 - `BOARD_TAG` - Type of board, for a list see boards.txt or `make show_boards`
 - `MONITOR_PORT` - The port where your Arduino is plugged in, usually `/dev/ttyACM0` or `/dev/ttyUSB0` in Linux or Mac OS X and `com3`, `com4`, etc. in Windows.
 - `ARDUINO_DIR` - Path to Arduino installation. In Cygwin in Windows this path must be
@@ -123,6 +123,16 @@ Instead of:
 - `AVR_TOOLS_DIR` - Path where the avr tools chain binaries are present. If you are going to use the binaries that came with Arduino installation, then you don't have to set it. Otherwise set it realtive and not absolute.
 
 The list of all variables that can be overridden is available at [arduino-mk-vars.md](arduino-mk-vars.md) file.
+
+### Advanced Usage
+
+If you are planning on using the [Arduino-Makefile](https://github.com/sudar/Arduino-Makefile) in a larger/professional project, you might want to take a look at the [Bare-Arduino–Project](https://github.com/WeAreLeka/Bare-Arduino-Project) framework.
+
+Similar to HTML frameworks, [Bare-Arduino–Project](https://github.com/WeAreLeka/Bare-Arduino-Project) aims at providing a basic `tree` organization, `Makefile` configurations for both OS X and Linux and a handful of instruction on how to get started with a robust Arduino project architecture.
+
+Of course, as it is just a framework, everything is customizable to suit your needs.
+
+Further information are available in the [README.md](https://github.com/WeAreLeka/Bare-Arduino-Project/blob/master/README.md) as well as the [use/installation procedure](https://github.com/WeAreLeka/Bare-Arduino-Project/blob/master/INSTALL.md).
 
 ## Including Libraries
 
