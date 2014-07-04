@@ -15,28 +15,29 @@
 #
 ########################################################################
 
-prefix=@prefix@
+prefix="@prefix@"
 
 case "$1" in
 	'')
-		echo '@ARDMK_DIR@/Arduino.mk'
+		echo "@ARDMK_DIR@/Arduino.mk"
 		;;
 	ARDMK_DIR)
-		echo '@ARDMK_DIR@'
+		echo "@ARDMK_DIR@"
 		;;
 	ARDUINO_DIR)
-		echo '@ARDUINO_DIR@'
+		echo "@ARDUINO_DIR@"
 		;;
 	AVR_TOOLS_DIR)
-		echo '@AVR_TOOLS_DIR@'
+		echo "@AVR_TOOLS_DIR@"
 		;;
 	AVRDUDE)
-		echo '@AVRDUDE@'
+		echo "@AVRDUDE@"
 		;;
 	MONITOR_PORT)
-		echo '@MONITOR_PORT@'
+		echo "@MONITOR_PORT@"
 		;;
 	*)
 		echo >&2 "usage: $0 [<ARDUINO_DIR|AVR_TOOLS_DIR|AVRDUDE|MONITOR_PORT>]"
 		exit 1
+		;;
 esac

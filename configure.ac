@@ -22,9 +22,9 @@ AC_PATH_PROG([CC_NAME], [avr-gcc])
 AC_SUBST([AVR_TOOLS_DIR], `AS_DIRNAME([${CC_NAME}])`/..)
 AC_CANONICAL_HOST
 AS_CASE([$host],
-	[*-linux-*], [ARDUINO_DIR=${datarootdir}/arduino; MONITOR_PORT="/dev/ttyACM* /dev/ttyUSB*"],
-	[*-darwin-*], [ARDUINO_DIR=/Applications/Arduino.app/Contents/Resources/Java; MONITOR_PORT=/dev/cu.usb*],
-	[*-cygwin-*], [MONITOR_PORT=com1])
+	[*-linux-*], [AS_IF([test "x${ARDUINO_DIR}" = x], [ARDUINO_DIR=${datarootdir}/arduino]); AS_IF([test "x${MONITOR_PORT}" = x], [MONITOR_PORT="/dev/ttyACM* /dev/ttyUSB*"])],
+	[*-darwin-*], [AS_IF([test "x${ARDUINO_DIR}" = x], [ARDUINO_DIR=/Applications/Arduino.app/Contents/Resources/Java]); AS_IF([test "x${MONITOR_PORT}" = x], [MONITOR_PORT=/dev/cu.usb*])],
+	[*-cygwin-*], [AS_IF([test "x${MONITOR_PORT}" = x], [MONITOR_PORT=com1])])
 AS_IF([test "x$ARDUINO_DIR" = x], [AC_MSG_ERROR(["ARDUINO_DIR is not defined for your platform; please define it manually"])])
 AS_IF([test "x$MONITOR_PORT" = x], [AC_MSG_ERROR(["MONITOR_PORT is not defined for your platform; please define it manually"])])
 AC_SUBST([ARDUINO_DIR])

@@ -231,11 +231,11 @@
 ifneq ($(shell which arduino-mk-tool),)
     # use defaults as set by installation.
     # When using this file without installing it, those variables must be set manually.
-    ARDMK_DIR ?= `arduino-mk-tool ARDMK_DIR`
-    ARDUINO_DIR ?= `arduino-mk-tool ARDUINO_DIR`
-    AVR_TOOLS_DIR ?= `arduino-mk-tool AVR_TOOLS_DIR`
-    AVRDUDE ?= `arduino-mk-tool AVRDUDE`
-    MONITOR_PORT ?= `arduino-mk-tool MONITOR_PORT`
+    ARDMK_DIR ?= $(shell arduino-mk-tool ARDMK_DIR)
+    ARDUINO_DIR ?= $(shell arduino-mk-tool ARDUINO_DIR)
+    AVR_TOOLS_DIR ?= $(shell arduino-mk-tool AVR_TOOLS_DIR)
+    AVRDUDE ?= $(shell arduino-mk-tool AVRDUDE)
+    MONITOR_PORT ?= $(shell arduino-mk-tool MONITOR_PORT)
 endif
 
 arduino_output =

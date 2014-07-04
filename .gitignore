@@ -8,3 +8,8 @@ config.sub
 configure
 install-sh
 missing
+Makefile
+arduino-mk-tool
+autom4te.cache/
+config.log
+config.status
