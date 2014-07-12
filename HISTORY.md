@@ -4,7 +4,7 @@ A Makefile for Arduino Sketches
 The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
-### 1.3.4 (In development)
+### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
 - Add: Add support for compiling assembler code. (Issue #195) (https://github.com/hrobeers)
 - Add: Try to guess port from wildcards if not specified. (Issue #197) (https://github.com/tuzz)
