@@ -129,6 +129,42 @@ ARDUINO_VERSION = 105
 
 ----
 
+### ARCHITECTURE
+
+**Description:**
+
+Architecture for Arduino 1.5
+
+Defaults to unset for 1.0 or `avr` for 1.5
+
+**Example:**
+
+```Makefile
+ARCHITECTURE = sam
+```
+
+**Requirement:** *Optional*
+
+----
+
+### VENDOR
+
+**Description:**
+
+Board vendor/maintainer.
+
+Defaults to `arduino`
+
+**Example:**
+
+```Makefile
+VENDOR = sparkfun
+```
+
+**Requirement:** *Optional*
+
+----
+
 ### ARDUINO_SKETCHBOOK
 
 **Description:**
@@ -217,6 +253,26 @@ BOARD_TAG = uno or mega2560
 ```
 
 **Requirement:** *Mandatory*
+
+----
+
+### BOARD_SUB
+
+**Description:**
+
+1.5 submenu as listed in `boards.txt`
+
+**Example:**
+
+```Makefile
+# diecimila.name=Arduino Duemilanove or Diecimila
+BOARD_TAG=diecimila
+
+# diecimila.menu.cpu.atmega168=ATmega168
+BOARD_SUB=atmega168
+```
+
+**Requirement:** *Mandatory for 1.5 if using a submenu CPU*
 
 ----
 
@@ -1029,6 +1085,8 @@ BOOTLOADER_FILE = optiboot_atmega328.hex
 Relative path to bootloader directory.
 
 Usually can be auto-detected as a relative `bootloader.path` from `boards.txt`
+
+Deprecated in 1.5, now part of bootloader.file
 
 **Example:**
 
