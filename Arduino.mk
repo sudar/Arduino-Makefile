@@ -1327,7 +1327,7 @@ ifneq ($(strip $(AVRDUDE_ISP_FUSES_POST)),)
 endif
 
 clean:
-		$(REMOVE) ./$(OBJDIR)
+		$(REMOVE) $(OBJDIR)
 
 size:	$(TARGET_HEX)
 		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
