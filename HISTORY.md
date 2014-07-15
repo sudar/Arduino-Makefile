@@ -5,6 +5,7 @@ The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### In development
+- Add: Add "Advanced Usage" and reference to the Bare-Arduino-Project in the README. (Issue #220) (https://github.com/ladislas)
 - Tweak: Allow remove of any OBJDIR with `$(REMOVE) $(OBJDIR)`. (https://github.com/ladislas)
 - Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)
 
