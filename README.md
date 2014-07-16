@@ -119,7 +119,6 @@ Instead of:
     ARDUINO_DIR=../../../../../Program\ Files\ \(x86\)/Arduino
 
 
-
 - `BOARD_TAG` - Type of board, for a list see boards.txt or `make show_boards`
 - `MONITOR_PORT` - The port where your Arduino is plugged in, usually `/dev/ttyACM0` or `/dev/ttyUSB0` in Linux or Mac OS X and `com3`, `com4`, etc. in Windows.
 - `ARDUINO_DIR` - Path to Arduino installation. In Cygwin in Windows this path must be
@@ -151,38 +150,6 @@ To upload compiled files, `avrdude` is used. This Makefile tries to find `avrdud
       AVRDDUDE     = /usr/bin/avrdude
       AVRDUDE_CONF = /etc/avrdude.conf
 
-## Colorgcc
-
-It is possible to use [`colorgcc`](https://github.com/colorgcc/colorgcc) with this makefile. Check out [this comment](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile#comment-1408) to find usage instructions.
-
-## Emacs/Flymake support
-
-On-the-fly syntax checking in Emacs using the [Flymake](http://www.emacswiki.org/emacs/FlyMake) minor mode is now possible.
-
-First, the flymake mode must be configured to recognize ino files :
-
-Edit the flymake configuration :
-
-```
-    M-x customize-option RET
-    flymake-allowed-file-name-masks RET
-```
-
-Add the line :
-
-```
-      ("\\.ino\\'" flymake-simple-make-init)
-```
-
-Then click on "Apply and Save" button
-
-Then, the following line must be added to the project Makefile :
-
-```
-    check-syntax:
-        $(CXX_NAME) -c -include Arduino.h   -x c++ $(CXXFLAGS)   $(CPPFLAGS)  -fsyntax-only $(CHK_SOURCES)
-```
-
 ## Versioning
 
 The current version of the makefile is `1.3.4`. You can find the full history in the [HISTORY.md](HISTORY.md) file
@@ -210,6 +177,40 @@ If you are looking for ideas to work on, then check out the following TODO items
 - When you compile for the first time, it builds all libs inside Arduino directory even if it is not needed. But while linking only the relevant files are linked. ([issue #29](https://github.com/sudar/Arduino-Makefile/issues/29)). Even Arduino IDE does the same thing though.
 
 If you find an issue or have an idea for a feature then log them in the [issue tracker](https://github.com/sudar/Arduino-Makefile/issues/)
+
+## Interfacing with other projects/frameworks/IDE's
+
+### Colorgcc
+
+It is possible to use [`colorgcc`](https://github.com/colorgcc/colorgcc) with this makefile. Check out [this comment](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile#comment-1408) to find usage instructions.
+
+### Emacs/Flymake support
+
+On-the-fly syntax checking in Emacs using the [Flymake](http://www.emacswiki.org/emacs/FlyMake) minor mode is now possible.
+
+First, the flymake mode must be configured to recognize ino files :
+
+Edit the flymake configuration :
+
+```
+    M-x customize-option RET
+    flymake-allowed-file-name-masks RET
+```
+
+Add the line :
+
+```
+      ("\\.ino\\'" flymake-simple-make-init)
+```
+
+Then click on "Apply and Save" button
+
+Then, the following line must be added to the project Makefile :
+
+```
+    check-syntax:
+        $(CXX_NAME) -c -include Arduino.h   -x c++ $(CXXFLAGS)   $(CPPFLAGS)  -fsyntax-only $(CHK_SOURCES)
+```
 
 ## Credits
 
