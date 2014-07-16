@@ -212,6 +212,14 @@ Then, the following line must be added to the project Makefile :
         $(CXX_NAME) -c -include Arduino.h   -x c++ $(CXXFLAGS)   $(CPPFLAGS)  -fsyntax-only $(CHK_SOURCES)
 ```
 
+### Bare-Arduino–Project
+
+If you are planning on using this makefile in a larger/professional project, you might want to take a look at the [Bare-Arduino–Project](https://github.com/WeAreLeka/Bare-Arduino-Project) framework.
+
+Similar to HTML frameworks, [Bare-Arduino–Project](https://github.com/WeAreLeka/Bare-Arduino-Project) aims at providing a basic `tree` organization, `Makefile` configurations for both OS X and Linux and a handful of instruction on how to get started with a robust Arduino project architecture.
+
+Further information are available in the [README.md](https://github.com/WeAreLeka/Bare-Arduino-Project/blob/master/README.md) as well as in the [use/installation procedure](https://github.com/WeAreLeka/Bare-Arduino-Project/blob/master/INSTALL.md).
+
 ## Credits
 
 This makefile was originally created by [Martin Oldfield](http://mjo.tc/atelier/2009/02/arduino-cli.html) and he maintained it till v0.10.2.
