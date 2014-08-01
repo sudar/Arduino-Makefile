@@ -8,6 +8,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Allow remove of any OBJDIR with `$(REMOVE) $(OBJDIR)`. (https://github.com/ladislas)
 - Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)
 - Add: Add information about `Bare-Arduino–Project` in README. (https://github.com/ladislas)
+- Fix: Make avr-g++ use CXXFLAGS instead of CFLAGS. (https://github.com/sej7278)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
