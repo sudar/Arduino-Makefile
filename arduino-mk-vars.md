@@ -307,6 +307,8 @@ Directory where additional libraries are stored.
 
 Defaults to `libraries` directory within user's sketchbook.
 
+Note that you cannot have user libraries with the same name as the system Arduino libs.
+
 **Example:**
 
 ```Makefile
