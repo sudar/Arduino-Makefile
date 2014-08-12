@@ -931,8 +931,15 @@ else
     $(call show_config_variable,CFLAGS_STD,[USER])
 endif
 
-CFLAGS        += $(EXTRA_FLAGS) $(EXTRA_CFLAGS)
-CXXFLAGS      += -fno-exceptions $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS)
+ifndef CPPFLAGS_STD
+    CPPFLAGS_STD        = -std=c++0x
+    $(call show_config_variable,CPPFLAGS_STD,[DEFAULT])
+else
+    $(call show_config_variable,CPPFLAGS_STD,[USER])
+endif
+
+CFLAGS        += $(CFLAGS_STD) $(EXTRA_FLAGS) $(EXTRA_CFLAGS)
+CXXFLAGS      += -fno-exceptions $(CPPFLAGS_STD) $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS)
 ASFLAGS       += -x assembler-with-cpp
 LDFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL) $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_LDFLAGS)
 SIZEFLAGS     ?= --mcu=$(MCU) -C
