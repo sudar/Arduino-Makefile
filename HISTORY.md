@@ -11,7 +11,6 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Make avr-g++ use CXXFLAGS instead of CFLAGS. (https://github.com/sej7278)
 - Add: Add information about overriding system libs (Issue #229). (https://github.com/sej7278)
 - Add: Add information about reporting bugs to the correct project (Issue #231). (https://github.com/sej7278)
-- Fix: Create CPPFLAGS_STD variable and add CFLAGS_STD and CPPFLAGS_STD to CFLAGS and CXXFLAGS (http://github.com/ladislas)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
