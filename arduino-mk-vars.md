@@ -798,24 +798,6 @@ Defaults to `-std=gnu99`
 
 ----
 
-### CPPFLAGS_STD
-
-**Description:**
-
-Flags to pass to the C compiler.
-
-Defaults to `-std=c++0x`
-
-**Example:**
-
-```Makefile
-CPPFLAGS_STD = -std=gnu++14
-```
-
-**Requirement:** *Optional*
-
-----
-
 ### OVERRIDE_EXECUTABLES
 
 **Description:**
