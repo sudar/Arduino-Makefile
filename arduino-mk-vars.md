@@ -784,14 +784,70 @@ OPTIMIZATION_LEVEL = 3
 
 **Description:**
 
-Flags to pass to the C compiler.
+Controls, *exclusively*, which C standard is to be used for compilation.
 
-Defaults to `-std=gnu99`
+Defaults to `undefined`
+
+Possible values:
+
+*	With `avr-gcc 4.3`, shipped with the Arduino IDE:
+	*	`undefined`
+	*	`-std=c99`
+	*	`-std=gnu89` - This is the default for C code
+	*	`-std=gnu99`
+*	With `avr-gcc 4.7, 4.8 or 4.9`, installed by you
+	*	`undefined`
+	*	`-std=c99`
+	*	`-std=c11`
+	*	`-std=gnu89` - This is the default for C code
+	*	`-std=gnu99`
+	*	`-std=gnu11`
+
+For more information, please refer to the [Options Controlling C Dialect](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html)
 
 **Example:**
 
 ```Makefile
-<unset as per chipKIT.mk>
+CFLAGS_STD = = -std=gnu89
+```
+
+**Requirement:** *Optional*
+
+----
+
+### CXXFLAGS_STD
+
+**Description:**
+
+Controls, *exclusively*, which C++ standard is to be used for compilation.
+
+Defaults to `undefined`
+
+Possible values:
+
+*	With `avr-gcc 4.3`, shipped with the Arduino IDE:
+	*	`undefined`
+	*	`-std=c++98`
+	*	`-std=c++0x`
+	*	`-std=gnu++98` - This is the default for C code
+	*	`-std=gnu++0x`
+*	With `avr-gcc 4.7, 4.8 or 4.9`, installed by you
+	*	`undefined`
+	*	`-std=c++98`
+	*	`-std=c++11`
+	*	`-std=c++1y`
+	*	`-std=c++14`
+	*	`-std=gnu++98` - This is the default for C++ code
+	*	`-std=gnu++11`
+	*	`-std=gnu++1y`
+	*	`-std=gnu++14`
+
+For more information, please refer to the [Options Controlling C Dialect](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html)
+
+**Example:**
+
+```Makefile
+CXXFLAGS_STD = = -std=gnu++98
 ```
 
 **Requirement:** *Optional*

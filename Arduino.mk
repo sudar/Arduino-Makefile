@@ -925,16 +925,23 @@ ifneq ($(CATERINA),)
 endif
 
 ifndef CFLAGS_STD
-    CFLAGS_STD        = -std=gnu99
+    CFLAGS_STD        =
     $(call show_config_variable,CFLAGS_STD,[DEFAULT])
 else
     $(call show_config_variable,CFLAGS_STD,[USER])
 endif
 
-CFLAGS        += $(EXTRA_FLAGS) $(EXTRA_CFLAGS)
-CXXFLAGS      += -fno-exceptions $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS)
+ifndef CXXFLAGS_STD
+    CXXFLAGS_STD      =
+    $(call show_config_variable,CXXFLAGS_STD,[DEFAULT])
+else
+    $(call show_config_variable,CXXFLAGS_STD,[USER])
+endif
+
+CFLAGS        += $(CFLAGS_STD)
+CXXFLAGS      += -fno-exceptions $(CXXFLAGS_STD)
 ASFLAGS       += -x assembler-with-cpp
-LDFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL) $(EXTRA_FLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_LDFLAGS)
+LDFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL)
 SIZEFLAGS     ?= --mcu=$(MCU) -C
 
 # for backwards compatibility, grab ARDUINO_PORT if the user has it set
