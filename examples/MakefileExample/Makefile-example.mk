@@ -36,7 +36,7 @@ MONITOR_BAUDRATE  = 115200
 ### On OS X with `homebrew`:
 AVR_TOOLS_DIR     = /usr/local
 ### or on Linux: (remove the one you don't want)
-AVR_TOOLS_DIR     = /usr/bin
+AVR_TOOLS_DIR     = /usr
 
 ### AVRDDUDE
 ### Path to avrdude directory.
