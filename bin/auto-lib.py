@@ -16,6 +16,12 @@ MAIN_LIBS = [] ;
 LIBS_DEPS = [] ;
 LIBS_DEPS_STACK = [] ;
 
+# Define functions
+def outputLibs(libArray):
+	for lib in libArray:
+		print(lib),
+	print("")
+
 # Find local sources .ino, .c or .cpp
 for file in os.listdir(os.curdir):
 	if file.endswith((".c", ".cpp", ".ino")):
@@ -70,24 +76,10 @@ while LIBS_DEPS_STACK:
 						LIBS_DEPS_STACK.remove(lib)
 
 	LIBS_DEPS_STACK = sorted(set(LIBS_DEPS_STACK))
-	# print(LIBS_DEPS_STACK)
 
 LIBS_DEPS = sorted(set(LIBS_DEPS))
 
-# print("Main libraries: ")
-# print(MAIN_LIBS);
-# print("")
-# print("Dependencies stack: ")
-# print(LIBS_DEPS_STACK)
-# print("")
-# print("Libraries dependencies: ")
-# print(LIBS_DEPS);
-
-def outputLibs(libArray):
-	for lib in libArray:
-		print(lib),
-	print("")
-
+# Output libraries for the Makefile
 print("MAIN_LIBS"),
 outputLibs(MAIN_LIBS)
 
