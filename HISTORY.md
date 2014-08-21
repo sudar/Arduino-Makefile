@@ -16,6 +16,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Add: Add documentation about CFLAGS_STD and CXXFLAGS_STD (Issue #234) (https://github.com/ladislas)
 - Tweak: Update Malefile-example.mk with STD flags (https://github.com/ladislas)
 - Add: Allow "make clean" target to be extended (Issue #239). (https://github.com/sej7278)
+- Fix: Update "make show_boards" regex to work with the Due in 1.5. (https://github.com/sej7278)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
