@@ -1092,8 +1092,9 @@ $(OBJDIR)/%.s: %.ino $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-#$(OBJDIR)/%.lst: $(OBJDIR)/%.s
-#	$(AS) -$(MCU_FLAG_NAME)=$(MCU) -alhnd $< > $@
+$(OBJDIR)/%.s: %.cpp $(COMMON_DEPS) | $(OBJDIR)
+	@$(MKDIR) $(dir $@)
+	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # core files
 $(OBJDIR)/core/%.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS) | $(OBJDIR)
