@@ -767,12 +767,12 @@ endif
 # Automatically find the libraries needed to compile the sketch
 
 ifndef MAIN_LIBS
-    MAIN_LIBS = $(shell $(ARDMK_DIR)/bin/auto-lib.py $(USER_LIB_PATH) | \
+    MAIN_LIBS = $(shell $(ARDMK_DIR)/bin/auto-lib $(USER_LIB_PATH) | \
                 sed -ne 's/MAIN_LIBS \(.*\) /\1/p')
 endif
 
 ifndef LIBS_DEPS
-    LIBS_DEPS = $(shell $(ARDMK_DIR)/bin/auto-lib.py $(USER_LIB_PATH) | \
+    LIBS_DEPS = $(shell $(ARDMK_DIR)/bin/auto-lib $(USER_LIB_PATH) | \
                 sed -ne 's/LIBS_DEPS \(.*\) /\1/p')
 endif
 
