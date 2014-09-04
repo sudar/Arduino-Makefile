@@ -9,7 +9,6 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)
 - Add: Add information about `Bare-Arduino–Project` in README. (https://github.com/ladislas)
 - Fix: Make avr-g++ use CXXFLAGS instead of CFLAGS. (https://github.com/sej7278)
-- Add: Add information about overriding system libs (Issue #229). (https://github.com/sej7278)
 - Add: Add information about reporting bugs to the correct project (Issue #231). (https://github.com/sej7278)
 - Fix: Allow the use of CFLAGS_STD and CXXFLAGS_STD and set defaults (Issue #234) (https://github.com/ladislas)
 - Tweak: Remove $(EXTRA_XXX) variables (Issue #234) (https://github.com/ladislas)
@@ -17,6 +16,8 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Update Malefile-example.mk with STD flags (https://github.com/ladislas)
 - Add: Allow "make clean" target to be extended (Issue #239). (https://github.com/sej7278)
 - Fix: Update "make show_boards" regex to work with the Due in 1.5. (https://github.com/sej7278)
+- Fix: Allow user libaries/sketches to have the same name as system libs. (Issue #244, #229). (https://github.com/sej7278)
+- Tweak: Add cpp to extensions supported by "make generate_assembly". (https://github.com/sej7278)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
