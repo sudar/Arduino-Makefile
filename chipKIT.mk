@@ -108,11 +108,11 @@ LDSCRIPT = $(call PARSE_BOARD,$(BOARD_TAG),ldscript)
 LDSCRIPT_FILE = $(ARDUINO_CORE_PATH)/$(LDSCRIPT)
 
 MCU_FLAG_NAME=mprocessor
-LDFLAGS  += -T$(ARDUINO_CORE_PATH)/$(LDSCRIPT)
-LDFLAGS  += -T$(ARDUINO_CORE_PATH)/chipKIT-application-COMMON.ld
-LDFLAGS  += -mno-peripheral-libs -nostartfiles -Wl,--gc-sections
+LDFLAGS  += -mdebugger -mno-peripheral-libs -nostartfiles -Wl,--gc-sections
+LINKER_SCRIPTS  += -T $(ARDUINO_CORE_PATH)/$(LDSCRIPT)
+LINKER_SCRIPTS  += -T $(ARDUINO_CORE_PATH)/chipKIT-application-COMMON.ld
 CPPFLAGS += -mno-smart-io -fno-short-double -fframe-base-loclist \
-			-g3 -Wcast-align -D__PROG_TYPES_COMPAT__
+			-g3 -Wcast-align -D_BOARD_MEGA_
 CFLAGS_STD =
 
 include $(ARDMK_DIR)/Arduino.mk
