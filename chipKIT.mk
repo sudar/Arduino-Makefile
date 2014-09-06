@@ -81,7 +81,8 @@ ARDUINO_CORE_PATH = $(ALTERNATE_CORE_PATH)/cores/$(ALTERNATE_CORE)
 ARDUINO_PREFERENCES_PATH = $(MPIDE_PREFERENCES_PATH)
 ARDUINO_DIR = $(MPIDE_DIR)
 
-CORE_AS_SRCS = $(ARDUINO_CORE_PATH)/vector_table.S
+CORE_AS_SRCS = $(ARDUINO_CORE_PATH)/vector_table.S \
+			   $(ARDUINO_CORE_PATH)/pic32_software_reset.S
 
 ARDUINO_VERSION = 23
 
@@ -109,7 +110,9 @@ LDSCRIPT_FILE = $(ARDUINO_CORE_PATH)/$(LDSCRIPT)
 MCU_FLAG_NAME=mprocessor
 LDFLAGS  += -T$(ARDUINO_CORE_PATH)/$(LDSCRIPT)
 LDFLAGS  += -T$(ARDUINO_CORE_PATH)/chipKIT-application-COMMON.ld
-CPPFLAGS += -mno-smart-io -fno-short-double
+LDFLAGS  += -mno-peripheral-libs -nostartfiles -Wl,--gc-sections
+CPPFLAGS += -mno-smart-io -fno-short-double -fframe-base-loclist \
+			-g3 -Wcast-align -D__PROG_TYPES_COMPAT__
 CFLAGS_STD =
 
 include $(ARDMK_DIR)/Arduino.mk
