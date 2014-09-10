@@ -9,6 +9,7 @@ BOARD_TAG    = attiny85-8
 
 ARDUINO_LIBS = SoftwareSerial
 
+include ../TestSuiteCommon.mk
 include $(ARDMK_DIR)/Arduino.mk
 
 # !!! Important. You have to use make ispload to upload when using ISP programmer

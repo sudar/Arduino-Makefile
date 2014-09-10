@@ -212,6 +212,13 @@ Then, the following line must be added to the project Makefile :
         $(CXX_NAME) -c -include Arduino.h   -x c++ $(CXXFLAGS)   $(CPPFLAGS)  -fsyntax-only $(CHK_SOURCES)
 ```
 
+## Test Suite
+
+This project includes a suite of example Makefiles and small Arduino and chipKIT
+programs to assist the developers. Run `script/bootstrap.sh` to attempt to
+automatically install the dependencies (Arduino IDE, MPIDE, etc.). Run
+`script/runtests.sh` to attempt to compile all of the examples.
+
 ### Bare-Arduino–Project
 
 If you are planning on using this makefile in a larger/professional project, you might want to take a look at the [Bare-Arduino–Project](https://github.com/WeAreLeka/Bare-Arduino-Project) framework.
