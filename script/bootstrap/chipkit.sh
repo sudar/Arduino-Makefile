@@ -9,13 +9,14 @@ if [ -z "$MPIDE_DIR" ] || ! test -e $MPIDE_DIR || [ $OS == "cygwin" ]; then
 
     echo "Installing MPIDE..."
 
-        MPIDE_BUILD=20140821
-        if [ $OS == "cygwin" ]; then
+    MPIDE_BUILD=20140821
+    if [ $OS == "cygwin" ]; then
         MPIDE_BASENAME="mpide-0023-windows-$MPIDE_BUILD"
         MPIDE_FILE="$MPIDE_BASENAME".zip
         EXTRACT_COMMAND="unzip -q"
     elif [ $OS == "mac" ]; then
         MPIDE_BASENAME=mpide-0023-macosx-$MPIDE_BUILD
+        MPIDE_FILE="$MPIDE_BASENAME".dmg.zip
         EXTRACT_COMMAND="unzip -q"
     else
         MPIDE_BASENAME=mpide-0023-linux64-$MPIDE_BUILD
@@ -36,6 +37,11 @@ if [ -z "$MPIDE_DIR" ] || ! test -e $MPIDE_DIR || [ $OS == "cygwin" ]; then
     then
         echo "Installing MPIDE to local folder..."
         $EXTRACT_COMMAND $MPIDE_FILE
+        if [ $OS == "mac" ]; then
+            hdiutil attach $MPIDE_FILE
+            cp -R /Volumes/Mpide/Mpide.app/Contents/Resources/Java $MPIDE_BASENAME
+            hdiutil detach /Volumes/Mpide
+        fi
         rm -rf mpide-0023-$MPIDE_BUILD
         cp -R $MPIDE_BASENAME mpide-0023-$MPIDE_BUILD
         echo "MPIDE installed"
