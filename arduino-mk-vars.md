@@ -852,6 +852,82 @@ CXXFLAGS_STD = = -std=gnu++98
 
 ----
 
+### CFLAGS
+
+**Description:**
+
+Flags passed to copmiler for files compiled as C. Add more flags to this
+variable using `+=`.
+
+Defaults to all flags required for a typical build.
+
+**Example:**
+
+```Makefile
+CFLAGS += -DMY_DEFINE
+```
+
+**Requirement:** *Optional*
+
+----
+
+### CPPFLAGS
+
+**Description:**
+
+Flags passed to the compiler for files compiled as C++. Add more flags to this
+variable using `+=`.
+
+Defaults to all flags required for a typical build.
+
+**Example:**
+
+```Makefile
+CPPFLAGS += -DMY_DEFINE
+```
+
+**Requirement:** *Optional*
+
+----
+
+### ASFLAGS
+
+**Description:**
+
+Flags passed to compiler for files compiled as assembly (e.g. `.S` files). Add
+more flags to this variable using `+=`.
+
+Defaults to all flags required for a typical build.
+
+**Example:**
+
+```Makefile
+ASFLAGS += -DMY_DEFINE
+```
+
+**Requirement:** *Optional*
+
+----
+
+### COMMONFLAGS
+
+**Description:**
+
+Flags passed to the compiler for files compiled as C, C++ and assembly. Add more
+flags to this variable using `+=`.
+
+Defaults to all flags required for a typical build.
+
+**Example:**
+
+```Makefile
+COMMON_FLAGS += -DMY_DEFINE_FOR_ALL_SOURCE_TYPES
+```
+
+**Requirement:** *Optional*
+
+----
+
 ### OVERRIDE_EXECUTABLES
 
 **Description:**
