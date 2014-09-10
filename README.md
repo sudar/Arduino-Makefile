@@ -1,4 +1,4 @@
-# A Makefile for Arduino Sketches
+# A Makefile for Arduino Sketches [![Build Status](https://travis-ci.org/sudar/Arduino-Makefile.svg)](https://travis-ci.org/sudar/Arduino-Makefile)
 
 This is a very simple Makefile which knows how to build Arduino sketches. It defines entire workflows for compiling code, flashing it to Arduino and even communicating through Serial monitor. You don't need to change anything in the Arduino sketches.
 
