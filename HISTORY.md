@@ -18,6 +18,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Update "make show_boards" regex to work with the Due in 1.5. (https://github.com/sej7278)
 - Fix: Allow user libaries/sketches to have the same name as system libs. (Issue #244, #229). (https://github.com/sej7278)
 - Tweak: Add cpp to extensions supported by "make generate_assembly". (https://github.com/sej7278)
+- New: Added test suite and integration with travis CI. (https://github.com/peplin)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
