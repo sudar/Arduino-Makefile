@@ -5,20 +5,22 @@ The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### In development
-- Tweak: Allow remove of any OBJDIR with `$(REMOVE) $(OBJDIR)`. (https://github.com/ladislas)
-- Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)
-- Add: Add information about `Bare-Arduino–Project` in README. (https://github.com/ladislas)
-- Fix: Make avr-g++ use CXXFLAGS instead of CFLAGS. (https://github.com/sej7278)
-- Add: Add information about reporting bugs to the correct project (Issue #231). (https://github.com/sej7278)
-- Fix: Allow the use of CFLAGS_STD and CXXFLAGS_STD and set defaults (Issue #234) (https://github.com/ladislas)
+- New: Added test suite and integration with travis CI. (https://github.com/peplin)
+- New: Add information about `Bare-Arduino–Project` in README. (https://github.com/ladislas)
+- New: Add information about reporting bugs to the correct project (Issue #231). (https://github.com/sej7278)
+- New: Add documentation about CFLAGS_STD and CXXFLAGS_STD (Issue #234) (https://github.com/ladislas)
+- New: Allow "make clean" target to be extended (Issue #239). (https://github.com/sej7278)
+
 - Tweak: Remove $(EXTRA_XXX) variables (Issue #234) (https://github.com/ladislas)
-- Add: Add documentation about CFLAGS_STD and CXXFLAGS_STD (Issue #234) (https://github.com/ladislas)
 - Tweak: Update Malefile-example.mk with STD flags (https://github.com/ladislas)
-- Add: Allow "make clean" target to be extended (Issue #239). (https://github.com/sej7278)
+- Tweak: Allow remove of any OBJDIR with `$(REMOVE) $(OBJDIR)`. (https://github.com/ladislas)
+- Tweak: Add cpp to extensions supported by "make generate_assembly". (https://github.com/sej7278)
+
+- Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)
+- Fix: Make avr-g++ use CXXFLAGS instead of CFLAGS. (https://github.com/sej7278)
+- Fix: Allow the use of CFLAGS_STD and CXXFLAGS_STD and set defaults (Issue #234) (https://github.com/ladislas)
 - Fix: Update "make show_boards" regex to work with the Due in 1.5. (https://github.com/sej7278)
 - Fix: Allow user libaries/sketches to have the same name as system libs. (Issue #244, #229). (https://github.com/sej7278)
-- Tweak: Add cpp to extensions supported by "make generate_assembly". (https://github.com/sej7278)
-- New: Added test suite and integration with travis CI. (https://github.com/peplin)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
