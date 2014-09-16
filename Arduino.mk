@@ -715,9 +715,9 @@ LOCAL_AS_SRCS   ?= $(wildcard *.S)
 LOCAL_SRCS      = $(LOCAL_C_SRCS)   $(LOCAL_CPP_SRCS) \
 		$(LOCAL_CC_SRCS)   $(LOCAL_PDE_SRCS) \
 		$(LOCAL_INO_SRCS) $(LOCAL_AS_SRCS)
-LOCAL_OBJ_FILES = $(LOCAL_C_SRCS:.c=.o)   $(LOCAL_CPP_SRCS:.cpp=.o) \
-		$(LOCAL_CC_SRCS:.cc=.o)   $(LOCAL_PDE_SRCS:.pde=.o) \
-		$(LOCAL_INO_SRCS:.ino=.o) $(LOCAL_AS_SRCS:.S=.o)
+LOCAL_OBJ_FILES = $(LOCAL_C_SRCS:.c=.c.o)   $(LOCAL_CPP_SRCS:.cpp=.cpp.o) \
+		$(LOCAL_CC_SRCS:.cc=.cc.o)   $(LOCAL_PDE_SRCS:.pde=.pde.o) \
+		$(LOCAL_INO_SRCS:.ino=.ino.o) $(LOCAL_AS_SRCS:.S=.S.o)
 LOCAL_OBJS      = $(patsubst %,$(OBJDIR)/%,$(LOCAL_OBJ_FILES))
 
 ifeq ($(words $(LOCAL_SRCS)), 0)
@@ -755,7 +755,7 @@ ifeq ($(strip $(NO_CORE)),)
             $(call show_config_info,NO_CORE_MAIN_CPP set so core library will not include main.cpp,[MANUAL])
         endif
 
-        CORE_OBJ_FILES  = $(CORE_C_SRCS:.c=.o) $(CORE_CPP_SRCS:.cpp=.o) $(CORE_AS_SRCS:.S=.o)
+        CORE_OBJ_FILES  = $(CORE_C_SRCS:.c=.c.o) $(CORE_CPP_SRCS:.cpp=.cpp.o) $(CORE_AS_SRCS:.S=.S.o)
         CORE_OBJS       = $(patsubst $(ARDUINO_CORE_PATH)/%,  \
                 $(OBJDIR)/core/%,$(CORE_OBJ_FILES))
     endif
@@ -871,12 +871,12 @@ LIB_AS_SRCS         = $(wildcard $(patsubst %,%/*.S,$(SYS_LIBS)))
 USER_LIB_CPP_SRCS   = $(wildcard $(patsubst %,%/*.cpp,$(USER_LIBS)))
 USER_LIB_C_SRCS     = $(wildcard $(patsubst %,%/*.c,$(USER_LIBS)))
 USER_LIB_AS_SRCS    = $(wildcard $(patsubst %,%/*.S,$(USER_LIBS)))
-LIB_OBJS            = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(LIB_C_SRCS)) \
-                      $(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS)) \
-                      $(patsubst $(ARDUINO_LIB_PATH)/%.S,$(OBJDIR)/libs/%.o,$(LIB_AS_SRCS))
-USER_LIB_OBJS       = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/userlibs/%.o,$(USER_LIB_CPP_SRCS)) \
-                      $(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/userlibs/%.o,$(USER_LIB_C_SRCS)) \
-                      $(patsubst $(USER_LIB_PATH)/%.S,$(OBJDIR)/userlibs/%.o,$(USER_LIB_AS_SRCS))
+LIB_OBJS            = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.c.o,$(LIB_C_SRCS)) \
+                      $(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.cpp.o,$(LIB_CPP_SRCS)) \
+                      $(patsubst $(ARDUINO_LIB_PATH)/%.S,$(OBJDIR)/libs/%.S.o,$(LIB_AS_SRCS))
+USER_LIB_OBJS       = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/userlibs/%.cpp.o,$(USER_LIB_CPP_SRCS)) \
+                      $(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/userlibs/%.c.o,$(USER_LIB_C_SRCS)) \
+                      $(patsubst $(USER_LIB_PATH)/%.S,$(OBJDIR)/userlibs/%.s.o,$(USER_LIB_AS_SRCS))
 
 # Dependency files
 DEPS                = $(LOCAL_OBJS:.o=.d) $(LIB_OBJS:.o=.d) $(USER_LIB_OBJS:.o=.d) $(CORE_OBJS:.o=.d)
@@ -896,7 +896,7 @@ ifndef DEBUG_FLAGS
 endif
 
 # SoftwareSerial requires -Os (some delays are tuned for this optimization level)
-%SoftwareSerial.o : OPTIMIZATION_FLAGS = -Os
+%SoftwareSerial.cpp.o : OPTIMIZATION_FLAGS = -Os
 
 ifndef MCU_FLAG_NAME
     MCU_FLAG_NAME = mmcu
@@ -1022,27 +1022,27 @@ $(call show_separator)
 # easy to change the build options in future
 
 # library sources
-$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c
+$(OBJDIR)/libs/%.c.o: $(ARDUINO_LIB_PATH)/%.c
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp
+$(OBJDIR)/libs/%.cpp.o: $(ARDUINO_LIB_PATH)/%.cpp
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.S
+$(OBJDIR)/libs/%.S.o: $(ARDUINO_LIB_PATH)/%.S
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
-$(OBJDIR)/userlibs/%.o: $(USER_LIB_PATH)/%.cpp
+$(OBJDIR)/userlibs/%.cpp.o: $(USER_LIB_PATH)/%.cpp
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/userlibs/%.o: $(USER_LIB_PATH)/%.c
+$(OBJDIR)/userlibs/%.c.o: $(USER_LIB_PATH)/%.c
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/userlibs/%.o: $(USER_LIB_PATH)/%.S
+$(OBJDIR)/userlibs/%.S.o: $(USER_LIB_PATH)/%.S
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
@@ -1053,33 +1053,33 @@ else
 endif
 
 # normal local sources
-$(OBJDIR)/%.o: %.c $(COMMON_DEPS) | $(OBJDIR)
+$(OBJDIR)/%.c.o: %.c $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.cc $(COMMON_DEPS) | $(OBJDIR)
+$(OBJDIR)/%.cc.o: %.cc $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.cpp $(COMMON_DEPS) | $(OBJDIR)
+$(OBJDIR)/%.cpp.o: %.cpp $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.S $(COMMON_DEPS) | $(OBJDIR)
+$(OBJDIR)/%.S.o: %.S $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
-$(OBJDIR)/%.o: %.s $(COMMON_DEPS) | $(OBJDIR)
+$(OBJDIR)/%.s.o: %.s $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CC) -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
 # the pde -> o file
-$(OBJDIR)/%.o: %.pde $(COMMON_DEPS) | $(OBJDIR)
+$(OBJDIR)/%.pde.o: %.pde $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # the ino -> o file
-$(OBJDIR)/%.o: %.ino $(COMMON_DEPS) | $(OBJDIR)
+$(OBJDIR)/%.ino.o: %.ino $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
@@ -1097,15 +1097,15 @@ $(OBJDIR)/%.s: %.cpp $(COMMON_DEPS) | $(OBJDIR)
 	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # core files
-$(OBJDIR)/core/%.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS) | $(OBJDIR)
+$(OBJDIR)/core/%.c.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/core/%.o: $(ARDUINO_CORE_PATH)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
+$(OBJDIR)/core/%.cpp.o: $(ARDUINO_CORE_PATH)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/core/%.o: $(ARDUINO_CORE_PATH)/%.S $(COMMON_DEPS) | $(OBJDIR)
+$(OBJDIR)/core/%.S.o: $(ARDUINO_CORE_PATH)/%.S $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
