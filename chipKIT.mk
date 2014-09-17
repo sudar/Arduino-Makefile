@@ -81,7 +81,18 @@ ARDUINO_CORE_PATH = $(ALTERNATE_CORE_PATH)/cores/$(ALTERNATE_CORE)
 ARDUINO_PREFERENCES_PATH = $(MPIDE_PREFERENCES_PATH)
 ARDUINO_DIR = $(MPIDE_DIR)
 
-CORE_AS_SRCS = $(ARDUINO_CORE_PATH)/vector_table.S
+# TODO Because of a bug in MPIDE 20140821, if crti.S is not
+# compiled into libcore.a as crti.S.o (i.e. NOT crti.o) the
+# program will compile but will crash on the device. Need to wait
+# for a decision on
+# https://github.com/sudar/Arduino-Makefile/issues/255 and/or
+# implement a workaround before merging this code into the master
+# branch.
+CORE_AS_SRCS = $(ARDUINO_CORE_PATH)/vector_table.S \
+			   $(ARDUINO_CORE_PATH)/cpp-startup.S \
+			   $(ARDUINO_CORE_PATH)/crti.S \
+			   $(ARDUINO_CORE_PATH)/crtn.S \
+			   $(ARDUINO_CORE_PATH)/pic32_software_reset.S
 
 ARDUINO_VERSION = 23
 
@@ -107,9 +118,11 @@ LDSCRIPT = $(call PARSE_BOARD,$(BOARD_TAG),ldscript)
 LDSCRIPT_FILE = $(ARDUINO_CORE_PATH)/$(LDSCRIPT)
 
 MCU_FLAG_NAME=mprocessor
-LDFLAGS  += -T$(ARDUINO_CORE_PATH)/$(LDSCRIPT)
-LDFLAGS  += -T$(ARDUINO_CORE_PATH)/chipKIT-application-COMMON.ld
-CPPFLAGS += -mno-smart-io -fno-short-double
+LDFLAGS  += -mdebugger -mno-peripheral-libs -nostartfiles -Wl,--gc-sections
+LINKER_SCRIPTS  += -T $(ARDUINO_CORE_PATH)/$(LDSCRIPT)
+LINKER_SCRIPTS  += -T $(ARDUINO_CORE_PATH)/chipKIT-application-COMMON.ld
+CPPFLAGS += -mno-smart-io -fno-short-double -fframe-base-loclist \
+			-g3 -Wcast-align -D_BOARD_MEGA_
 CFLAGS_STD =
 
 include $(ARDMK_DIR)/Arduino.mk
