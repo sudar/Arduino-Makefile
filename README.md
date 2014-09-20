@@ -215,9 +215,12 @@ Then, the following line must be added to the project Makefile :
 ## Test Suite
 
 This project includes a suite of example Makefiles and small Arduino and chipKIT
-programs to assist the developers. Run `script/bootstrap.sh` to attempt to
-automatically install the dependencies (Arduino IDE, MPIDE, etc.). Run
-`script/runtests.sh` to attempt to compile all of the examples.
+programs to assist the maintainers of the Makefile. Run
+`tests/script/bootstrap.sh` to attempt to automatically install the dependencies
+(Arduino IDE, MPIDE, etc.). Run `tests/script/runtests.sh` to attempt to compile
+all of the examples. The bootstrap script is primarily intended for use by a
+continuous integration server, specifically Travis CI. It is not intended for
+normal users.
 
 ### Bare-Arduino–Project
 

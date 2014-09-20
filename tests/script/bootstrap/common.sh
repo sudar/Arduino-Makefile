@@ -132,7 +132,7 @@ if [ -z $COMMON_SOURCED ]; then
 
     echo "Storing all downloaded dependencies in the \"dependencies\" folder"
 
-    DEPENDENCIES_FOLDER="dependencies"
+    DEPENDENCIES_FOLDER="/var/tmp/Arduino-Makefile-testing-dependencies"
     mkdir -p $DEPENDENCIES_FOLDER
 
     if ! command -v make >/dev/null 2>&1; then
