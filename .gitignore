@@ -1,5 +1,4 @@
 *.o
 build-cli
 /.project
-/dependencies
 build-*
