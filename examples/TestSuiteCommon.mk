@@ -1,5 +1,5 @@
 ARDMK_DIR=../../
-DEPENDENCIES_FOLDER = ../../dependencies
+DEPENDENCIES_FOLDER = /var/tmp/Arduino-Makefile-testing-dependencies
 DEPENDENCIES_MPIDE_DIR = $(DEPENDENCIES_FOLDER)/mpide-0023-linux64-20130817-test
 
 ifeq ($(MPIDE_DIR),)
