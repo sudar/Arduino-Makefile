@@ -28,8 +28,8 @@ do
 
     pushd $dir
     echo "Compiling $example..."
-    make_output=`make clean`
-    make_output=`make`
+    make_output=`make clean TEST=1`
+    make_output=`make TEST=1`
     if [[ $? -ne 0 ]]; then
         failures+=("$example")
         echo "Example $example failed"

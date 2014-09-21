@@ -3,5 +3,4 @@
 BOARD_TAG    = uno
 ARDUINO_LIBS = Wire
 
-include ../TestSuiteCommon.mk
 include ../../Arduino.mk
