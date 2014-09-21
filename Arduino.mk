@@ -1344,7 +1344,8 @@ show_boards:
 		@$(CAT) "$(BOARDS_TXT)" | grep -E "^[a-zA-Z0-9_]+.name" | sort -uf | sed 's/.name=/:/' | column -s: -t
 
 monitor:
-		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
+		$(MONITOR_CMD) -S ARD_MONITOR $(call get_monitor_port) $(MONITOR_BAUDRATE)
+		-$(MONITOR_CMD) -X -S ARD_MONITOR quit
 
 disasm: $(OBJDIR)/$(TARGET).lss
 		@$(ECHO) "The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss\n\n"
