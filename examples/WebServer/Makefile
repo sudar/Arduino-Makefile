@@ -3,5 +3,4 @@
 BOARD_TAG    = uno
 ARDUINO_LIBS = Ethernet SPI
 
-include ../TestSuiteCommon.mk
 include ../../Arduino.mk

@@ -1010,6 +1010,14 @@ else
     $(call show_config_variable,BOOTLOADER_PARENT,[USER])
 endif
 
+########################################################################
+# Tools version info
+ARDMK_VERSION = 1.3.4
+$(call show_config_variable,ARDMK_VERSION,[COMPUTED])
+
+CC_VERSION = $(shell $(CC) -dumpversion)
+$(call show_config_variable,CC_VERSION,[COMPUTED],($(CC_NAME)))
+
 # end of config output
 $(call show_separator)
 
