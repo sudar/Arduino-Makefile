@@ -56,7 +56,7 @@ ifneq ($(TEST),)
               MPIDE_DIR = $(DEPENDENCIES_MPIDE_DIR)
        endif
 
-       DEPENDENCIES_ARDUINO_DIR = $(DEPENDENCIES_DIR)/arduino-1.0.5
+       DEPENDENCIES_ARDUINO_DIR = $(DEPENDENCIES_DIR)/arduino-1.0.6
        ifeq ($(ARDUINO_DIR),)
               ARDUINO_DIR = $(DEPENDENCIES_ARDUINO_DIR)
        endif

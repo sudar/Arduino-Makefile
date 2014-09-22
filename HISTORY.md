@@ -16,6 +16,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Update Malefile-example.mk with STD flags (https://github.com/ladislas)
 - Tweak: Allow remove of any OBJDIR with `$(REMOVE) $(OBJDIR)`. (https://github.com/ladislas)
 - Tweak: Add cpp to extensions supported by "make generate_assembly". (https://github.com/sej7278)
+- Tweak: Update travis-ci to test against Arduino 1.0.6. (https://github.com/sej7278)
 
 - Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)
 - Fix: Make avr-g++ use CXXFLAGS instead of CFLAGS. (https://github.com/sej7278)
