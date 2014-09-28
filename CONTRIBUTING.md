@@ -24,6 +24,7 @@ Submit a ticket for your issue, assuming one does not already exist.
 - When committing, reference your issue (if present) and include a note about the fix
     - If possible (and if makes sense) do atomic commits
     - Try to follow [this guideline](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) while choosing the git commit message
+    - If it makes sense then add a unit test case for the changes that you are making
 - Push the changes to your fork and submit a pull request to the 'master' branch of the this repository
 
 At this point you're waiting on us to merge your pull request. We'll review all pull requests, and make suggestions and changes if necessary.

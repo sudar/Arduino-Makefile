@@ -1,4 +1,4 @@
-# A Makefile for Arduino Sketches
+# A Makefile for Arduino Sketches [![Build Status](https://travis-ci.org/sudar/Arduino-Makefile.svg)](https://travis-ci.org/sudar/Arduino-Makefile)
 
 This is a very simple Makefile which knows how to build Arduino sketches. It defines entire workflows for compiling code, flashing it to Arduino and even communicating through Serial monitor. You don't need to change anything in the Arduino sketches.
 
@@ -211,6 +211,16 @@ Then, the following line must be added to the project Makefile :
     check-syntax:
         $(CXX_NAME) -c -include Arduino.h   -x c++ $(CXXFLAGS)   $(CPPFLAGS)  -fsyntax-only $(CHK_SOURCES)
 ```
+
+## Test Suite
+
+This project includes a suite of example Makefiles and small Arduino and chipKIT
+programs to assist the maintainers of the Makefile. Run
+`tests/script/bootstrap.sh` to attempt to automatically install the dependencies
+(Arduino IDE, MPIDE, etc.). Run `tests/script/runtests.sh` to attempt to compile
+all of the examples. The bootstrap script is primarily intended for use by a
+continuous integration server, specifically Travis CI. It is not intended for
+normal users.
 
 ### Bare-Arduino–Project
 
