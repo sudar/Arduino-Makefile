@@ -20,8 +20,14 @@ in the build process. Changes in `*.h` files lead to recompilation of sources wh
 
 ### Through package
 
-If you're using FreeBSD, Debian or Ubuntu, you can find this in the `arduino-mk`
+If you're using FreeBSD, Debian, Raspbian or Ubuntu, you can find this in the `arduino-mk`
 package which can be installed using `apt-get` or `aptitude`.
+
+Arch Linux users can use the unofficial AUR package [arduino-mk](https://aur.archlinux.org/packages/arduino-mk/)
+and install using `yaourt -S arduino-mk`
+
+Fedora Linux users can use our packaging instructions [here](https://github.com/sudar/Arduino-Makefile/tree/master/packaging/fedora)
+to build an RPM.
 
 ### From source
 
