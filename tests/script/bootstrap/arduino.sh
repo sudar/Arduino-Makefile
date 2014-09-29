@@ -8,9 +8,9 @@ if [ -z "$ARDUINO_DIR" ] || ! test -e $ARDUINO_DIR || [ $OS == "cygwin" ]; then
 
     echo "Installing Arduino..."
 
-    ARDUINO_BASENAME="arduino-1.0.5"
+    ARDUINO_BASENAME="arduino-1.0.6"
     if [ $OS == "cygwin" ]; then
-        ARDUINO_FILE="$ARDUINO_BASENAME-r2-windows".zip
+        ARDUINO_FILE="$ARDUINO_BASENAME-windows".zip
         EXTRACT_COMMAND="unzip -q"
     elif [ $OS == "mac" ]; then
         ARDUINO_FILE="$ARDUINO_BASENAME-macosx".zip
@@ -20,7 +20,7 @@ if [ -z "$ARDUINO_DIR" ] || ! test -e $ARDUINO_DIR || [ $OS == "cygwin" ]; then
         EXTRACT_COMMAND="tar -xzf"
     fi
 
-    ARDUINO_URL=http://arduino.googlecode.com/files/$ARDUINO_FILE
+    ARDUINO_URL=http://downloads.arduino.cc/$ARDUINO_FILE
 
     _pushd $DEPENDENCIES_FOLDER
     if ! test -e $ARDUINO_FILE
