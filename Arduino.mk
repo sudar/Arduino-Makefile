@@ -315,13 +315,13 @@ endif
 # 1.5.x architecture - avr or sam for arduino vendor
 ifndef ARCHITECTURE
     ifeq ($(shell expr $(ARDUINO_VERSION) '>' 150), 1)
-		# default to avr for 1.5
-		ARCHITECTURE = avr
+        # default to avr for 1.5
+        ARCHITECTURE = avr
         ARDUINO_ARCH_FLAG = -DARDUINO_ARCH_AVR
-	else
-		# unset for 1.0
-		ARCHITECTURE =
-	endif
+    else
+        # unset for 1.0
+        ARCHITECTURE =
+    endif
     $(call show_config_variable,ARCHITECTURE,[DEFAULT])
 else
     $(call show_config_variable,ARCHITECTURE,[USER])
@@ -482,9 +482,9 @@ endif
 # 1.5.x platform dependent libs path
 ifndef ARDUINO_PLATFORM_LIB_PATH
     ifeq ($(shell expr $(ARDUINO_VERSION) '>' 150), 1)
-		# only for 1.5
-		ARDUINO_PLATFORM_LIB_PATH = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/libraries
-	endif
+        # only for 1.5
+        ARDUINO_PLATFORM_LIB_PATH = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/libraries
+    endif
     $(call show_config_variable,ARDUINO_PLATFORM_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
 else
     $(call show_config_variable,ARDUINO_PLATFORM_LIB_PATH,[USER])
