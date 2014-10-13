@@ -484,8 +484,8 @@ ifndef ARDUINO_PLATFORM_LIB_PATH
     ifeq ($(shell expr $(ARDUINO_VERSION) '>' 150), 1)
         # only for 1.5
         ARDUINO_PLATFORM_LIB_PATH = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/libraries
+        $(call show_config_variable,ARDUINO_PLATFORM_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
     endif
-    $(call show_config_variable,ARDUINO_PLATFORM_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
 else
     $(call show_config_variable,ARDUINO_PLATFORM_LIB_PATH,[USER])
 endif
