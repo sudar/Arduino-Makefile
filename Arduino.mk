@@ -372,37 +372,9 @@ endif
 ########################################################################
 # Arduino and system paths
 
-ifndef CC_NAME
-CC_NAME      = avr-gcc
-endif
-
-ifndef CXX_NAME
-CXX_NAME     = avr-g++
-endif
-
-ifndef OBJCOPY_NAME
-OBJCOPY_NAME = avr-objcopy
-endif
-
-ifndef OBJDUMP_NAME
-OBJDUMP_NAME = avr-objdump
-endif
-
-ifndef AR_NAME
-AR_NAME      = avr-ar
-endif
-
-ifndef SIZE_NAME
-SIZE_NAME    = avr-size
-endif
-
-ifndef NM_NAME
-NM_NAME      = avr-nm
-endif
-
 ifndef AVR_TOOLS_DIR
 
-    BUNDLED_AVR_TOOLS_DIR := $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/avr)
+    BUNDLED_AVR_TOOLS_DIR := $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/$(ARCHITECTURE))
 
     ifdef BUNDLED_AVR_TOOLS_DIR
         AVR_TOOLS_DIR     = $(BUNDLED_AVR_TOOLS_DIR)
@@ -549,7 +521,7 @@ endif
 
 ifndef PARSE_BOARD
     # result = $(call READ_BOARD_TXT, 'boardname', 'parameter')
-    PARSE_BOARD = $(shell grep -v "^\#" "$(BOARDS_TXT)" | grep $(1).$(2) | cut -d = -f 2 )
+    PARSE_BOARD = $(shell grep -v "^\#" "$(BOARDS_TXT)" | grep $(1).$(2) | cut -d = -f 2,3 )
 endif
 
 # If NO_CORE is set, then we don't have to parse boards.txt file
@@ -574,11 +546,16 @@ ifeq ($(strip $(NO_CORE)),)
 
     # processor stuff
     ifndef MCU
-        MCU := $(call PARSE_BOARD,$(BOARD_TAG),build.mcu)
+        MCU := $(call PARSE_BOARD,$(BOARD_TAG),build.cpu)
         ifndef MCU
+            MCU := $(call PARSE_BOARD,$(BOARD_TAG),build.mcu)
+            ifndef MCU
 		    # might be a submenu
-            MCU := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).build.mcu)
-        endif
+                MCU := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).build.mcu)
+            endif
+       else
+            MCU_FLAG_NAME="mcpu"
+       endif
     endif
 
     ifndef F_CPU
@@ -818,6 +795,73 @@ ifndef ARDUINO_HEADER
     endif
 endif
 
+
+########################################################################
+# command names
+
+ifndef CC_NAME
+    CC_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.gcc)
+    ifndef CC_NAME
+        CC_NAME := avr-gcc
+    else
+        $(call show_config_variable,CC_NAME,[COMPUTED])
+    endif
+endif
+
+ifndef CXX_NAME
+    CXX_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.g++)
+    ifndef CXX_NAME
+        CXX_NAME := avr-g++
+    else
+        $(call show_config_variable,CXX_NAME,[COMPUTED])
+    endif
+endif
+
+ifndef OBJCOPY_NAME
+    OBJCOPY_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.objcopy)
+    ifndef OBJCOPY_NAME
+        OBJCOPY_NAME := avr-objcopy
+    else
+        $(call show_config_variable,OBJCOPY_NAME,[COMPUTED])
+    endif
+endif
+
+ifndef OBJDUMP_NAME
+    OBJDUMP_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.objdump)
+    ifndef OBJDUMP_NAME
+        OBJDUMP_NAME := avr-objdump
+    else
+        $(call show_config_variable,OBJDUMP_NAME,[COMPUTED])
+    endif
+endif
+
+ifndef AR_NAME
+    AR_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.ar)
+    ifndef AR_NAME
+        AR_NAME := avr-ar
+    else
+        $(call show_config_variable,AR_NAME,[COMPUTED])
+    endif
+endif
+
+ifndef SIZE_NAME
+    SIZE_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.size)
+    ifndef SIZE_NAME
+        SIZE_NAME := avr-size
+    else
+        $(call show_config_variable,SIZE_NAME,[COMPUTED])
+    endif
+endif
+
+ifndef NM_NAME
+    NM_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.nm)
+    ifndef NM_NAME
+        NM_NAME := avr-nm
+    else
+        $(call show_config_variable,NM_NAME,[COMPUTED])
+    endif
+endif
+
 ########################################################################
 # Rules for making stuff
 
@@ -909,7 +953,7 @@ endif
 CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) -D__PROG_TYPES_COMPAT__ \
         -I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
         $(SYS_INCLUDES) $(USER_INCLUDES) -Wall -ffunction-sections \
-        -fdata-sections
+        -fdata-sections $(call PARSE_BOARD,$(BOARD_TAG),build.option)
 
 ifdef DEBUG
 OPTIMIZATION_FLAGS= $(DEBUG_FLAGS)
@@ -939,9 +983,23 @@ else
 endif
 
 CFLAGS        += $(CFLAGS_STD)
-CXXFLAGS      += -fno-exceptions $(CXXFLAGS_STD)
+CXXFLAGS      += -fno-exceptions $(CXXFLAGS_STD) $(call PARSE_BOARD,$(BOARD_TAG),build.cppoption)
+
+ifeq ("$(call PARSE_BOARD,$(BOARD_TAG),build.gnu0x)","true")
+    CXXFLAGS      += -std=gnu++0x
+endif
+
+ifeq ("$(call PARSE_BOARD,$(BOARD_TAG),build.elide_constructors)", "true")
+    CXXFLAGS      += -felide-constructors
+endif
+
 ASFLAGS       += -x assembler-with-cpp
-LDFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL)
+LDFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL) $(call PARSE_BOARD,$(BOARD_TAG),build.linkoption) $(call PARSE_BOARD,$(BOARD_TAG),build.additionalobject)
+
+ifneq ("$(call PARSE_BOARD,$(BOARD_TAG),build.linkscript)",)
+    LDFLAGS   += -T$(call PARSE_BOARD,$(BOARD_TAG),build.linkscript)
+endif
+
 SIZEFLAGS     ?= --mcu=$(MCU) -C
 
 # for backwards compatibility, grab ARDUINO_PORT if the user has it set
@@ -1322,6 +1380,17 @@ reset_stty:
 ispload:	$(TARGET_EEP) $(TARGET_HEX) verify_size
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) \
 			$(AVRDUDE_ISPLOAD_OPTS)
+
+teensy_upload: $(TARGET_HEX) verify_size
+	@echo "This works best if you have already started: $(ARDUINO_DIR)/hardware/tools/teensy &"
+	$(MAKE) teensy_do_upload
+	$(MAKE) teensy_reboot
+
+teensy_reboot:
+	-$(ARDUINO_DIR)/hardware/tools/teensy_reboot
+
+teensy_do_upload:
+	$(ARDUINO_DIR)/hardware/tools/teensy_post_compile -board=$(BOARD_TAG) -tools=$(abspath $(ARDUINO_DIR)/hardware/tools) -path=$(abspath $(OBJDIR)) -file=$(TARGET)
 
 burn_bootloader:
 ifneq ($(strip $(AVRDUDE_ISP_FUSES_PRE)),)
