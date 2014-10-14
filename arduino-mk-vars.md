@@ -111,6 +111,23 @@ ARDUINO_DIR = /Applications/Arduino.app/Contents/Resources/Java
 
 ----
 
+### ARDUINO_PLATFORM_LIB_PATH
+
+**Description:**
+
+Directory where the Arduino platform dependent libraries are stored.
+(Used only for Arduino 1.5.x)
+
+**Example:**
+
+```Makefile
+ARDUINO_PLATFORM_LIB_PATH = /usr/share/arduino/hardware/arduino/avr/libraries
+```
+
+**Requirement:** *Optional*
+
+----
+
 ### ARDUINO_VERSION
 
 **Description:**
