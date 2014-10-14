@@ -44,6 +44,15 @@ ifndef CXX_NAME
     endif
 endif
 
+ifndef AS_NAME
+    AS_NAME := $(call PARSE_TEENSY,$(BOARD_TAG),build.command.as)
+    ifndef AS_NAME
+        AS_NAME := arm-none-eabi-gcc-as
+    else
+        $(call show_config_variable,AS_NAME,[COMPUTED])
+    endif
+endif
+
 ifndef OBJCOPY_NAME
     OBJCOPY_NAME := $(call PARSE_TEENSY,$(BOARD_TAG),build.command.objcopy)
     ifndef OBJCOPY_NAME
@@ -83,7 +92,7 @@ endif
 ifndef NM_NAME
     NM_NAME := $(call PARSE_TEENSY,$(BOARD_TAG),build.command.nm)
     ifndef NM_NAME
-        NM_NAME := avr-nm
+        NM_NAME := arm-none-eabi-gcc-nm
     else
         $(call show_config_variable,NM_NAME,[COMPUTED])
     endif
@@ -94,10 +103,6 @@ ifndef MCU
     MCU := $(call PARSE_TEENSY,$(BOARD_TAG),build.cpu)
     ifndef MCU
         MCU := $(call PARSE_TEENSY,$(BOARD_TAG),build.mcu)
-        ifndef MCU
-		    # might be a submenu
-            MCU := $(call PARSE_TEENSY,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).build.mcu)
-        endif
     else
         MCU_FLAG_NAME=mcpu
     endif
