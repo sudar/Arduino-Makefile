@@ -5,6 +5,8 @@ The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### In development
+- New: Add support for new 1.5.x library layout (Issue #275) (https://github.com/lukasz-e)
+- New: Add support for 1.5.x vendor/hardware architecture library location (Issue #276) (https://github.com/lukasz-e)
 - New: Added test suite and integration with travis CI. (https://github.com/peplin)
 - New: Add information about `Bare-Arduino–Project` in README. (https://github.com/ladislas)
 - New: Add information about reporting bugs to the correct project (Issue #231). (https://github.com/sej7278)
@@ -25,6 +27,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Update "make show_boards" regex to work with the Due in 1.5. (https://github.com/sej7278)
 - Fix: Allow user libaries/sketches to have the same name as system libs. (Issue #244, #229). (https://github.com/sej7278)
 - Fix: Remove impact of travis-ci from regular users. (Issue #258). (https://github.com/sej7278)
+- Fix: objcopy quoting issue on Windows. (Issue #272). (https://github.com/sej7278)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
