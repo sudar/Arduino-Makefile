@@ -46,6 +46,23 @@ endif
 $(call show_config_variable,CURRENT_OS,[AUTODETECTED])
 
 ########################################################################
+#
+# Travis-CI
+ifneq ($(TEST),)
+       DEPENDENCIES_DIR = /var/tmp/Arduino-Makefile-testing-dependencies
+
+       DEPENDENCIES_MPIDE_DIR = $(DEPENDENCIES_DIR)/mpide-0023-linux64-20130817-test
+       ifeq ($(MPIDE_DIR),)
+              MPIDE_DIR = $(DEPENDENCIES_MPIDE_DIR)
+       endif
+
+       DEPENDENCIES_ARDUINO_DIR = $(DEPENDENCIES_DIR)/arduino-1.0.6
+       ifeq ($(ARDUINO_DIR),)
+              ARDUINO_DIR = $(DEPENDENCIES_ARDUINO_DIR)
+       endif
+endif
+
+########################################################################
 # Arduino Directory
 
 ifndef ARDUINO_DIR
@@ -66,21 +83,4 @@ ifeq ($(CURRENT_OS),WINDOWS)
     ifneq ($(shell echo $(ARDUINO_DIR) | egrep '^(/|[a-zA-Z]:\\)'),)
         echo $(error On Windows, ARDUINO_DIR must be a relative path)
     endif
-endif
-
-########################################################################
-#
-# Travis-CI
-ifneq ($(TEST),)
-       DEPENDENCIES_DIR = /var/tmp/Arduino-Makefile-testing-dependencies
-
-       DEPENDENCIES_MPIDE_DIR = $(DEPENDENCIES_DIR)/mpide-0023-linux64-20130817-test
-       ifeq ($(MPIDE_DIR),)
-              MPIDE_DIR = $(DEPENDENCIES_MPIDE_DIR)
-       endif
-
-       DEPENDENCIES_ARDUINO_DIR = $(DEPENDENCIES_DIR)/arduino-1.0.6
-       ifeq ($(ARDUINO_DIR),)
-              ARDUINO_DIR = $(DEPENDENCIES_ARDUINO_DIR)
-       endif
 endif
