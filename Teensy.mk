@@ -4,7 +4,9 @@
 #
 # https://www.pjrc.com/teensy/
 #
-# Example sketch: https://github.com/stepcut/teensy-blink
+# You must install teensyduino for this Makefile to work:
+#
+# http://www.pjrc.com/teensy/teensyduino.html
 #
 # Copyright (C) 2014 Jeremy Shaw <jeremy@n-heptane.com> based on
 # work that is copyright Sudar, Nicholas Zambetti, David A. Mellis
@@ -19,11 +21,17 @@
 #
 # Original Arduino adaptation by mellis, eighthave, oli.keller
 #
-# Current version: 1.3.4
-#
 # Refer to HISTORY.md file for complete history of changes
 #
 ########################################################################
+
+
+ifndef ARDMK_DIR
+    ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
+endif
+
+# include Common.mk now we know where it is
+include $(ARDMK_DIR)/Common.mk
 
 VENDOR              = teensy
 ARDUINO_CORE_PATH   = $(ARDUINO_DIR)/hardware/teensy/cores/teensy3
@@ -121,10 +129,21 @@ ifndef MCU
     MCU := $(call PARSE_TEENSY,$(BOARD_TAG),build.cpu)
     ifndef MCU
         MCU := $(call PARSE_TEENSY,$(BOARD_TAG),build.mcu)
-    else
-        MCU_FLAG_NAME=mcpu
     endif
 endif
+
+ifndef MCU_FLAG_NAME
+    MCU_FLAG_NAME=mcpu
+endif
+
+#ifndef MCU
+#    MCU := $(call PARSE_TEENSY,$(BOARD_TAG),build.cpu)
+#    ifndef MCU
+#        MCU := $(call PARSE_TEENSY,$(BOARD_TAG),build.mcu)
+#    else
+#        MCU_FLAG_NAME=mcpu
+#    endif
+#endif
 
 ########################################################################
 # FLAGS
@@ -158,9 +177,5 @@ RESET_CMD = nohup $(ARDUINO_DIR)/hardware/tools/teensy_post_compile -board=$(BOA
 
 ########################################################################
 # automatially include Arduino.mk for the user
-
-ifndef ARDMK_DIR
-    ARDMK_DIR := $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
-endif
 
 include $(ARDMK_DIR)/Arduino.mk
