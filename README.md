@@ -8,6 +8,7 @@ This is a very simple Makefile which knows how to build Arduino sketches. It def
 - Highly customizable
 - Supports all official AVR-based Arduino boards
 - Supports chipKIT
+- Supports Teensy 3.x (via Teensyduino)
 - Works on all three major OS (Mac, Linux, Windows)
 - Auto detects serial baud rate and libraries used
 - Support for `*.ino` and `*.pde` sketches as well as raw `*.c` and `*.cpp`
@@ -155,6 +156,12 @@ To upload compiled files, `avrdude` is used. This Makefile tries to find `avrdud
 
       AVRDUDE     = /usr/bin/avrdude
       AVRDUDE_CONF = /etc/avrdude.conf
+
+## Teensy 3.x
+
+For Teensy 3.x support you must first install [Teensyduino](http://www.pjrc.com/teensy/teensyduino.html).
+
+See examples/BlinkTeensy for example usage.
 
 ## Versioning
 
