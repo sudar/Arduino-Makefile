@@ -127,23 +127,11 @@ endif
 # processor stuff
 ifndef MCU
     MCU := $(call PARSE_TEENSY,$(BOARD_TAG),build.cpu)
-    ifndef MCU
-        MCU := $(call PARSE_TEENSY,$(BOARD_TAG),build.mcu)
-    endif
 endif
 
 ifndef MCU_FLAG_NAME
     MCU_FLAG_NAME=mcpu
 endif
-
-#ifndef MCU
-#    MCU := $(call PARSE_TEENSY,$(BOARD_TAG),build.cpu)
-#    ifndef MCU
-#        MCU := $(call PARSE_TEENSY,$(BOARD_TAG),build.mcu)
-#    else
-#        MCU_FLAG_NAME=mcpu
-#    endif
-#endif
 
 ########################################################################
 # FLAGS
