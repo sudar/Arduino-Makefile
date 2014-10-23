@@ -28,6 +28,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Allow user libaries/sketches to have the same name as system libs. (Issue #244, #229). (https://github.com/sej7278)
 - Fix: Remove impact of travis-ci from regular users. (Issue #258). (https://github.com/sej7278)
 - Fix: objcopy quoting issue on Windows. (Issue #272). (https://github.com/sej7278)
+- Fix: Add "avrispmkii" to the list of isp that don't have a port. (Issue #279). (https://github.com/sej7278)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
