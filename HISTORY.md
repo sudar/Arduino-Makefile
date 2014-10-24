@@ -13,6 +13,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Add documentation about CFLAGS_STD and CXXFLAGS_STD (Issue #234) (https://github.com/ladislas)
 - New: Allow "make clean" target to be extended (Issue #239). (https://github.com/sej7278)
 - New: Add makefile and gcc version info to config output. (https://github.com/sej7278)
+- New: Support for Teensy 3.x (https://github.com/stepcut)
 
 - Tweak: Remove $(EXTRA_XXX) variables (Issue #234) (https://github.com/ladislas)
 - Tweak: Update Malefile-example.mk with STD flags (https://github.com/ladislas)

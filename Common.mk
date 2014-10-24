@@ -61,3 +61,26 @@ ifneq ($(TEST),)
               ARDUINO_DIR = $(DEPENDENCIES_ARDUINO_DIR)
        endif
 endif
+
+########################################################################
+# Arduino Directory
+
+ifndef ARDUINO_DIR
+    AUTO_ARDUINO_DIR := $(firstword \
+        $(call dir_if_exists,/usr/share/arduino) \
+        $(call dir_if_exists,/Applications/Arduino.app/Contents/Resources/Java) )
+    ifdef AUTO_ARDUINO_DIR
+       ARDUINO_DIR = $(AUTO_ARDUINO_DIR)
+       $(call show_config_variable,ARDUINO_DIR,[AUTODETECTED])
+    else
+        echo $(error "ARDUINO_DIR is not defined")
+    endif
+else
+    $(call show_config_variable,ARDUINO_DIR,[USER])
+endif
+
+ifeq ($(CURRENT_OS),WINDOWS)
+    ifneq ($(shell echo $(ARDUINO_DIR) | egrep '^(/|[a-zA-Z]:\\)'),)
+        echo $(error On Windows, ARDUINO_DIR must be a relative path)
+    endif
+endif
