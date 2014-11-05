@@ -263,29 +263,6 @@ else
 endif
 
 ########################################################################
-# Arduino Directory
-
-ifndef ARDUINO_DIR
-    AUTO_ARDUINO_DIR := $(firstword \
-        $(call dir_if_exists,/usr/share/arduino) \
-        $(call dir_if_exists,/Applications/Arduino.app/Contents/Resources/Java) )
-    ifdef AUTO_ARDUINO_DIR
-       ARDUINO_DIR = $(AUTO_ARDUINO_DIR)
-       $(call show_config_variable,ARDUINO_DIR,[AUTODETECTED])
-    else
-        echo $(error "ARDUINO_DIR is not defined")
-    endif
-else
-    $(call show_config_variable,ARDUINO_DIR,[USER])
-endif
-
-ifeq ($(CURRENT_OS),WINDOWS)
-    ifneq ($(shell echo $(ARDUINO_DIR) | egrep '^(/|[a-zA-Z]:\\)'),)
-        echo $(error On Windows, ARDUINO_DIR must be a relative path)
-    endif
-endif
-
-########################################################################
 # Default TARGET to pwd (ex Daniele Vergini)
 
 ifndef TARGET
@@ -1128,7 +1105,7 @@ $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c
 
 $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp
 	@$(MKDIR) $(dir $@)
-	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.S
 	@$(MKDIR) $(dir $@)
@@ -1140,7 +1117,7 @@ $(OBJDIR)/platformlibs/%.o: $(ARDUINO_PLATFORM_LIB_PATH)/%.c
 
 $(OBJDIR)/platformlibs/%.o: $(ARDUINO_PLATFORM_LIB_PATH)/%.cpp
 	@$(MKDIR) $(dir $@)
-	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/platformlibs/%.o: $(ARDUINO_PLATFORM_LIB_PATH)/%.S
 	@$(MKDIR) $(dir $@)
@@ -1148,7 +1125,7 @@ $(OBJDIR)/platformlibs/%.o: $(ARDUINO_PLATFORM_LIB_PATH)/%.S
 
 $(OBJDIR)/userlibs/%.o: $(USER_LIB_PATH)/%.cpp
 	@$(MKDIR) $(dir $@)
-	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/userlibs/%.o: $(USER_LIB_PATH)/%.c
 	@$(MKDIR) $(dir $@)
@@ -1336,7 +1313,7 @@ endif
 AVRDUDE_ISP_OPTS = -c $(ISP_PROG) -b $(AVRDUDE_ISP_BAUDRATE)
 
 ifndef $(ISP_PORT)
-    ifneq ($(strip $(ISP_PROG)),$(filter $(ISP_PROG), usbasp usbtiny gpio))
+    ifneq ($(strip $(ISP_PROG)),$(filter $(ISP_PROG), usbasp usbtiny gpio avrispmkii))
         AVRDUDE_ISP_OPTS += -P $(call get_isp_port)
     endif
 else

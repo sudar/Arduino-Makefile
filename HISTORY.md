@@ -13,6 +13,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Add documentation about CFLAGS_STD and CXXFLAGS_STD (Issue #234) (https://github.com/ladislas)
 - New: Allow "make clean" target to be extended (Issue #239). (https://github.com/sej7278)
 - New: Add makefile and gcc version info to config output. (https://github.com/sej7278)
+- New: Support for Teensy 3.x (https://github.com/stepcut)
 
 - Tweak: Remove $(EXTRA_XXX) variables (Issue #234) (https://github.com/ladislas)
 - Tweak: Update Malefile-example.mk with STD flags (https://github.com/ladislas)
@@ -28,6 +29,8 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Allow user libaries/sketches to have the same name as system libs. (Issue #244, #229). (https://github.com/sej7278)
 - Fix: Remove impact of travis-ci from regular users. (Issue #258). (https://github.com/sej7278)
 - Fix: objcopy quoting issue on Windows. (Issue #272). (https://github.com/sej7278)
+- Fix: Add "avrispmkii" to the list of isp that don't have a port. (Issue #279). (https://github.com/sej7278)
+- Fix: Make CXX compile .cpp files instead of CC. (Issue #285). (https://github.com/sej7278)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
