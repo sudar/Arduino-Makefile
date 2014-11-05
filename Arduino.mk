@@ -1079,7 +1079,7 @@ $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c
 
 $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp
 	@$(MKDIR) $(dir $@)
-	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.S
 	@$(MKDIR) $(dir $@)
@@ -1091,7 +1091,7 @@ $(OBJDIR)/platformlibs/%.o: $(ARDUINO_PLATFORM_LIB_PATH)/%.c
 
 $(OBJDIR)/platformlibs/%.o: $(ARDUINO_PLATFORM_LIB_PATH)/%.cpp
 	@$(MKDIR) $(dir $@)
-	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/platformlibs/%.o: $(ARDUINO_PLATFORM_LIB_PATH)/%.S
 	@$(MKDIR) $(dir $@)
@@ -1099,7 +1099,7 @@ $(OBJDIR)/platformlibs/%.o: $(ARDUINO_PLATFORM_LIB_PATH)/%.S
 
 $(OBJDIR)/userlibs/%.o: $(USER_LIB_PATH)/%.cpp
 	@$(MKDIR) $(dir $@)
-	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/userlibs/%.o: $(USER_LIB_PATH)/%.c
 	@$(MKDIR) $(dir $@)
