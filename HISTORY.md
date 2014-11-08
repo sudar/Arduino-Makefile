@@ -32,6 +32,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Add "avrispmkii" to the list of isp that don't have a port. (Issue #279). (https://github.com/sej7278)
 - Fix: Make CXX compile .cpp files instead of CC. (Issue #285). (https://github.com/sej7278)
 - Fix: Changed IDE download URL *again* for Travis-CI. (https://github.com/sej7278)
+- Fix: Allow avrdude to erase the chip before programming during ispload (https://github.com/tchebb)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
