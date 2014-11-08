@@ -20,7 +20,7 @@ if [ -z "$ARDUINO_DIR" ] || ! test -e $ARDUINO_DIR || [ $OS == "cygwin" ]; then
         EXTRACT_COMMAND="tar -xzf"
     fi
 
-    ARDUINO_URL=http://downloads.arduino.cc/$ARDUINO_FILE
+    ARDUINO_URL=http://arduino.cc/download.php?f=/$ARDUINO_FILE
 
     _pushd $DEPENDENCIES_FOLDER
     if ! test -e $ARDUINO_FILE
