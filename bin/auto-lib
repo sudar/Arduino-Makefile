@@ -14,8 +14,8 @@ includeRegex = re.compile("(?<=^\#include\s\")(.*)(?=\.h\")", re.DOTALL|re.M)
 MAIN_SRCS = []
 MAIN_LIBS = []
 
-LIBS_DEPS = []
-LIBS_DEPS_STACK = []
+MAIN_LIBS_DEPS = []
+MAIN_LIBS_DEPS_STACK = []
 
 
 # Define functions
@@ -47,7 +47,7 @@ for src in MAIN_SRCS:
 
 MAIN_LIBS = sorted(set(MAIN_LIBS))
 
-# Find LIBS_DEPS includes in MAIN_LIBS
+# Find MAIN_LIBS_DEPS includes in MAIN_LIBS
 for lib in MAIN_LIBS:
 	if lib in USER_LIBS:
 		currentFile = open(os.path.join(USER_LIB_PATH, lib, lib + ".h"))
@@ -57,13 +57,13 @@ for lib in MAIN_LIBS:
 			if match is not None:
 				group = match.group(1)
 				if group in USER_LIBS and group not in MAIN_LIBS:
-					LIBS_DEPS_STACK.append(group)
+					MAIN_LIBS_DEPS_STACK.append(group)
 
-LIBS_DEPS_STACK = list(set(LIBS_DEPS_STACK))
+MAIN_LIBS_DEPS_STACK = list(set(MAIN_LIBS_DEPS_STACK))
 
 # Recursively find all dependencies of every libraries in USER_LIB_PATH
-while len(LIBS_DEPS_STACK) > 0:
-	for lib in LIBS_DEPS_STACK:
+while len(MAIN_LIBS_DEPS_STACK) > 0:
+	for lib in MAIN_LIBS_DEPS_STACK:
 		if lib in USER_LIBS:
 			currentFile = open(os.path.join(USER_LIB_PATH, lib, lib + ".h"))
 
@@ -71,20 +71,20 @@ while len(LIBS_DEPS_STACK) > 0:
 				match = includeRegex.search(line)
 				if match is not None:
 					group = match.group(1)
-					if group in USER_LIBS and group not in LIBS_DEPS_STACK and group not in LIBS_DEPS and group not in MAIN_LIBS:
-						LIBS_DEPS_STACK.append(group)
+					if group in USER_LIBS and group not in MAIN_LIBS_DEPS_STACK and group not in MAIN_LIBS_DEPS and group not in MAIN_LIBS:
+						MAIN_LIBS_DEPS_STACK.append(group)
 
 				else:
-					if lib not in LIBS_DEPS:
-						LIBS_DEPS.append(lib)
-						if lib in LIBS_DEPS_STACK:
-							LIBS_DEPS_STACK.remove(lib)
+					if lib not in MAIN_LIBS_DEPS:
+						MAIN_LIBS_DEPS.append(lib)
+						if lib in MAIN_LIBS_DEPS_STACK:
+							MAIN_LIBS_DEPS_STACK.remove(lib)
 
-LIBS_DEPS.sort()
+MAIN_LIBS_DEPS.sort()
 
 # Output libraries for the Makefile
 print("MAIN_LIBS"),
 outputLibs(MAIN_LIBS)
 
-print("LIBS_DEPS"),
-outputLibs(LIBS_DEPS)
+print("MAIN_LIBS_DEPS"),
+outputLibs(MAIN_LIBS_DEPS)
