@@ -883,7 +883,7 @@ get_library_files  = $(if $(and $(wildcard $(1)/src), $(wildcard $(1)/library.pr
                         $(wildcard $(1)/*.$(2) $(1)/utility/*.$(2)))
 
 # General arguments
-USER_LIBS      = $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(ARDUINO_LIBS)))
+USER_LIBS     := $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(ARDUINO_LIBS)))
 USER_LIBS     += $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(MAIN_LIBS)))
 USER_LIBS     += $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(MAIN_LIBS_DEPS)))
 
