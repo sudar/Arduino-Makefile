@@ -767,13 +767,13 @@ endif
 # Automatically find the libraries needed to compile the sketch
 
 ifndef MAIN_LIBS
-    MAIN_LIBS = $(shell $(ARDMK_DIR)/bin/auto-lib $(USER_LIB_PATH) | \
+	MAIN_LIBS := $(shell $(ARDMK_DIR)/bin/auto-lib $(USER_LIB_PATH) | \
                 sed -ne 's/MAIN_LIBS \(.*\) /\1/p')
 endif
 
-ifndef LIBS_DEPS
-    LIBS_DEPS = $(shell $(ARDMK_DIR)/bin/auto-lib $(USER_LIB_PATH) | \
-                sed -ne 's/LIBS_DEPS \(.*\) /\1/p')
+ifndef MAIN_LIBS_DEPS
+	MAIN_LIBS_DEPS := $(shell $(ARDMK_DIR)/bin/auto-lib $(USER_LIB_PATH) | \
+                sed -ne 's/MAIN_LIBS_DEPS \(.*\) /\1/p')
 endif
 
 ########################################################################
@@ -785,7 +785,6 @@ ifndef ARDUINO_LIBS
         $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
     ARDUINO_LIBS += $(filter $(notdir $(wildcard $(ARDUINO_SKETCHBOOK)/libraries/*)), \
         $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
-    ARDUINO_LIBS += $(MAIN_LIBS) $(LIBS_DEPS)
 endif
 
 ########################################################################
@@ -885,6 +884,9 @@ get_library_files  = $(if $(and $(wildcard $(1)/src), $(wildcard $(1)/library.pr
 
 # General arguments
 USER_LIBS      = $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(ARDUINO_LIBS)))
+USER_LIBS     += $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(MAIN_LIBS)))
+USER_LIBS     += $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(MAIN_LIBS_DEPS)))
+
 USER_LIB_NAMES = $(patsubst $(USER_LIB_PATH)/%,%,$(USER_LIBS))
 
 # Let user libraries override system ones.
@@ -1053,13 +1055,13 @@ ifneq (,$(strip $(MAIN_LIBS)))
     $(foreach lib,$(MAIN_LIBS),$(call show_config_info,  $(lib),[USER]))
 endif
 
-ifneq (,$(strip $(LIBS_DEPS)))
+ifneq (,$(strip $(MAIN_LIBS_DEPS)))
     $(call arduino_output,-)
-    $(call show_config_info,LIBS_DEPS =)
+    $(call show_config_info,MAIN_LIBS_DEPS =)
 endif
 
-ifneq (,$(strip $(LIBS_DEPS)))
-    $(foreach lib,$(LIBS_DEPS),$(call show_config_info,  $(lib),[USER]))
+ifneq (,$(strip $(MAIN_LIBS_DEPS)))
+    $(foreach lib,$(MAIN_LIBS_DEPS),$(call show_config_info,  $(lib),[USER]))
 endif
 
 ifneq (,$(strip $(SYS_LIBS)))
