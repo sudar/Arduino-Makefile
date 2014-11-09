@@ -1,4 +1,4 @@
-# A Makefile for Arduino Sketches
+# A Makefile for Arduino Sketches [![Build Status](https://travis-ci.org/sudar/Arduino-Makefile.svg)](https://travis-ci.org/sudar/Arduino-Makefile)
 
 This is a very simple Makefile which knows how to build Arduino sketches. It defines entire workflows for compiling code, flashing it to Arduino and even communicating through Serial monitor. You don't need to change anything in the Arduino sketches.
 
@@ -8,6 +8,7 @@ This is a very simple Makefile which knows how to build Arduino sketches. It def
 - Highly customizable
 - Supports all official AVR-based Arduino boards
 - Supports chipKIT
+- Supports Teensy 3.x (via Teensyduino)
 - Works on all three major OS (Mac, Linux, Windows)
 - Auto detects serial baud rate and libraries used
 - Support for `*.ino` and `*.pde` sketches as well as raw `*.c` and `*.cpp`
@@ -20,8 +21,14 @@ in the build process. Changes in `*.h` files lead to recompilation of sources wh
 
 ### Through package
 
-If you're using FreeBSD, Debian or Ubuntu, you can find this in the `arduino-mk`
+If you're using FreeBSD, Debian, Raspbian or Ubuntu, you can find this in the `arduino-mk`
 package which can be installed using `apt-get` or `aptitude`.
+
+Arch Linux users can use the unofficial AUR package [arduino-mk](https://aur.archlinux.org/packages/arduino-mk/)
+and install using `yaourt -S arduino-mk`
+
+Fedora Linux users can use our packaging instructions [here](https://github.com/sudar/Arduino-Makefile/tree/master/packaging/fedora)
+to build an RPM.
 
 ### From source
 
@@ -147,8 +154,14 @@ The makefile can autodetect the libraries that are included from your sketch and
 
 To upload compiled files, `avrdude` is used. This Makefile tries to find `avrdude` and it's config (`avrdude.conf`) below `ARDUINO_DIR`. If you like to use the one installed on your system instead of the one which came with Arduino, you can try to set the variables `AVRDUDE` and `AVRDUDE_CONF`. On a typical Linux system these could be set to
 
-      AVRDDUDE     = /usr/bin/avrdude
+      AVRDUDE     = /usr/bin/avrdude
       AVRDUDE_CONF = /etc/avrdude.conf
+
+## Teensy 3.x
+
+For Teensy 3.x support you must first install [Teensyduino](http://www.pjrc.com/teensy/teensyduino.html).
+
+See examples/BlinkTeensy for example usage.
 
 ## Versioning
 
@@ -211,6 +224,16 @@ Then, the following line must be added to the project Makefile :
     check-syntax:
         $(CXX_NAME) -c -include Arduino.h   -x c++ $(CXXFLAGS)   $(CPPFLAGS)  -fsyntax-only $(CHK_SOURCES)
 ```
+
+## Test Suite
+
+This project includes a suite of example Makefiles and small Arduino and chipKIT
+programs to assist the maintainers of the Makefile. Run
+`tests/script/bootstrap.sh` to attempt to automatically install the dependencies
+(Arduino IDE, MPIDE, etc.). Run `tests/script/runtests.sh` to attempt to compile
+all of the examples. The bootstrap script is primarily intended for use by a
+continuous integration server, specifically Travis CI. It is not intended for
+normal users.
 
 ### Bare-Arduino–Project
 

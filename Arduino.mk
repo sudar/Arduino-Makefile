@@ -263,29 +263,6 @@ else
 endif
 
 ########################################################################
-# Arduino Directory
-
-ifndef ARDUINO_DIR
-    AUTO_ARDUINO_DIR := $(firstword \
-        $(call dir_if_exists,/usr/share/arduino) \
-        $(call dir_if_exists,/Applications/Arduino.app/Contents/Resources/Java) )
-    ifdef AUTO_ARDUINO_DIR
-       ARDUINO_DIR = $(AUTO_ARDUINO_DIR)
-       $(call show_config_variable,ARDUINO_DIR,[AUTODETECTED])
-    else
-        echo $(error "ARDUINO_DIR is not defined")
-    endif
-else
-    $(call show_config_variable,ARDUINO_DIR,[USER])
-endif
-
-ifeq ($(CURRENT_OS),WINDOWS)
-    ifneq ($(shell echo $(ARDUINO_DIR) | egrep '^(/|[a-zA-Z]:\\)'),)
-        echo $(error On Windows, ARDUINO_DIR must be a relative path)
-    endif
-endif
-
-########################################################################
 # Default TARGET to pwd (ex Daniele Vergini)
 
 ifndef TARGET
@@ -315,15 +292,27 @@ endif
 # 1.5.x architecture - avr or sam for arduino vendor
 ifndef ARCHITECTURE
     ifeq ($(shell expr $(ARDUINO_VERSION) '>' 150), 1)
-		# default to avr for 1.5
-		ARCHITECTURE = avr
-	else
-		# unset for 1.0
-		ARCHITECTURE =
-	endif
+        # default to avr for 1.5
+        ARCHITECTURE = avr
+        ARDUINO_ARCH_FLAG = -DARDUINO_ARCH_AVR
+    else
+        # unset for 1.0
+        ARCHITECTURE =
+    endif
     $(call show_config_variable,ARCHITECTURE,[DEFAULT])
 else
     $(call show_config_variable,ARCHITECTURE,[USER])
+
+    #avoid using shell for known architectures
+    ifeq ($(ARCHITECTURE),avr)
+        ARDUINO_ARCH_FLAG = -DARDUINO_ARCH_AVR
+    else
+        ifeq ($(ARCHITECTURE),sam)
+            ARDUINO_ARCH_FLAG = -DARDUINO_ARCH_SAM
+        else
+            ARDUINO_ARCH_FLAG = -DARDUINO_ARCH_$(shell echo $(ARCHITECTURE) | tr '[:lower:]' '[:upper:]')
+        endif
+    endif
 endif
 
 ########################################################################
@@ -465,6 +454,17 @@ ifndef ARDUINO_CORE_PATH
     $(call show_config_variable,ARDUINO_CORE_PATH,[DEFAULT])
 else
     $(call show_config_variable,ARDUINO_CORE_PATH,[USER])
+endif
+
+# 1.5.x platform dependent libs path
+ifndef ARDUINO_PLATFORM_LIB_PATH
+    ifeq ($(shell expr $(ARDUINO_VERSION) '>' 150), 1)
+        # only for 1.5
+        ARDUINO_PLATFORM_LIB_PATH = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/libraries
+        $(call show_config_variable,ARDUINO_PLATFORM_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
+    endif
+else
+    $(call show_config_variable,ARDUINO_PLATFORM_LIB_PATH,[USER])
 endif
 
 # Third party hardware and core like ATtiny or ATmega 16
@@ -767,13 +767,13 @@ endif
 # Automatically find the libraries needed to compile the sketch
 
 ifndef MAIN_LIBS
-    MAIN_LIBS = $(shell $(ARDMK_DIR)/bin/auto-lib.py $(USER_LIB_PATH) | \
+	MAIN_LIBS := $(shell $(ARDMK_DIR)/bin/auto-lib $(USER_LIB_PATH) | \
                 sed -ne 's/MAIN_LIBS \(.*\) /\1/p')
 endif
 
-ifndef LIBS_DEPS
-    LIBS_DEPS = $(shell $(ARDMK_DIR)/bin/auto-lib.py $(USER_LIB_PATH) | \
-                sed -ne 's/LIBS_DEPS \(.*\) /\1/p')
+ifndef MAIN_LIBS_DEPS
+	MAIN_LIBS_DEPS := $(shell $(ARDMK_DIR)/bin/auto-lib $(USER_LIB_PATH) | \
+                sed -ne 's/MAIN_LIBS_DEPS \(.*\) /\1/p')
 endif
 
 ########################################################################
@@ -785,7 +785,6 @@ ifndef ARDUINO_LIBS
         $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
     ARDUINO_LIBS += $(filter $(notdir $(wildcard $(ARDUINO_SKETCHBOOK)/libraries/*)), \
         $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
-    ARDUINO_LIBS += $(MAIN_LIBS) $(LIBS_DEPS)
 endif
 
 ########################################################################
@@ -859,39 +858,85 @@ CAT     = cat
 ECHO    = printf
 MKDIR   = mkdir -p
 
+# recursive wildcard function, call with params:
+#  - start directory (finished with /) or empty string for current dir
+#  - glob pattern
+# (taken from http://blog.jgc.org/2011/07/gnu-make-recursive-wildcard-function.html)
+rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+
+# functions used to determine various properties of library
+# called with library path. Needed because of differences between library
+# layouts in arduino 1.0.x and 1.5.x.
+# Assuming new 1.5.x layout when there is "src" subdirectory in main directory
+# and library.properties file
+
+# Gets include flags for library
+get_library_includes = $(if $(and $(wildcard $(1)/src), $(wildcard $(1)/library.properties)), \
+                           -I$(1)/src, \
+                           $(addprefix -I,$(1) $(wildcard $(1)/utility)))
+
+# Gets all sources with given extension (param2) for library (path = param1)
+# for old (1.0.x) layout looks in . and "utility" directories
+# for new (1.5.x) layout looks in src and recursively its subdirectories
+get_library_files  = $(if $(and $(wildcard $(1)/src), $(wildcard $(1)/library.properties)), \
+                        $(call rwildcard,$(1)/src/,*.$(2)), \
+                        $(wildcard $(1)/*.$(2) $(1)/utility/*.$(2)))
+
 # General arguments
-USER_LIBS      = $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(ARDUINO_LIBS)))
+USER_LIBS     := $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(ARDUINO_LIBS)))
+USER_LIBS     += $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(MAIN_LIBS)))
+USER_LIBS     += $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(MAIN_LIBS_DEPS)))
+
 USER_LIB_NAMES = $(patsubst $(USER_LIB_PATH)/%,%,$(USER_LIBS))
 
 # Let user libraries override system ones.
 SYS_LIBS       = $(wildcard $(patsubst %,$(ARDUINO_LIB_PATH)/%,$(filter-out $(USER_LIB_NAMES),$(ARDUINO_LIBS))))
 SYS_LIB_NAMES  = $(patsubst $(ARDUINO_LIB_PATH)/%,%,$(SYS_LIBS))
 
-# Error here if any are missing.
-LIBS_NOT_FOUND = $(filter-out $(USER_LIB_NAMES) $(SYS_LIB_NAMES),$(ARDUINO_LIBS))
-ifneq (,$(strip $(LIBS_NOT_FOUND)))
-    $(error The following libraries specified in ARDUINO_LIBS could not be found (searched USER_LIB_PATH and ARDUINO_LIB_PATH): $(LIBS_NOT_FOUND))
+ifdef ARDUINO_PLATFORM_LIB_PATH
+    PLATFORM_LIBS       = $(wildcard $(patsubst %,$(ARDUINO_PLATFORM_LIB_PATH)/%,$(filter-out $(USER_LIB_NAMES),$(ARDUINO_LIBS))))
+    PLATFORM_LIB_NAMES  = $(patsubst $(ARDUINO_PLATFORM_LIB_PATH)/%,%,$(PLATFORM_LIBS))
 endif
 
-SYS_LIBS           := $(wildcard $(SYS_LIBS) $(addsuffix /utility,$(SYS_LIBS)))
-USER_LIBS          := $(wildcard $(USER_LIBS) $(addsuffix /utility,$(USER_LIBS)))
-SYS_INCLUDES        = $(patsubst %,-I%,$(SYS_LIBS))
-USER_INCLUDES       = $(patsubst %,-I%,$(USER_LIBS))
-LIB_C_SRCS          = $(wildcard $(patsubst %,%/*.c,$(SYS_LIBS)))
-LIB_CPP_SRCS        = $(wildcard $(patsubst %,%/*.cpp,$(SYS_LIBS)))
-LIB_AS_SRCS         = $(wildcard $(patsubst %,%/*.S,$(SYS_LIBS)))
-USER_LIB_CPP_SRCS   = $(wildcard $(patsubst %,%/*.cpp,$(USER_LIBS)))
-USER_LIB_C_SRCS     = $(wildcard $(patsubst %,%/*.c,$(USER_LIBS)))
-USER_LIB_AS_SRCS    = $(wildcard $(patsubst %,%/*.S,$(USER_LIBS)))
+
+# Error here if any are missing.
+LIBS_NOT_FOUND = $(filter-out $(USER_LIB_NAMES) $(SYS_LIB_NAMES) $(PLATFORM_LIB_NAMES),$(ARDUINO_LIBS))
+ifneq (,$(strip $(LIBS_NOT_FOUND)))
+    ifdef ARDUINO_PLATFORM_LIB_PATH
+        $(error The following libraries specified in ARDUINO_LIBS could not be found (searched USER_LIB_PATH, ARDUINO_LIB_PATH and ARDUINO_PLATFORM_LIB_PATH): $(LIBS_NOT_FOUND))
+    else
+        $(error The following libraries specified in ARDUINO_LIBS could not be found (searched USER_LIB_PATH and ARDUINO_LIB_PATH): $(LIBS_NOT_FOUND))
+    endif
+endif
+
+SYS_INCLUDES        = $(foreach lib, $(SYS_LIBS), $(call get_library_includes,$(lib)))
+USER_INCLUDES       = $(foreach lib, $(USER_LIBS), $(call get_library_includes,$(lib)))
+LIB_C_SRCS          = $(foreach lib, $(SYS_LIBS), $(call get_library_files,$(lib),c))
+LIB_CPP_SRCS        = $(foreach lib, $(SYS_LIBS), $(call get_library_files,$(lib),cpp))
+LIB_AS_SRCS         = $(foreach lib, $(SYS_LIBS), $(call get_library_files,$(lib),S))
+USER_LIB_CPP_SRCS   = $(foreach lib, $(USER_LIBS), $(call get_library_files,$(lib),cpp))
+USER_LIB_C_SRCS     = $(foreach lib, $(USER_LIBS), $(call get_library_files,$(lib),c))
+USER_LIB_AS_SRCS     = $(foreach lib, $(USER_LIBS), $(call get_library_files,$(lib),S))
 LIB_OBJS            = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(LIB_C_SRCS)) \
                       $(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS)) \
                       $(patsubst $(ARDUINO_LIB_PATH)/%.S,$(OBJDIR)/libs/%.o,$(LIB_AS_SRCS))
-USER_LIB_OBJS       = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(USER_LIB_CPP_SRCS)) \
-                      $(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(USER_LIB_C_SRCS)) \
-                      $(patsubst $(USER_LIB_PATH)/%.S,$(OBJDIR)/libs/%.o,$(USER_LIB_AS_SRCS))
+USER_LIB_OBJS       = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/userlibs/%.o,$(USER_LIB_CPP_SRCS)) \
+                      $(patsubst $(USER_LIB_PATH)/%.c,$(OBJDIR)/userlibs/%.o,$(USER_LIB_C_SRCS)) \
+                      $(patsubst $(USER_LIB_PATH)/%.S,$(OBJDIR)/userlibs/%.o,$(USER_LIB_AS_SRCS))
+
+ifdef ARDUINO_PLATFORM_LIB_PATH
+    PLATFORM_INCLUDES     = $(foreach lib, $(PLATFORM_LIBS), $(call get_library_includes,$(lib)))
+    PLATFORM_LIB_CPP_SRCS = $(foreach lib, $(PLATFORM_LIBS), $(call get_library_files,$(lib),cpp))
+    PLATFORM_LIB_C_SRCS   = $(foreach lib, $(PLATFORM_LIBS), $(call get_library_files,$(lib),c))
+    PLATFORM_LIB_AS_SRCS  = $(foreach lib, $(PLATFORM_LIBS), $(call get_library_files,$(lib),S))
+    PLATFORM_LIB_OBJS     = $(patsubst $(ARDUINO_PLATFORM_LIB_PATH)/%.cpp,$(OBJDIR)/platformlibs/%.o,$(PLATFORM_LIB_CPP_SRCS)) \
+                          $(patsubst $(ARDUINO_PLATFORM_LIB_PATH)/%.c,$(OBJDIR)/platformlibs/%.o,$(PLATFORM_LIB_C_SRCS)) \
+                          $(patsubst $(ARDUINO_PLATFORM_LIB_PATH)/%.S,$(OBJDIR)/platformlibs/%.o,$(PLATFORM_LIB_AS_SRCS))
+
+endif
 
 # Dependency files
-DEPS                = $(LOCAL_OBJS:.o=.d) $(LIB_OBJS:.o=.d) $(USER_LIB_OBJS:.o=.d) $(CORE_OBJS:.o=.d)
+DEPS                = $(LOCAL_OBJS:.o=.d) $(LIB_OBJS:.o=.d) $(PLATFORM_OBJS:.o=.d) $(USER_LIB_OBJS:.o=.d) $(CORE_OBJS:.o=.d)
 
 # Optimization level for the compiler.
 # You can get the list of options at http://www.nongnu.org/avr-libc/user-manual/using_tools.html#gcc_optO
@@ -918,9 +963,9 @@ else
 endif
 
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
-CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) -D__PROG_TYPES_COMPAT__ \
+CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) $(ARDUINO_ARCH_FLAG) -D__PROG_TYPES_COMPAT__ \
         -I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
-        $(SYS_INCLUDES) $(USER_INCLUDES) -Wall -ffunction-sections \
+        $(SYS_INCLUDES) $(PLATFORM_INCLUDES) $(USER_INCLUDES) -Wall -ffunction-sections \
         -fdata-sections
 
 ifdef DEBUG
@@ -1010,13 +1055,13 @@ ifneq (,$(strip $(MAIN_LIBS)))
     $(foreach lib,$(MAIN_LIBS),$(call show_config_info,  $(lib),[USER]))
 endif
 
-ifneq (,$(strip $(LIBS_DEPS)))
+ifneq (,$(strip $(MAIN_LIBS_DEPS)))
     $(call arduino_output,-)
-    $(call show_config_info,LIBS_DEPS =)
+    $(call show_config_info,MAIN_LIBS_DEPS =)
 endif
 
-ifneq (,$(strip $(LIBS_DEPS)))
-    $(foreach lib,$(LIBS_DEPS),$(call show_config_info,  $(lib),[USER]))
+ifneq (,$(strip $(MAIN_LIBS_DEPS)))
+    $(foreach lib,$(MAIN_LIBS_DEPS),$(call show_config_info,  $(lib),[USER]))
 endif
 
 ifneq (,$(strip $(SYS_LIBS)))
@@ -1024,7 +1069,7 @@ ifneq (,$(strip $(SYS_LIBS)))
     $(call show_config_info,SYS_LIBS =)
 endif
 
-ifneq (,$(strip $(SYS_LIB_NAMES)))
+ifneq (,$(strip $(SYS_LIB_NAMES) $(PLATFORM_LIB_NAMES)))
     $(foreach lib,$(SYS_LIB_NAMES),$(call show_config_info,  $(lib),[SYSTEM]))
 endif
 
@@ -1035,6 +1080,14 @@ ifndef BOOTLOADER_PARENT
 else
     $(call show_config_variable,BOOTLOADER_PARENT,[USER])
 endif
+
+########################################################################
+# Tools version info
+ARDMK_VERSION = 1.3.4
+$(call show_config_variable,ARDMK_VERSION,[COMPUTED])
+
+CC_VERSION = $(shell $(CC) -dumpversion)
+$(call show_config_variable,CC_VERSION,[COMPUTED],($(CC_NAME)))
 
 # end of config output
 $(call show_separator)
@@ -1054,21 +1107,33 @@ $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c
 
 $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp
 	@$(MKDIR) $(dir $@)
-	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.S
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.cpp
-	@$(MKDIR) $(dir $@)
-	$(CC) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
-
-$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.c
+$(OBJDIR)/platformlibs/%.o: $(ARDUINO_PLATFORM_LIB_PATH)/%.c
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/libs/%.o: $(USER_LIB_PATH)/%.S
+$(OBJDIR)/platformlibs/%.o: $(ARDUINO_PLATFORM_LIB_PATH)/%.cpp
+	@$(MKDIR) $(dir $@)
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+
+$(OBJDIR)/platformlibs/%.o: $(ARDUINO_PLATFORM_LIB_PATH)/%.S
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+
+$(OBJDIR)/userlibs/%.o: $(USER_LIB_PATH)/%.cpp
+	@$(MKDIR) $(dir $@)
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+
+$(OBJDIR)/userlibs/%.o: $(USER_LIB_PATH)/%.c
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+
+$(OBJDIR)/userlibs/%.o: $(USER_LIB_PATH)/%.S
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
@@ -1118,8 +1183,9 @@ $(OBJDIR)/%.s: %.ino $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-#$(OBJDIR)/%.lst: $(OBJDIR)/%.s
-#	$(AS) -$(MCU_FLAG_NAME)=$(MCU) -alhnd $< > $@
+$(OBJDIR)/%.s: %.cpp $(COMMON_DEPS) | $(OBJDIR)
+	@$(MKDIR) $(dir $@)
+	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # core files
 $(OBJDIR)/core/%.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS) | $(OBJDIR)
@@ -1149,7 +1215,7 @@ endif
 
 $(OBJDIR)/%.eep: $(OBJDIR)/%.elf $(COMMON_DEPS)
 	@$(MKDIR) $(dir $@)
-	-$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" \
+	-$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom='alloc,load' \
 		--change-section-lma .eeprom=0 -O ihex $< $@
 
 $(OBJDIR)/%.lss: $(OBJDIR)/%.elf $(COMMON_DEPS)
@@ -1171,10 +1237,8 @@ endif
 # Default avrdude options
 # -V Do not verify
 # -q - suppress progress output
-# -D - Disable auto erase for flash memory
-# (-D is needed for Mega boards. See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
 ifndef AVRDUDE_OPTS
-    AVRDUDE_OPTS = -q -V -D
+    AVRDUDE_OPTS = -q -V
 endif
 
 AVRDUDE_COM_OPTS = $(AVRDUDE_OPTS) -p $(MCU)
@@ -1182,7 +1246,9 @@ ifdef AVRDUDE_CONF
     AVRDUDE_COM_OPTS += -C $(AVRDUDE_CONF)
 endif
 
-AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P
+# -D - Disable auto erase for flash memory
+# (-D is needed for Mega boards. See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
+AVRDUDE_ARD_OPTS = -D -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P
 ifeq ($(CURRENT_OS), WINDOWS)
     # get_monitor_port checks to see if the monitor port exists, assuming it is
     # a file. In Windows, avrdude needs the port in the format 'com1' which is
@@ -1249,7 +1315,7 @@ endif
 AVRDUDE_ISP_OPTS = -c $(ISP_PROG) -b $(AVRDUDE_ISP_BAUDRATE)
 
 ifndef $(ISP_PORT)
-    ifneq ($(strip $(ISP_PROG)),$(filter $(ISP_PROG), usbasp usbtiny gpio))
+    ifneq ($(strip $(ISP_PROG)),$(filter $(ISP_PROG), usbasp usbtiny gpio avrispmkii))
         AVRDUDE_ISP_OPTS += -P $(call get_isp_port)
     endif
 else
@@ -1288,8 +1354,8 @@ pre-build:
 $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 		$(CC) $(LDFLAGS) -o $@ $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS) -lc -lm
 
-$(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
-		$(AR) rcs $@ $(CORE_OBJS) $(LIB_OBJS) $(USER_LIB_OBJS)
+$(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(PLATFORM_LIB_OBJS) $(USER_LIB_OBJS)
+		$(AR) rcs $@ $(CORE_OBJS) $(LIB_OBJS) $(PLATFORM_LIB_OBJS) $(USER_LIB_OBJS)
 
 error_on_caterina:
 		$(ERROR_ON_CATERINA)
@@ -1366,7 +1432,7 @@ size:	$(TARGET_HEX)
 		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
 
 show_boards:
-		@$(CAT) "$(BOARDS_TXT)" | grep -E "^[[:alnum:]]+.name" | sort -uf | sed 's/.name=/:/' | column -s: -t
+		@$(CAT) "$(BOARDS_TXT)" | grep -E "^[a-zA-Z0-9_]+.name" | sort -uf | sed 's/.name=/:/' | column -s: -t
 
 monitor:
 		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)

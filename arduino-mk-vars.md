@@ -111,6 +111,23 @@ ARDUINO_DIR = /Applications/Arduino.app/Contents/Resources/Java
 
 ----
 
+### ARDUINO_PLATFORM_LIB_PATH
+
+**Description:**
+
+Directory where the Arduino platform dependent libraries are stored.
+(Used only for Arduino 1.5.x)
+
+**Example:**
+
+```Makefile
+ARDUINO_PLATFORM_LIB_PATH = /usr/share/arduino/hardware/arduino/avr/libraries
+```
+
+**Requirement:** *Optional*
+
+----
+
 ### ARDUINO_VERSION
 
 **Description:**
@@ -306,8 +323,6 @@ MONITOR_PORT = com3
 Directory where additional libraries are stored.
 
 Defaults to `libraries` directory within user's sketchbook.
-
-Note that you cannot have user libraries with the same name as the system Arduino libs.
 
 **Example:**
 
@@ -854,6 +869,82 @@ CXXFLAGS_STD = = -std=gnu++98
 
 ----
 
+### CFLAGS
+
+**Description:**
+
+Flags passed to compiler for files compiled as C. Add more flags to this
+variable using `+=`.
+
+Defaults to all flags required for a typical build.
+
+**Example:**
+
+```Makefile
+CFLAGS += -my-c-only-flag
+```
+
+**Requirement:** *Optional*
+
+----
+
+### CXXFLAGS
+
+**Description:**
+
+Flags passed to the compiler for files compiled as C++. Add more flags to this
+variable using `+=`.
+
+Defaults to all flags required for a typical build.
+
+**Example:**
+
+```Makefile
+CXXFLAGS += -my-c++-onlyflag
+```
+
+**Requirement:** *Optional*
+
+----
+
+### ASFLAGS
+
+**Description:**
+
+Flags passed to compiler for files compiled as assembly (e.g. `.S` files). Add
+more flags to this variable using `+=`.
+
+Defaults to all flags required for a typical build.
+
+**Example:**
+
+```Makefile
+ASFLAGS += -my-as-only-flag
+```
+
+**Requirement:** *Optional*
+
+----
+
+### CPPFLAGS
+
+**Description:**
+
+Flags passed to the C pre-processor (for C, C++ and assembly source flies). Add
+more flags to this variable using `+=`.
+
+Defaults to all flags required for a typical build.
+
+**Example:**
+
+```Makefile
+CPPFLAGS += -DMY_DEFINE_FOR_ALL_SOURCE_TYPES
+```
+
+**Requirement:** *Optional*
+
+----
+
 ### OVERRIDE_EXECUTABLES
 
 **Description:**
@@ -1104,7 +1195,7 @@ AVRDUDE_ISP_BAUDRATE = 19200
 
 Options to pass to `avrdude`.
 
-Defaults to `-q -V -D` (quiet, don't verify, don't auto-erase). User values are not *ANDed* to the defaults, you have to set each option you require.
+Defaults to `-q -V` (quiet, don't verify). User values are not *ANDed* to the defaults, you have to set each option you require.
 
 **Example:**
 
