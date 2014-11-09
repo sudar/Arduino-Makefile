@@ -1237,10 +1237,8 @@ endif
 # Default avrdude options
 # -V Do not verify
 # -q - suppress progress output
-# -D - Disable auto erase for flash memory
-# (-D is needed for Mega boards. See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
 ifndef AVRDUDE_OPTS
-    AVRDUDE_OPTS = -q -V -D
+    AVRDUDE_OPTS = -q -V
 endif
 
 AVRDUDE_COM_OPTS = $(AVRDUDE_OPTS) -p $(MCU)
@@ -1248,7 +1246,9 @@ ifdef AVRDUDE_CONF
     AVRDUDE_COM_OPTS += -C $(AVRDUDE_CONF)
 endif
 
-AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P
+# -D - Disable auto erase for flash memory
+# (-D is needed for Mega boards. See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
+AVRDUDE_ARD_OPTS = -D -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P
 ifeq ($(CURRENT_OS), WINDOWS)
     # get_monitor_port checks to see if the monitor port exists, assuming it is
     # a file. In Windows, avrdude needs the port in the format 'com1' which is

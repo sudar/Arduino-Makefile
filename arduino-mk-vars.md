@@ -1195,7 +1195,7 @@ AVRDUDE_ISP_BAUDRATE = 19200
 
 Options to pass to `avrdude`.
 
-Defaults to `-q -V -D` (quiet, don't verify, don't auto-erase). User values are not *ANDed* to the defaults, you have to set each option you require.
+Defaults to `-q -V` (quiet, don't verify). User values are not *ANDed* to the defaults, you have to set each option you require.
 
 **Example:**
 
