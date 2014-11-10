@@ -343,7 +343,7 @@ ifndef ARDUINO_SKETCHBOOK
     endif
 
     ifneq ($(ARDUINO_PREFERENCES_PATH),)
-        ARDUINO_SKETCHBOOK = $(shell grep --max-count=1 --regexp="sketchbook.path=" \
+        ARDUINO_SKETCHBOOK := $(shell grep --max-count=1 --regexp="sketchbook.path=" \
                                           "$(ARDUINO_PREFERENCES_PATH)" | \
                                      sed -e 's/sketchbook.path=//' )
     endif
@@ -351,7 +351,7 @@ ifndef ARDUINO_SKETCHBOOK
     ifneq ($(ARDUINO_SKETCHBOOK),)
         $(call show_config_variable,ARDUINO_SKETCHBOOK,[AUTODETECTED],(from arduino preferences file))
     else
-        ARDUINO_SKETCHBOOK = $(HOME)/sketchbook
+        ARDUINO_SKETCHBOOK := $(HOME)/sketchbook
         $(call show_config_variable,ARDUINO_SKETCHBOOK,[DEFAULT])
     endif
 else
@@ -872,16 +872,16 @@ get_library_files  = $(if $(and $(wildcard $(1)/src), $(wildcard $(1)/library.pr
                         $(wildcard $(1)/*.$(2) $(1)/utility/*.$(2)))
 
 # General arguments
-USER_LIBS      = $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(ARDUINO_LIBS)))
-USER_LIB_NAMES = $(patsubst $(USER_LIB_PATH)/%,%,$(USER_LIBS))
+USER_LIBS      := $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(ARDUINO_LIBS)))
+USER_LIB_NAMES := $(patsubst $(USER_LIB_PATH)/%,%,$(USER_LIBS))
 
 # Let user libraries override system ones.
-SYS_LIBS       = $(wildcard $(patsubst %,$(ARDUINO_LIB_PATH)/%,$(filter-out $(USER_LIB_NAMES),$(ARDUINO_LIBS))))
-SYS_LIB_NAMES  = $(patsubst $(ARDUINO_LIB_PATH)/%,%,$(SYS_LIBS))
+SYS_LIBS       := $(wildcard $(patsubst %,$(ARDUINO_LIB_PATH)/%,$(filter-out $(USER_LIB_NAMES),$(ARDUINO_LIBS))))
+SYS_LIB_NAMES  := $(patsubst $(ARDUINO_LIB_PATH)/%,%,$(SYS_LIBS))
 
 ifdef ARDUINO_PLATFORM_LIB_PATH
-    PLATFORM_LIBS       = $(wildcard $(patsubst %,$(ARDUINO_PLATFORM_LIB_PATH)/%,$(filter-out $(USER_LIB_NAMES),$(ARDUINO_LIBS))))
-    PLATFORM_LIB_NAMES  = $(patsubst $(ARDUINO_PLATFORM_LIB_PATH)/%,%,$(PLATFORM_LIBS))
+    PLATFORM_LIBS       := $(wildcard $(patsubst %,$(ARDUINO_PLATFORM_LIB_PATH)/%,$(filter-out $(USER_LIB_NAMES),$(ARDUINO_LIBS))))
+    PLATFORM_LIB_NAMES  := $(patsubst $(ARDUINO_PLATFORM_LIB_PATH)/%,%,$(PLATFORM_LIBS))
 endif
 
 
@@ -895,14 +895,14 @@ ifneq (,$(strip $(LIBS_NOT_FOUND)))
     endif
 endif
 
-SYS_INCLUDES        = $(foreach lib, $(SYS_LIBS), $(call get_library_includes,$(lib)))
-USER_INCLUDES       = $(foreach lib, $(USER_LIBS), $(call get_library_includes,$(lib)))
-LIB_C_SRCS          = $(foreach lib, $(SYS_LIBS), $(call get_library_files,$(lib),c))
-LIB_CPP_SRCS        = $(foreach lib, $(SYS_LIBS), $(call get_library_files,$(lib),cpp))
-LIB_AS_SRCS         = $(foreach lib, $(SYS_LIBS), $(call get_library_files,$(lib),S))
-USER_LIB_CPP_SRCS   = $(foreach lib, $(USER_LIBS), $(call get_library_files,$(lib),cpp))
-USER_LIB_C_SRCS     = $(foreach lib, $(USER_LIBS), $(call get_library_files,$(lib),c))
-USER_LIB_AS_SRCS     = $(foreach lib, $(USER_LIBS), $(call get_library_files,$(lib),S))
+SYS_INCLUDES        := $(foreach lib, $(SYS_LIBS),  $(call get_library_includes,$(lib)))
+USER_INCLUDES       := $(foreach lib, $(USER_LIBS), $(call get_library_includes,$(lib)))
+LIB_C_SRCS          := $(foreach lib, $(SYS_LIBS),  $(call get_library_files,$(lib),c))
+LIB_CPP_SRCS        := $(foreach lib, $(SYS_LIBS),  $(call get_library_files,$(lib),cpp))
+LIB_AS_SRCS         := $(foreach lib, $(SYS_LIBS),  $(call get_library_files,$(lib),S))
+USER_LIB_CPP_SRCS   := $(foreach lib, $(USER_LIBS), $(call get_library_files,$(lib),cpp))
+USER_LIB_C_SRCS     := $(foreach lib, $(USER_LIBS), $(call get_library_files,$(lib),c))
+USER_LIB_AS_SRCS    := $(foreach lib, $(USER_LIBS), $(call get_library_files,$(lib),S))
 LIB_OBJS            = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(LIB_C_SRCS)) \
                       $(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS)) \
                       $(patsubst $(ARDUINO_LIB_PATH)/%.S,$(OBJDIR)/libs/%.o,$(LIB_AS_SRCS))
@@ -911,13 +911,13 @@ USER_LIB_OBJS       = $(patsubst $(USER_LIB_PATH)/%.cpp,$(OBJDIR)/userlibs/%.o,$
                       $(patsubst $(USER_LIB_PATH)/%.S,$(OBJDIR)/userlibs/%.o,$(USER_LIB_AS_SRCS))
 
 ifdef ARDUINO_PLATFORM_LIB_PATH
-    PLATFORM_INCLUDES     = $(foreach lib, $(PLATFORM_LIBS), $(call get_library_includes,$(lib)))
-    PLATFORM_LIB_CPP_SRCS = $(foreach lib, $(PLATFORM_LIBS), $(call get_library_files,$(lib),cpp))
-    PLATFORM_LIB_C_SRCS   = $(foreach lib, $(PLATFORM_LIBS), $(call get_library_files,$(lib),c))
-    PLATFORM_LIB_AS_SRCS  = $(foreach lib, $(PLATFORM_LIBS), $(call get_library_files,$(lib),S))
-    PLATFORM_LIB_OBJS     = $(patsubst $(ARDUINO_PLATFORM_LIB_PATH)/%.cpp,$(OBJDIR)/platformlibs/%.o,$(PLATFORM_LIB_CPP_SRCS)) \
-                          $(patsubst $(ARDUINO_PLATFORM_LIB_PATH)/%.c,$(OBJDIR)/platformlibs/%.o,$(PLATFORM_LIB_C_SRCS)) \
-                          $(patsubst $(ARDUINO_PLATFORM_LIB_PATH)/%.S,$(OBJDIR)/platformlibs/%.o,$(PLATFORM_LIB_AS_SRCS))
+    PLATFORM_INCLUDES     := $(foreach lib, $(PLATFORM_LIBS), $(call get_library_includes,$(lib)))
+    PLATFORM_LIB_CPP_SRCS := $(foreach lib, $(PLATFORM_LIBS), $(call get_library_files,$(lib),cpp))
+    PLATFORM_LIB_C_SRCS   := $(foreach lib, $(PLATFORM_LIBS), $(call get_library_files,$(lib),c))
+    PLATFORM_LIB_AS_SRCS  := $(foreach lib, $(PLATFORM_LIBS), $(call get_library_files,$(lib),S))
+    PLATFORM_LIB_OBJS     := $(patsubst $(ARDUINO_PLATFORM_LIB_PATH)/%.cpp,$(OBJDIR)/platformlibs/%.o,$(PLATFORM_LIB_CPP_SRCS)) \
+                             $(patsubst $(ARDUINO_PLATFORM_LIB_PATH)/%.c,$(OBJDIR)/platformlibs/%.o,$(PLATFORM_LIB_C_SRCS)) \
+                             $(patsubst $(ARDUINO_PLATFORM_LIB_PATH)/%.S,$(OBJDIR)/platformlibs/%.o,$(PLATFORM_LIB_AS_SRCS))
 
 endif
 
@@ -1058,7 +1058,7 @@ endif
 ARDMK_VERSION = 1.3.4
 $(call show_config_variable,ARDMK_VERSION,[COMPUTED])
 
-CC_VERSION = $(shell $(CC) -dumpversion)
+CC_VERSION := $(shell $(CC) -dumpversion)
 $(call show_config_variable,CC_VERSION,[COMPUTED],($(CC_NAME)))
 
 # end of config output
