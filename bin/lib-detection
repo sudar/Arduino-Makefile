@@ -1,0 +1,90 @@
+#!/usr/bin/env python
+
+import os
+import re
+import sys
+
+
+# Set variables
+USER_LIB_PATH = sys.argv[1]
+USER_LIBS = []
+
+includeRegex = re.compile("(?<=^\#include\s\")(.*)(?=\.h\")", re.DOTALL|re.M)
+
+SKETCH_SRCS = []
+SKETCH_LIBS = []
+
+SKETCH_LIBS_DEPS = []
+SKETCH_LIBS_DEPS_STACK = []
+
+
+# Define functions
+def outputLibs(libArray):
+	for lib in libArray:
+		print(lib),
+	print("")
+
+
+# Find local sources .ino, .c or .cpp
+FILE_END = (".c", ".cpp", ".ino")
+SKETCH_SRCS = [f for f in os.listdir(os.curdir) if f.endswith(FILE_END)]
+
+# Find all USER_LIBS
+for path, dirs, files in os.walk(USER_LIB_PATH):
+	for d in dirs:
+		USER_LIBS.append(d)
+
+# Find SKETCH_LIBS included in SKETCH_SRCS
+for src in SKETCH_SRCS:
+	currentFile = open(src)
+
+	for line in currentFile:
+		match = includeRegex.search(line)
+		if match is not None:
+			group = match.group(1)
+			if group in USER_LIBS:
+				SKETCH_LIBS.append(group)
+
+SKETCH_LIBS = sorted(set(SKETCH_LIBS))
+
+# Find SKETCH_LIBS_DEPS includes in SKETCH_LIBS
+for lib in SKETCH_LIBS:
+	if lib in USER_LIBS:
+		currentFile = open(os.path.join(USER_LIB_PATH, lib, lib + ".h"))
+
+		for line in currentFile:
+			match = includeRegex.search(line)
+			if match is not None:
+				group = match.group(1)
+				if group in USER_LIBS and group not in SKETCH_LIBS:
+					SKETCH_LIBS_DEPS_STACK.append(group)
+
+SKETCH_LIBS_DEPS_STACK = list(set(SKETCH_LIBS_DEPS_STACK))
+
+# Recursively find all dependencies of every libraries in USER_LIB_PATH
+while len(SKETCH_LIBS_DEPS_STACK) > 0:
+	for lib in SKETCH_LIBS_DEPS_STACK:
+		if lib in USER_LIBS:
+			currentFile = open(os.path.join(USER_LIB_PATH, lib, lib + ".h"))
+
+			for line in currentFile:
+				match = includeRegex.search(line)
+				if match is not None:
+					group = match.group(1)
+					if group in USER_LIBS and group not in SKETCH_LIBS_DEPS_STACK and group not in SKETCH_LIBS_DEPS and group not in SKETCH_LIBS:
+						SKETCH_LIBS_DEPS_STACK.append(group)
+
+				else:
+					if lib not in SKETCH_LIBS_DEPS:
+						SKETCH_LIBS_DEPS.append(lib)
+						if lib in SKETCH_LIBS_DEPS_STACK:
+							SKETCH_LIBS_DEPS_STACK.remove(lib)
+
+SKETCH_LIBS_DEPS.sort()
+
+# Output libraries for the Makefile
+print("SKETCH_LIBS"),
+outputLibs(SKETCH_LIBS)
+
+print("SKETCH_LIBS_DEPS"),
+outputLibs(SKETCH_LIBS_DEPS)

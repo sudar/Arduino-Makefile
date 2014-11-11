@@ -34,6 +34,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Changed IDE download URL *again* for Travis-CI. (https://github.com/sej7278)
 - Fix: Allow avrdude to erase the chip before programming during ispload (https://github.com/tchebb)
 - Fix: Fix speed regression. Thanks ladislas (Issue #280) (https://github.com/sej7278)
+- New: Add automatic library detection when compiling a sketch. (http://github.com/ladislas)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
