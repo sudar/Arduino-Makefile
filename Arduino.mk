@@ -1015,7 +1015,11 @@ else
 endif
 
 # Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
-get_monitor_port = $(if $(wildcard $(DEVICE_PATH)),$(firstword $(wildcard $(DEVICE_PATH))),$(error Arduino port $(DEVICE_PATH) not found!))
+ifeq ($(CURRENT_OS), WINDOWS)
+	get_monitor_port = $(DEVICE_PATH)
+else
+	get_monitor_port = $(if $(wildcard $(DEVICE_PATH)),$(firstword $(wildcard $(DEVICE_PATH))),$(error Arduino port $(DEVICE_PATH) not found!))
+endif
 
 # Returns the ISP port (first wildcard expansion) if it exists, otherwise it errors.
 get_isp_port = $(if $(wildcard $(ISP_PORT)),$(firstword $(wildcard $(ISP_PORT))),$(if $(findstring Xusb,X$(ISP_PORT)),$(ISP_PORT),$(error ISP port $(ISP_PORT) not found!)))
@@ -1407,7 +1411,15 @@ show_boards:
 		@$(CAT) "$(BOARDS_TXT)" | grep -E "^[a-zA-Z0-9_]+.name" | sort -uf | sed 's/.name=/:/' | column -s: -t
 
 monitor:
-		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
+ifneq ("$(MONITOR_CMD)", "putty")
+	$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
+else
+    ifneq ($(strip $(MONITOR_PARMS)),)
+		$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE),$(MONITOR_PARMS) $(call get_monitor_port)
+    else
+		$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE) $(call get_monitor_port)
+    endif
+endif
 
 disasm: $(OBJDIR)/$(TARGET).lss
 		@$(ECHO) "The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss\n\n"

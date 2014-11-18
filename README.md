@@ -102,6 +102,11 @@ On Windows (using cygwin), you might want to set:
     MONITOR_PORT  = com3
     BOARD_TAG     = mega2560
 
+On Windows (using MSYS and PuTTY), you might want to set the following extra parameters:
+
+    MONITOR_CMD   = putty
+    MONITOR_PARMS = 8,1,n,N
+
 On Arduino 1.5.x installs, you should set the architecture to either `avr` or `sam` and if using a submenu CPU, then also set that:
 
 	ARCHITECTURE  = avr
