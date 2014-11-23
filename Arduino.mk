@@ -691,9 +691,17 @@ ifndef RESET_CMD
 		ARD_RESET_ARDUINO = $(ARDMK_DIR)/bin/ard-reset-arduino
 	endif
     ifneq ($(CATERINA),)
-       RESET_CMD = $(ARD_RESET_ARDUINO) --caterina $(ARD_RESET_OPTS) $(call get_monitor_port)
+        ifneq (,$(findstring CYGWIN,$(shell uname -s)))
+            RESET_CMD = $(ARD_RESET_ARDUINO) --caterina $(ARD_RESET_OPTS) $(DEVICE_PATH)
+        else
+            RESET_CMD = $(ARD_RESET_ARDUINO) --caterina $(ARD_RESET_OPTS) $(call get_monitor_port)
+        endif
     else
-       RESET_CMD = $(ARD_RESET_ARDUINO) $(ARD_RESET_OPTS) $(call get_monitor_port)
+        ifneq (,$(findstring CYGWIN,$(shell uname -s)))
+            RESET_CMD = $(ARD_RESET_ARDUINO) $(ARD_RESET_OPTS) $(DEVICE_PATH)
+        else
+            RESET_CMD = $(ARD_RESET_ARDUINO) $(ARD_RESET_OPTS) $(call get_monitor_port)
+        endif
     endif
 endif
 
@@ -991,20 +999,20 @@ SIZEFLAGS     ?= --mcu=$(MCU) -C
 # instead of MONITOR_PORT
 MONITOR_PORT ?= $(ARDUINO_PORT)
 
-ifeq ($(CURRENT_OS), WINDOWS)
-    # Expect MONITOR_PORT to be '1' or 'com1' for COM1 in Windows. Split it up
-    # into the two styles required: /dev/ttyS* for ard-reset-arduino and com*
-    # for avrdude. This also could work with /dev/com* device names and be more
-    # consistent, but the /dev/com* is not recommended by Cygwin and doesn't
-    # always show up.
-    COM_PORT_ID = $(subst com,,$(MONITOR_PORT))
-    COM_STYLE_MONITOR_PORT = com$(COM_PORT_ID)
-    DEVICE_PATH = /dev/ttyS$(shell awk 'BEGIN{ print $(COM_PORT_ID) - 1 }')
-endif
-
 ifneq ($(strip $(MONITOR_PORT)),)
-    # set DEVICE_PATH based on user-defined MONITOR_PORT or ARDUINO_PORT
-    DEVICE_PATH = $(MONITOR_PORT)
+    ifeq ($(CURRENT_OS), WINDOWS)
+        # Expect MONITOR_PORT to be '1' or 'com1' for COM1 in Windows. Split it up
+        # into the two styles required: /dev/ttyS* for ard-reset-arduino and com*
+        # for avrdude. This also could work with /dev/com* device names and be more
+        # consistent, but the /dev/com* is not recommended by Cygwin and doesn't
+        # always show up.
+        COM_PORT_ID = $(subst com,,$(MONITOR_PORT))
+        COM_STYLE_MONITOR_PORT = com$(COM_PORT_ID)
+        DEVICE_PATH = /dev/ttyS$(shell awk 'BEGIN{ print $(COM_PORT_ID) - 1 }')
+    else
+        # set DEVICE_PATH based on user-defined MONITOR_PORT or ARDUINO_PORT
+        DEVICE_PATH = $(MONITOR_PORT)
+    endif
     $(call show_config_variable,DEVICE_PATH,[COMPUTED],(from MONITOR_PORT))
 else
     # If no port is specified, try to guess it from wildcards.
@@ -1015,7 +1023,11 @@ else
 endif
 
 # Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
-get_monitor_port = $(if $(wildcard $(DEVICE_PATH)),$(firstword $(wildcard $(DEVICE_PATH))),$(error Arduino port $(DEVICE_PATH) not found!))
+ifeq ($(CURRENT_OS), WINDOWS)
+    get_monitor_port = $(COM_STYLE_MONITOR_PORT)
+else
+    get_monitor_port = $(if $(wildcard $(DEVICE_PATH)),$(firstword $(wildcard $(DEVICE_PATH))),$(error Arduino port $(DEVICE_PATH) not found!))
+endif
 
 # Returns the ISP port (first wildcard expansion) if it exists, otherwise it errors.
 get_isp_port = $(if $(wildcard $(ISP_PORT)),$(firstword $(wildcard $(ISP_PORT))),$(if $(findstring Xusb,X$(ISP_PORT)),$(ISP_PORT),$(error ISP port $(ISP_PORT) not found!)))

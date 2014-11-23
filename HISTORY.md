@@ -22,6 +22,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Update travis-ci to test against Arduino 1.0.6. (https://github.com/sej7278)
 - Tweak: Updated package instructions for Arch/Fedora/Raspbian. (https://github.com/sej7278)
 
+- Fix: Improved Windows (Cygwin/MSYS) support (https://github.com/PeterMosmans)
 - Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)
 - Fix: Make avr-g++ use CXXFLAGS instead of CFLAGS. (https://github.com/sej7278)
 - Fix: Allow the use of CFLAGS_STD and CXXFLAGS_STD and set defaults (Issue #234) (https://github.com/ladislas)
