@@ -5,7 +5,6 @@ The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### In development
-- New: Support for PuTTY under Windows (https://github.com/PeterMosmans)
 - New: Add support for new 1.5.x library layout (Issue #275) (https://github.com/lukasz-e)
 - New: Add support for 1.5.x vendor/hardware architecture library location (Issue #276) (https://github.com/lukasz-e)
 - New: Added test suite and integration with travis CI. (https://github.com/peplin)
@@ -15,13 +14,15 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Allow "make clean" target to be extended (Issue #239). (https://github.com/sej7278)
 - New: Add makefile and gcc version info to config output. (https://github.com/sej7278)
 - New: Support for Teensy 3.x (https://github.com/stepcut)
+- New: Support for PuTTY under Windows (https://github.com/PeterMosmans)
+- New: Add support for installation using homebrew(https://github.com/ladislas)
 
-- Tweak: Remove $(EXTRA_XXX) variables (Issue #234) (https://github.com/ladislas)
 - Tweak: Update Malefile-example.mk with STD flags (https://github.com/ladislas)
 - Tweak: Allow remove of any OBJDIR with `$(REMOVE) $(OBJDIR)`. (https://github.com/ladislas)
 - Tweak: Add cpp to extensions supported by "make generate_assembly". (https://github.com/sej7278)
 - Tweak: Update travis-ci to test against Arduino 1.0.6. (https://github.com/sej7278)
 - Tweak: Updated package instructions for Arch/Fedora/Raspbian. (https://github.com/sej7278)
+- Tweak: Remove $(EXTRA_XXX) variables (Issue #234) (https://github.com/ladislas)
 
 - Fix: Improved Windows (Cygwin/MSYS) support (https://github.com/PeterMosmans)
 - Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)
