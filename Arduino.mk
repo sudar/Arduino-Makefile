@@ -1419,7 +1419,15 @@ show_boards:
 		@$(CAT) "$(BOARDS_TXT)" | grep -E "^[a-zA-Z0-9_]+.name" | sort -uf | sed 's/.name=/:/' | column -s: -t
 
 monitor:
-		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
+ifneq ("$(MONITOR_CMD)", "putty")
+	$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
+else
+    ifneq ($(strip $(MONITOR_PARMS)),)
+		$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE),$(MONITOR_PARMS) $(call get_monitor_port)
+    else
+		$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE) $(call get_monitor_port)
+    endif
+endif
 
 disasm: $(OBJDIR)/$(TARGET).lss
 		@$(ECHO) "The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss\n\n"
