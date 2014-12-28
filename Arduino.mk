@@ -1031,11 +1031,16 @@ else
     $(call show_config_variable,DEVICE_PATH,[AUTODETECTED])
 endif
 
-# Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
-ifeq ($(CURRENT_OS), WINDOWS)
-    get_monitor_port = $(COM_STYLE_MONITOR_PORT)
+ifdef FORCE_MONITOR_PORT
+    # Skips the DEVICE_PATH existance check.
+    get_monitor_port = $(DEVICE_PATH)
 else
-    get_monitor_port = $(if $(wildcard $(DEVICE_PATH)),$(firstword $(wildcard $(DEVICE_PATH))),$(error Arduino port $(DEVICE_PATH) not found!))
+    # Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
+    ifeq ($(CURRENT_OS), WINDOWS)
+        get_monitor_port = $(COM_STYLE_MONITOR_PORT)
+    else
+        get_monitor_port = $(if $(wildcard $(DEVICE_PATH)),$(firstword $(wildcard $(DEVICE_PATH))),$(error Arduino port $(DEVICE_PATH) not found!))
+    endif
 endif
 
 # Returns the ISP port (first wildcard expansion) if it exists, otherwise it errors.
