@@ -618,6 +618,14 @@ ifeq ($(strip $(NO_CORE)),)
         endif
     endif
 
+    ifndef MONITOR_PORT
+        MONITOR_PORT := $(call PARSE_BOARD,$(BOARD_TAG),upload.port)
+        ifndef MONITOR_PORT
+        # might be a submenu
+            MONITOR_PORT := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).upload.port)
+        endif
+    endif
+
     ifndef AVRDUDE_ARD_BAUDRATE
         AVRDUDE_ARD_BAUDRATE := $(call PARSE_BOARD,$(BOARD_TAG),upload.speed)
         ifndef AVRDUDE_ARD_BAUDRATE
