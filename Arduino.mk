@@ -1059,6 +1059,12 @@ else
     $(call show_config_variable,DEVICE_PATH,[AUTODETECTED])
 endif
 
+ifndef FORCE_MONITOR_PORT
+    $(call show_config_variable,FORCE_MONITOR_PORT,[DEFAULT])
+else
+    $(call show_config_variable,FORCE_MONITOR_PORT,[USER])
+endif
+
 ifdef FORCE_MONITOR_PORT
     # Skips the DEVICE_PATH existance check.
     get_monitor_port = $(DEVICE_PATH)
