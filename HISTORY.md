@@ -25,7 +25,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Updated package instructions for Arch/Fedora/Raspbian. (https://github.com/sej7278)
 - Tweak: Remove $(EXTRA_XXX) variables (Issue #234) (https://github.com/ladislas)
 - Tweak: Moved location of avrdude for 1.5.8 on Linux (Issue #301) (https://github.com/sej7278)
-- Tweak: Allow 'build.core' param as found in [arduino-attiny](https://code.google.com/p/arduino-tiny/) Prospective Boards.txt. (https://github.com/Gaboose)
+- Tweak: Allow 'build.core' param as found in [arduino-tiny](https://code.google.com/p/arduino-tiny/) Prospective Boards.txt. (https://github.com/Gaboose)
 
 - Fix: Improved Windows (Cygwin/MSYS) support (https://github.com/PeterMosmans)
 - Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)
