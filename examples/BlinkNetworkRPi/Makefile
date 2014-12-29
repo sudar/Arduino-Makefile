@@ -21,6 +21,8 @@ include ../../Arduino.mk
 
 # Additional rules to use a remote Raspberry Pi programmer
 
+# Note that it's recommended not to use root for this task,
+# but to setup spidev access on a normal user instead.
 HOST = root@alarmpi
 SSH_AVRDUDE = ssh $(HOST) /usr/local/bin/avrdude
 
