@@ -316,6 +316,25 @@ MONITOR_PORT = com3
 
 ----
 
+### FORCE_MONITOR_PORT
+
+**Description:**
+
+Skip the MONITOR_PORT existance check.
+
+**Example:**
+
+```Makefile
+# Enable
+FORCE_MONITOR_PORT = true
+# Disable (default)
+undefine FORCE_MONITOR_PORT
+```
+
+**Requirement:** *Optional*
+
+----
+
 ### USER_LIB_PATH
 
 **Description:**
@@ -386,6 +405,29 @@ Path to non-standard core's variant files.
 
 ```Makefile
 ARDUINO_VAR_PATH = ~/sketchbook/hardware/arduino-tiny/cores/tiny
+```
+
+**Requirement:** *Optional*
+
+----
+
+### CORE
+
+**Description:**
+
+Name of the core *inside* the ALTERNATE_CORE or the standard core.
+
+Usually can be auto-detected as `build.core` from `boards.txt`.
+
+**Example:**
+
+```Makefile
+# standard Arduino core (undefine ALTERNATE_CORE)
+CORE = arduino
+# or
+CORE = robot
+# tiny core (ALTERNATE_CORE = arduino-tiny)
+CORE = tiny
 ```
 
 **Requirement:** *Optional*

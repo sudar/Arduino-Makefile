@@ -13,7 +13,7 @@ BOARD_TAG = attiny85at8
 AVRDUDE_CONF=/usr/local/etc/avrdude.conf
 
 # Skip the monitor port existance check since it's not on our machine.
-FORCE_MONITOR_PORT=(defined)
+FORCE_MONITOR_PORT=true
 MONITOR_PORT=/dev/spidev0.0
 
 include ../../Arduino.mk
