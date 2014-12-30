@@ -563,7 +563,10 @@ ifeq ($(strip $(NO_CORE)),)
     # 'robot', but can also hold 'tiny', for example, if using
     # https://code.google.com/p/arduino-tiny alternate core.
     ifndef CORE
-        CORE = $(call PARSE_BOARD,$(BOARD_TAG),build.core)
+        CORE = $(shell echo $(call PARSE_BOARD,$(BOARD_TAG),build.core) | cut -d : -f 2)
+        $(call show_config_variable,CORE,[COMPUTED],(from build.core))
+    else
+        $(call show_config_variable,CORE,[USER])
     endif
 
     # Which variant ? This affects the include path
