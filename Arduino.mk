@@ -458,12 +458,6 @@ endif
 
 ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
 $(call show_config_variable,ARDUINO_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
-ifndef ARDUINO_CORE_PATH
-    ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/cores/arduino
-    $(call show_config_variable,ARDUINO_CORE_PATH,[DEFAULT])
-else
-    $(call show_config_variable,ARDUINO_CORE_PATH,[USER])
-endif
 
 # 1.5.x platform dependent libs path
 ifndef ARDUINO_PLATFORM_LIB_PATH
@@ -564,6 +558,16 @@ endif
 # If NO_CORE is set, then we don't have to parse boards.txt file
 # But the user might have to define MCU, F_CPU etc
 ifeq ($(strip $(NO_CORE)),)
+
+    # Select a core from the 'cores' directory. Two main values: 'arduino' or
+    # 'robot', but can also hold 'tiny', for example, if using
+    # https://code.google.com/p/arduino-tiny alternate core.
+    ifndef CORE
+        CORE = $(shell echo $(call PARSE_BOARD,$(BOARD_TAG),build.core) | cut -d : -f 2)
+        $(call show_config_variable,CORE,[COMPUTED],(from build.core))
+    else
+        $(call show_config_variable,CORE,[USER])
+    endif
 
     # Which variant ? This affects the include path
     ifndef VARIANT
@@ -687,6 +691,25 @@ ifndef OBJDIR
     $(call show_config_variable,OBJDIR,[COMPUTED],(from BOARD_TAG))
 else
     $(call show_config_variable,OBJDIR,[USER])
+endif
+
+# Now that we have ARDUINO_DIR, VENDOR, ARCHITECTURE and CORE,
+# we can set ARDUINO_CORE_PATH.
+ifndef ARDUINO_CORE_PATH
+    ifeq ($(strip $(CORE)),)
+        ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/cores/arduino
+        $(call show_config_variable,ARDUINO_CORE_PATH,[DEFAULT])
+    else
+        ARDUINO_CORE_PATH = $(ALTERNATE_CORE_PATH)/cores/$(CORE)
+        ifeq ($(wildcard $(ARDUINO_CORE_PATH)),)
+            ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/cores/$(CORE)
+            $(call show_config_variable,ARDUINO_CORE_PATH,[COMPUTED],(from ARDUINO_DIR, BOARD_TAG and boards.txt))
+        else
+            $(call show_config_variable,ARDUINO_CORE_PATH,[COMPUTED],(from ALTERNATE_CORE_PATH, BOARD_TAG and boards.txt))
+        endif
+    endif
+else
+    $(call show_config_variable,ARDUINO_CORE_PATH,[USER])
 endif
 
 ########################################################################
@@ -1031,11 +1054,22 @@ else
     $(call show_config_variable,DEVICE_PATH,[AUTODETECTED])
 endif
 
-# Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
-ifeq ($(CURRENT_OS), WINDOWS)
-    get_monitor_port = $(COM_STYLE_MONITOR_PORT)
+ifndef FORCE_MONITOR_PORT
+    $(call show_config_variable,FORCE_MONITOR_PORT,[DEFAULT])
 else
-    get_monitor_port = $(if $(wildcard $(DEVICE_PATH)),$(firstword $(wildcard $(DEVICE_PATH))),$(error Arduino port $(DEVICE_PATH) not found!))
+    $(call show_config_variable,FORCE_MONITOR_PORT,[USER])
+endif
+
+ifdef FORCE_MONITOR_PORT
+    # Skips the DEVICE_PATH existance check.
+    get_monitor_port = $(DEVICE_PATH)
+else
+    # Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
+    ifeq ($(CURRENT_OS), WINDOWS)
+        get_monitor_port = $(COM_STYLE_MONITOR_PORT)
+    else
+        get_monitor_port = $(if $(wildcard $(DEVICE_PATH)),$(firstword $(wildcard $(DEVICE_PATH))),$(error Arduino port $(DEVICE_PATH) not found!))
+    endif
 endif
 
 # Returns the ISP port (first wildcard expansion) if it exists, otherwise it errors.
