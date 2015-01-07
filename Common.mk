@@ -16,6 +16,7 @@ runscript_if_exists =                                                          \
 # the number of bytes indicated by the second argument.
 space_pad_to = $(shell echo $(1) "                                                      " | head -c$(2))
 
+ifndef ARDUINO_QUIET_MAKE
 # Call with some text, and a prefix tag if desired (like [AUTODETECTED]),
 show_config_info = $(call arduino_output,- $(call space_pad_to,$(2),20) $(1))
 
@@ -28,6 +29,7 @@ show_separator = $(call arduino_output,-------------------------)
 
 $(call show_separator)
 $(call arduino_output,Arduino.mk Configuration:)
+endif   # !ARDUINO_QUIET_MAKE
 
 ########################################################################
 #
