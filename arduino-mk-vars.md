@@ -452,6 +452,32 @@ VARIANT = leonardo
 
 ----
 
+### USB_TYPE
+
+**Description:**
+
+Define Teensy 3.1 usb device type. Default is USB_SERIAL
+
+**Example:**
+
+```Makefile
+USB_TYPE = USB_SERIAL
+# or
+USB_TYPE = USB_HID
+# or
+USB_TYPE = USB_SERIAL_HID
+# or
+USB_TYPE = USB_MIDI
+# or
+USB_TYPE = USB_RAWHID
+# or
+USB_TYPE = USB_FLIGHTSIM
+```
+
+**Requirement:** *Optional*
+
+----
+
 ### USB_VID
 
 **Description:**

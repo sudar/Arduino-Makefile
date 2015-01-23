@@ -18,7 +18,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Add support for installation using homebrew(https://github.com/ladislas)
 - New: Add support and example for flashing on a remote RPi. (https://github.com/Gaboose)
 
-- Tweak: Update Malefile-example.mk with STD flags (https://github.com/ladislas)
+- Tweak: Update Makefile-example.mk with STD flags (https://github.com/ladislas)
 - Tweak: Allow remove of any OBJDIR with `$(REMOVE) $(OBJDIR)`. (https://github.com/ladislas)
 - Tweak: Add cpp to extensions supported by "make generate_assembly". (https://github.com/sej7278)
 - Tweak: Update travis-ci to test against Arduino 1.0.6. (https://github.com/sej7278)
@@ -27,6 +27,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Moved location of avrdude for 1.5.8 on Linux (Issue #301) (https://github.com/sej7278)
 - Tweak: Allow 'build.core' param as found in [arduino-tiny](https://code.google.com/p/arduino-tiny/) Prospective Boards.txt. (https://github.com/Gaboose)
 - Tweak: Replace CXX_NAME with CXX as per the Emacs Flymake Wiki (Issue #309) (https://github.com/sej7278)
+- Tweak: Ability to override `USB_TYPE` in Teensy.md (Issue #313) (https://github.com/Poofjunior)
 
 - Fix: Improved Windows (Cygwin/MSYS) support (https://github.com/PeterMosmans)
 - Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)

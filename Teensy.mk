@@ -135,8 +135,12 @@ endif
 
 ########################################################################
 # FLAGS
+ifndef USB_TYPE
+    USB_TYPE = USB_SERIAL
+endif
 
-CPPFLAGS += -DLAYOUT_US_ENGLISH -DUSB_SERIAL
+CPPFLAGS += -DLAYOUT_US_ENGLISH -D$(USB_TYPE)
+
 CPPFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.option)
 
 CXXFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.cppoption)
