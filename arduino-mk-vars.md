@@ -456,7 +456,7 @@ VARIANT = leonardo
 
 **Description:**
 
-Define Teensy 3.1 usb device type. Available options are: 
+Define Teensy 3.1 usb device type. Default is USB_SERIAL
 
 **Example:**
 
