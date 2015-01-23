@@ -276,7 +276,7 @@ ifndef ARDUINO_VERSION
     # Remove all the decimals, and right-pad with zeros, and finally grab the first 3 bytes.
     # Works for 1.0 and 1.0.1
     VERSION_FILE := $(ARDUINO_DIR)/lib/version.txt
-    AUTO_ARDUINO_VERSION := $(shell [ -e "$(VERSION_FILE)" ] && cat "$(VERSION_FILE)" | sed -e 's/^[0-9]://g' -e 's/[.]//g' -e 's/$$/0000/' | head -c3)
+    AUTO_ARDUINO_VERSION := $(shell [ -e $(VERSION_FILE) ] && cat $(VERSION_FILE) | sed -e 's/^[0-9]://g' -e 's/[.]//g' -e 's/$$/0000/' | head -c3)
     ifdef AUTO_ARDUINO_VERSION
         ARDUINO_VERSION = $(AUTO_ARDUINO_VERSION)
         $(call show_config_variable,ARDUINO_VERSION,[AUTODETECTED])
@@ -343,8 +343,8 @@ ifndef ARDUINO_SKETCHBOOK
     endif
 
     ifneq ($(ARDUINO_PREFERENCES_PATH),)
-        ARDUINO_SKETCHBOOK := $(shell grep --max-count=1 --regexp="sketchbook.path=" \
-                                          "$(ARDUINO_PREFERENCES_PATH)" | \
+        ARDUINO_SKETCHBOOK := $(shell grep --max-count=1 --regexp='sketchbook.path=' \
+                                          $(ARDUINO_PREFERENCES_PATH) | \
                                      sed -e 's/sketchbook.path=//' )
     endif
 
@@ -403,11 +403,20 @@ ifndef AVR_TOOLS_DIR
         ifeq ($(CURRENT_OS),LINUX)
 
             ifndef AVRDUDE
-                AVRDUDE = $(AVR_TOOLS_DIR)/../avrdude
+                ifeq ($(shell expr $(ARDUINO_VERSION) '>' 157), 1)
+                    # 1.5.8 has different location than all prior versions!
+                    AVRDUDE = $(AVR_TOOLS_DIR)/bin/avrdude
+                else
+                    AVRDUDE = $(AVR_TOOLS_DIR)/../avrdude
+                endif
             endif
 
             ifndef AVRDUDE_CONF
-                AVRDUDE_CONF = $(AVR_TOOLS_DIR)/../avrdude.conf
+                ifeq ($(shell expr $(ARDUINO_VERSION) '>' 157), 1)
+                    AVRDUDE_CONF = $(AVR_TOOLS_DIR)/etc/avrdude.conf
+                else
+                    AVRDUDE_CONF = $(AVR_TOOLS_DIR)/../avrdude.conf
+                endif
             endif
 
         else
@@ -449,12 +458,6 @@ endif
 
 ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
 $(call show_config_variable,ARDUINO_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
-ifndef ARDUINO_CORE_PATH
-    ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/cores/arduino
-    $(call show_config_variable,ARDUINO_CORE_PATH,[DEFAULT])
-else
-    $(call show_config_variable,ARDUINO_CORE_PATH,[USER])
-endif
 
 # 1.5.x platform dependent libs path
 ifndef ARDUINO_PLATFORM_LIB_PATH
@@ -549,12 +552,22 @@ endif
 
 ifndef PARSE_BOARD
     # result = $(call READ_BOARD_TXT, 'boardname', 'parameter')
-    PARSE_BOARD = $(shell grep -v "^\#" "$(BOARDS_TXT)" | grep $(1).$(2) | cut -d = -f 2 )
+    PARSE_BOARD = $(shell grep -v '^\#' $(BOARDS_TXT) | grep $(1).$(2) | cut -d = -f 2 )
 endif
 
 # If NO_CORE is set, then we don't have to parse boards.txt file
 # But the user might have to define MCU, F_CPU etc
 ifeq ($(strip $(NO_CORE)),)
+
+    # Select a core from the 'cores' directory. Two main values: 'arduino' or
+    # 'robot', but can also hold 'tiny', for example, if using
+    # https://code.google.com/p/arduino-tiny alternate core.
+    ifndef CORE
+        CORE = $(shell echo $(call PARSE_BOARD,$(BOARD_TAG),build.core) | cut -d : -f 2)
+        $(call show_config_variable,CORE,[COMPUTED],(from build.core))
+    else
+        $(call show_config_variable,CORE,[USER])
+    endif
 
     # Which variant ? This affects the include path
     ifndef VARIANT
@@ -680,6 +693,25 @@ else
     $(call show_config_variable,OBJDIR,[USER])
 endif
 
+# Now that we have ARDUINO_DIR, VENDOR, ARCHITECTURE and CORE,
+# we can set ARDUINO_CORE_PATH.
+ifndef ARDUINO_CORE_PATH
+    ifeq ($(strip $(CORE)),)
+        ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/cores/arduino
+        $(call show_config_variable,ARDUINO_CORE_PATH,[DEFAULT])
+    else
+        ARDUINO_CORE_PATH = $(ALTERNATE_CORE_PATH)/cores/$(CORE)
+        ifeq ($(wildcard $(ARDUINO_CORE_PATH)),)
+            ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/cores/$(CORE)
+            $(call show_config_variable,ARDUINO_CORE_PATH,[COMPUTED],(from ARDUINO_DIR, BOARD_TAG and boards.txt))
+        else
+            $(call show_config_variable,ARDUINO_CORE_PATH,[COMPUTED],(from ALTERNATE_CORE_PATH, BOARD_TAG and boards.txt))
+        endif
+    endif
+else
+    $(call show_config_variable,ARDUINO_CORE_PATH,[USER])
+endif
+
 ########################################################################
 # Reset
 
@@ -777,11 +809,11 @@ endif
 ifndef ARDUINO_LIBS
     # automatically determine included libraries
     ARDUINO_LIBS += $(filter $(notdir $(wildcard $(ARDUINO_DIR)/libraries/*)), \
-        $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
+        $(shell sed -ne 's/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p' $(LOCAL_SRCS)))
     ARDUINO_LIBS += $(filter $(notdir $(wildcard $(ARDUINO_SKETCHBOOK)/libraries/*)), \
-        $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
+        $(shell sed -ne 's/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p' $(LOCAL_SRCS)))
     ARDUINO_LIBS += $(filter $(notdir $(wildcard $(USER_LIB_PATH)/*)), \
-        $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(LOCAL_SRCS)))
+        $(shell sed -ne 's/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p' $(LOCAL_SRCS)))
 endif
 
 ########################################################################
@@ -958,7 +990,7 @@ endif
 
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
 CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) $(ARDUINO_ARCH_FLAG) -D__PROG_TYPES_COMPAT__ \
-        -I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
+        -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
         $(SYS_INCLUDES) $(PLATFORM_INCLUDES) $(USER_INCLUDES) -Wall -ffunction-sections \
         -fdata-sections
 
@@ -1022,11 +1054,22 @@ else
     $(call show_config_variable,DEVICE_PATH,[AUTODETECTED])
 endif
 
-# Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
-ifeq ($(CURRENT_OS), WINDOWS)
-    get_monitor_port = $(COM_STYLE_MONITOR_PORT)
+ifndef FORCE_MONITOR_PORT
+    $(call show_config_variable,FORCE_MONITOR_PORT,[DEFAULT])
 else
-    get_monitor_port = $(if $(wildcard $(DEVICE_PATH)),$(firstword $(wildcard $(DEVICE_PATH))),$(error Arduino port $(DEVICE_PATH) not found!))
+    $(call show_config_variable,FORCE_MONITOR_PORT,[USER])
+endif
+
+ifdef FORCE_MONITOR_PORT
+    # Skips the DEVICE_PATH existance check.
+    get_monitor_port = $(DEVICE_PATH)
+else
+    # Returns the Arduino port (first wildcard expansion) if it exists, otherwise it errors.
+    ifeq ($(CURRENT_OS), WINDOWS)
+        get_monitor_port = $(COM_STYLE_MONITOR_PORT)
+    else
+        get_monitor_port = $(if $(wildcard $(DEVICE_PATH)),$(firstword $(wildcard $(DEVICE_PATH))),$(error Arduino port $(DEVICE_PATH) not found!))
+    endif
 endif
 
 # Returns the ISP port (first wildcard expansion) if it exists, otherwise it errors.
@@ -1416,10 +1459,10 @@ size:	$(TARGET_HEX)
 		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
 
 show_boards:
-		@$(CAT) "$(BOARDS_TXT)" | grep -E "^[a-zA-Z0-9_]+.name" | sort -uf | sed 's/.name=/:/' | column -s: -t
+		@$(CAT) $(BOARDS_TXT) | grep -E '^[a-zA-Z0-9_]+.name' | sort -uf | sed 's/.name=/:/' | column -s: -t
 
 monitor:
-ifneq ("$(MONITOR_CMD)", "putty")
+ifneq ($(MONITOR_CMD), 'putty')
 	$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
 else
     ifneq ($(strip $(MONITOR_PARMS)),)
@@ -1449,7 +1492,7 @@ generated_assembly: generate_assembly
 		@$(ECHO) "\"generated_assembly\" target is deprecated. Use \"generate_assembly\" target instead\n\n"
 
 help_vars:
-		@$(CAT) "$(ARDMK_DIR)/arduino-mk-vars.md"
+		@$(CAT) $(ARDMK_DIR)/arduino-mk-vars.md
 
 help:
 		@$(ECHO) "\nAvailable targets:\n\

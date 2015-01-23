@@ -16,6 +16,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Support for Teensy 3.x (https://github.com/stepcut)
 - New: Support for PuTTY under Windows (https://github.com/PeterMosmans)
 - New: Add support for installation using homebrew(https://github.com/ladislas)
+- New: Add support and example for flashing on a remote RPi. (https://github.com/Gaboose)
 
 - Tweak: Update Malefile-example.mk with STD flags (https://github.com/ladislas)
 - Tweak: Allow remove of any OBJDIR with `$(REMOVE) $(OBJDIR)`. (https://github.com/ladislas)
@@ -23,6 +24,9 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Update travis-ci to test against Arduino 1.0.6. (https://github.com/sej7278)
 - Tweak: Updated package instructions for Arch/Fedora/Raspbian. (https://github.com/sej7278)
 - Tweak: Remove $(EXTRA_XXX) variables (Issue #234) (https://github.com/ladislas)
+- Tweak: Moved location of avrdude for 1.5.8 on Linux (Issue #301) (https://github.com/sej7278)
+- Tweak: Allow 'build.core' param as found in [arduino-tiny](https://code.google.com/p/arduino-tiny/) Prospective Boards.txt. (https://github.com/Gaboose)
+- Tweak: Replace CXX_NAME with CXX as per the Emacs Flymake Wiki (Issue #309) (https://github.com/sej7278)
 
 - Fix: Improved Windows (Cygwin/MSYS) support (https://github.com/PeterMosmans)
 - Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)
@@ -37,6 +41,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Changed IDE download URL *again* for Travis-CI. (https://github.com/sej7278)
 - Fix: Allow avrdude to erase the chip before programming during ispload (https://github.com/tchebb)
 - Fix: Fix speed regression. Thanks ladislas (Issue #280) (https://github.com/sej7278)
+- Fix: Removed some double quotes that were breaking variable expansion. (https://github.com/sej7278)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)

@@ -7,7 +7,7 @@ failures=()
 # These examples cannot be tested easily at the moment as they require
 # alternate cores. The MakefileExample doesn't actually contain any source code
 # to compile.
-NON_TESTABLE_EXAMPLES=(ATtinyBlink MakefileExample TinySoftWareSerial BlinkTeensy)
+NON_TESTABLE_EXAMPLES=(ATtinyBlink MakefileExample TinySoftWareSerial BlinkTeensy BlinkNetworkRPi)
 
 for dir in $TESTS_DIR/*/
 do

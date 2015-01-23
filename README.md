@@ -259,7 +259,7 @@ Then, the following line must be added to the project Makefile :
 
 ```
     check-syntax:
-        $(CXX_NAME) -c -include Arduino.h   -x c++ $(CXXFLAGS)   $(CPPFLAGS)  -fsyntax-only $(CHK_SOURCES)
+        $(CXX) -c -include Arduino.h   -x c++ $(CXXFLAGS)   $(CPPFLAGS)  -fsyntax-only $(CHK_SOURCES)
 ```
 
 ## Test Suite
