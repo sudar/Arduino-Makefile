@@ -1,6 +1,6 @@
 Name:			arduino-mk
 Version:		1.3.4
-Release:		2%{dist}
+Release:		3%{dist}
 Summary:		Program your Arduino from the command line
 Packager:		Simon John <git@the-jedi.co.uk>
 URL:            https://github.com/sudar/Arduino-Makefile
@@ -35,6 +35,11 @@ install -m 644 licence.txt %{buildroot}/%{_pkgdocdir}
 install -m 755 bin/ard-reset-arduino %{buildroot}/%{_bindir}/ard-reset-arduino
 install -m 644 ard-reset-arduino.1 %{buildroot}/%{_mandir}/man1
 
+# Fedora uses ccache
+sed -i -e 's,\(CC \+= \)\($(AVR_TOOLS_PATH)\)\(/$(CC_NAME)\),\1%{_libdir}/ccache\3,' \
+    -e 's,\(CXX \+= \)\($(AVR_TOOLS_PATH)\)\(/$(CXX_NAME)\),\1%{_libdir}/ccache\3,' \
+    %{buildroot}/%{_datadir}/arduino/Arduino.mk
+
 %clean
 rm -rf %{buildroot}
 
@@ -48,6 +53,9 @@ rm -rf %{buildroot}
 %doc %{_pkgdocdir}/examples
 
 %changelog
+* Sun Feb 22 2015 Suvayu Ali <fatkasuvayu+linux@gmail.com> - 1.3.4-3
+- Use ccache for compilers
+
 * Sat Jan 10 2015 Suvayu Ali <fatkasuvayu+linux@gmail.com>
 - Update according to latest Fedora packaging guidelines
 
