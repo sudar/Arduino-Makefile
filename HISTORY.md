@@ -28,6 +28,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Allow 'build.core' param as found in [arduino-tiny](https://code.google.com/p/arduino-tiny/) Prospective Boards.txt. (https://github.com/Gaboose)
 - Tweak: Replace CXX_NAME with CXX as per the Emacs Flymake Wiki (Issue #309) (https://github.com/sej7278)
 - Tweak: Ability to override `USB_TYPE` in Teensy.md (Issue #313) (https://github.com/Poofjunior)
+- Tweak: Integration instructions for CodeBlocks IDE (Issue #321) (https://github.com/fbielejec)
 
 - Fix: Improved Windows (Cygwin/MSYS) support (https://github.com/PeterMosmans)
 - Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)
