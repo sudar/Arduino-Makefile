@@ -262,6 +262,48 @@ Then, the following line must be added to the project Makefile :
         $(CXX) -c -include Arduino.h   -x c++ $(CXXFLAGS)   $(CPPFLAGS)  -fsyntax-only $(CHK_SOURCES)
 ```
 
+### Code:Blocks integration
+
+In Code:Blocks open Project -> Properties -> Project settings tab -> check "This is custom Makefile".
+
+Now go to Settings -> Environment -> Environment variables -> Add
+
+Add three keys with paths as values, using full paths (!):
+
+```
+ARDUINO_DIR=/full/path/to/arduino-1.0.6
+ARDMK_DIR=/full/path/to/sketchbook
+AVR_TOOLS_DIR=/usr
+```
+
+Now to set DEBUG target (this will compile the project) go to Build options -> Debug -> "Make" commands
+
+In Build Project/Target remove $target:
+
+```
+$make -f $makefile
+```
+
+In Clean Project/Target remove $target:
+
+```
+$make -f $makefile clean
+```
+
+To set the RELEASE target (which will compile and upload) go to Build options -> Release -> "Make" commands
+
+In Build Project/Target put:
+
+```
+$make -f $makefile upload
+```
+
+In Clean Project/Target remove $target:
+
+```
+$make -f $makefile clean
+```
+
 ## Test Suite
 
 This project includes a suite of example Makefiles and small Arduino and chipKIT
