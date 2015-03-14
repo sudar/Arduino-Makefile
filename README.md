@@ -327,7 +327,7 @@ Please be sure to report issues to [Bare-Arduino–Project](https://github.com/W
 ## Credits
 
 This makefile was originally created by [Martin Oldfield](http://mjo.tc/atelier/2009/02/arduino-cli.html) and he maintained it till v0.10.2.
-From May 2013, it is maintained by [Sudar](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile)
+From May 2013, it is maintained by [Sudar Muthu](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile) and [Simon John](https://github.com/sej7278) with the help of [40+ contributors](https://github.com/sudar/Arduino-Makefile/graphs/contributors).
 
 ## Similar works
 - It's not a derivative of this, but Alan Burlison has written a [similar thing](http://bleaklow.com/2010/06/04/a_makefile_for_arduino_sketches.html).
