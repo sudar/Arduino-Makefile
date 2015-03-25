@@ -475,7 +475,7 @@ ifdef ALTERNATE_CORE
     $(call show_config_variable,ALTERNATE_CORE,[USER])
 
     ifndef ALTERNATE_CORE_PATH
-        ALTERNATE_CORE_PATH = $(ARDUINO_SKETCHBOOK)/hardware/$(ALTERNATE_CORE)
+        ALTERNATE_CORE_PATH = $(ARDUINO_SKETCHBOOK)/hardware/$(ALTERNATE_CORE)/$(ARCHITECTURE)
     endif
 endif
 
