@@ -44,6 +44,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Allow avrdude to erase the chip before programming during ispload (https://github.com/tchebb)
 - Fix: Fix speed regression. Thanks ladislas (Issue #280) (https://github.com/sej7278)
 - Fix: Removed some double quotes that were breaking variable expansion. (https://github.com/sej7278)
+- Fix: Fixed PLATFORM_LIB support for 1.5+ and removed duplicate libs (https://github.com/sej7278)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
