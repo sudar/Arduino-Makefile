@@ -688,6 +688,9 @@ endif
 # Everything gets built in here (include BOARD_TAG now)
 ifndef OBJDIR
     OBJDIR = build-$(BOARD_TAG)
+    ifdef BOARD_SUB
+        OBJDIR = build-$(BOARD_TAG)-$(BOARD_SUB)
+    endif
     $(call show_config_variable,OBJDIR,[COMPUTED],(from BOARD_TAG))
 else
     $(call show_config_variable,OBJDIR,[USER])
