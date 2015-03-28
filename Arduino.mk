@@ -331,7 +331,7 @@ ifndef ARDUINO_SKETCHBOOK
     ifndef ARDUINO_PREFERENCES_PATH
         ifeq ($(shell expr $(ARDUINO_VERSION) '>' 150), 1)
             AUTO_ARDUINO_PREFERENCES := $(firstword \
-                $(call dir_if_exists,$(HOME)/.arduino15/preferences.txt) )
+                $(call dir_if_exists,$(HOME)/.arduino15/preferences.txt) \
                 $(call dir_if_exists,$(HOME)/Library/Arduino15/preferences.txt) )
         else
             AUTO_ARDUINO_PREFERENCES := $(firstword \
