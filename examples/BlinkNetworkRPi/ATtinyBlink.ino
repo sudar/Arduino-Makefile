@@ -1,17 +1,17 @@
 /*
   Blink
   Turns on an LED on for one second, then off for one second, repeatedly.
- 
+
   This example code is in the public domain.
  */
- 
+
 // Connect a LED to Pin 3. It might be different in different ATtiny micro controllers
 int led = 3;
 
 // the setup routine runs once when you press reset:
-void setup() {                
+void setup() {
   // initialize the digital pin as an output.
-  pinMode(led, OUTPUT);     
+  pinMode(led, OUTPUT);
 }
 
 // the loop routine runs over and over again forever:
