@@ -577,7 +577,14 @@ ifeq ($(strip $(NO_CORE)),)
 
     # Which variant ? This affects the include path
     ifndef VARIANT
-        VARIANT = $(call PARSE_BOARD,$(BOARD_TAG),build.variant)
+        VARIANT := $(call PARSE_BOARD,$(BOARD_TAG),build.variant)
+        ifndef VARIANT
+            # might be a submenu
+            VARIANT := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).build.variant)
+        endif
+        $(call show_config_variable,VARIANT,[COMPUTED],(from build.variant))
+    else
+        $(call show_config_variable,VARIANT,[USER])
     endif
 
     # see if we are a caterina device like leonardo or micro

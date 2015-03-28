@@ -520,7 +520,8 @@ USB_PID = 0x8039
 
 CPU speed in Hz
 
-Usually can be auto-detected as `build.f_cpu` from `boards.txt`
+Usually can be auto-detected as `build.f_cpu` from `boards.txt`, except in
+some 1.6 cores like attiny where there is a clock submenu.
 
 **Example:**
 
