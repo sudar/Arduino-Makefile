@@ -1,5 +1,5 @@
 /*
- * © Anil Kumar Pugalia, 2010. Email: email@sarika-pugs.com
+ * (c) Anil Kumar Pugalia, 2010. Email: email@sarika-pugs.com
  *
  * ATmega48/88/168, ATmega16/32
  * 
