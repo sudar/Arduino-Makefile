@@ -48,7 +48,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Removed some double quotes that were breaking variable expansion. (https://github.com/sej7278)
 - Fix: Fixed PLATFORM_LIB support for 1.5+ and removed duplicate libs (https://github.com/sej7278)
 - Fix: Added ARCHITECTURE to ALTERNATE_CORE_PATH to support 1.5+ cores like arduino-tiny (https://github.com/sej7278)
-- Fix: Can now find IDE 1.5+ preferences.txt on Linux at least (https://github.com/sej7278)
+- Fix: Can now find IDE 1.5+ preferences.txt on Linux and Mac (https://github.com/sej7278)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)

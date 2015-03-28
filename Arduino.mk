@@ -332,7 +332,7 @@ ifndef ARDUINO_SKETCHBOOK
         ifeq ($(shell expr $(ARDUINO_VERSION) '>' 150), 1)
             AUTO_ARDUINO_PREFERENCES := $(firstword \
                 $(call dir_if_exists,$(HOME)/.arduino15/preferences.txt) )
-                # TODO: add mac/windows version once known
+                $(call dir_if_exists,$(HOME)/Library/Arduino15/preferences.txt) )
         else
             AUTO_ARDUINO_PREFERENCES := $(firstword \
                 $(call dir_if_exists,$(HOME)/.arduino/preferences.txt) \
