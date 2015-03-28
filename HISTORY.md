@@ -30,6 +30,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Ability to override `USB_TYPE` in Teensy.md (Issue #313) (https://github.com/Poofjunior)
 - Tweak: Integration instructions for CodeBlocks IDE (Issue #321) (https://github.com/fbielejec)
 - Tweak: Add BOARD_SUB to OBJDIR if defined in 1.5+ (https://github.com/sej7278)
+- Tweak: Add = to PARSE_BOARD regex to make it less greedy and not match vid.0, vid.1 and vid (https://github.com/sej7278)
 
 - Fix: Improved Windows (Cygwin/MSYS) support (https://github.com/PeterMosmans)
 - Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)
@@ -47,6 +48,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Removed some double quotes that were breaking variable expansion. (https://github.com/sej7278)
 - Fix: Fixed PLATFORM_LIB support for 1.5+ and removed duplicate libs (https://github.com/sej7278)
 - Fix: Added ARCHITECTURE to ALTERNATE_CORE_PATH to support 1.5+ cores like arduino-tiny (https://github.com/sej7278)
+- Fix: Can now find IDE 1.5+ preferences.txt on Linux at least (https://github.com/sej7278)
 
 ### 1.3.4 (2014-07-12)
 - Tweak: Allow spaces in "Serial.begin (....)". (Issue #190) (https://github.com/pdav)
