@@ -68,7 +68,8 @@ endif
 ifndef ARDUINO_DIR
     AUTO_ARDUINO_DIR := $(firstword \
         $(call dir_if_exists,/usr/share/arduino) \
-        $(call dir_if_exists,/Applications/Arduino.app/Contents/Resources/Java) )
+        $(call dir_if_exists,/Applications/Arduino.app/Contents/Resources/Java) \
+        $(call dir_if_exists,/Applications/Arduino.app/Contents/Java) )
     ifdef AUTO_ARDUINO_DIR
        ARDUINO_DIR = $(AUTO_ARDUINO_DIR)
        $(call show_config_variable,ARDUINO_DIR,[AUTODETECTED])
