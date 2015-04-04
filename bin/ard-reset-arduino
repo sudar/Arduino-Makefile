@@ -17,10 +17,10 @@ if args.caterina:
     if args.verbose: print('Forcing reset using 1200bps open/close on port %s' % args.port[0])
     ser = serial.Serial(args.port[0], 57600)
     ser.close()
-    ser.open()
-    ser.close()
     ser.setBaudrate(1200)
     ser.open()
+    ser.setRTS(True)  # RTS line needs to be held high and DTR low
+    ser.setDTR(False) # (see Arduino IDE source code)
     ser.close()
     sleep(1)
 
