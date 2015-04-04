@@ -70,11 +70,27 @@ to build an RPM.
 
 ## Requirements
 
+### Arduino IDE
+
 You need to have the Arduino IDE. You can either install it through the
 installer or download the distribution zip file and extract it.
 
+### pySerial
+
 The Makefile also delegates resetting the board to a short Python program.
-You'll need to install `pySerial` to use it though.
+You'll need to install `[pySerial](https://pypi.python.org/pypi/pyserial)` to use it though.
+
+On most systems you should be able to install it using either `pip` or `easy_install`.
+
+```sh
+pip install pyserial
+
+# or if you prefer easy_install
+
+easy_install -U pyserial
+```
+
+If you prefer to install it as a package, then you can do that as well.
 
 On Debian or Ubuntu:
 
@@ -102,21 +118,8 @@ sudo port install py27-serial
 
 On Windows:
 
-You need to install Cygwin and its packages for Make, Perl and the following Serial library.
-
-```sh
-pySerial can be downloaded from PyPi
-```
-
-On other systems:
-
-```sh
-pip install pyserial
-
-# or
-
-easy_install -U pyserial
-```
+You need to install Cygwin and its packages for Make, Perl and the following Serial library
+or you can install it using the [pre-built package installer](https://pypi.python.org/pypi/pyserial)
 
 ## Usage
 
