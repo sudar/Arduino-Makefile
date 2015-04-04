@@ -78,7 +78,7 @@ installer or download the distribution zip file and extract it.
 ### pySerial
 
 The Makefile also delegates resetting the board to a short Python program.
-You'll need to install `[pySerial](https://pypi.python.org/pypi/pyserial)` to use it though.
+You'll need to install [`pySerial`](https://pypi.python.org/pypi/pyserial) to use it though.
 
 On most systems you should be able to install it using either `pip` or `easy_install`.
 
