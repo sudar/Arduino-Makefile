@@ -357,7 +357,9 @@ ifndef ARDUINO_SKETCHBOOK
     ifneq ($(ARDUINO_SKETCHBOOK),)
         $(call show_config_variable,ARDUINO_SKETCHBOOK,[AUTODETECTED],(from arduino preferences file))
     else
-        ARDUINO_SKETCHBOOK := $(HOME)/sketchbook
+        ARDUINO_SKETCHBOOK := $(firstword \
+            $(call dir_if_exists,$(HOME)/sketchbook) \
+            $(call dir_if_exists,$(HOME)/Documents/Arduino) )
         $(call show_config_variable,ARDUINO_SKETCHBOOK,[DEFAULT])
     endif
 else

@@ -32,6 +32,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Add BOARD_SUB to OBJDIR if defined in 1.5+ (https://github.com/sej7278)
 - Tweak: Add = to PARSE_BOARD regex to make it less greedy and not match vid.0, vid.1 and vid (https://github.com/sej7278)
 - Tweak: Added note about clock submenu's being used as F_CPU (https://github.com/sej7278)
+- Tweak: Better autodetection of ARDUINO_SKETCHBOOK and ARDUINO_DIR on OSX (https://github.com/sej7278)
 
 - Fix: Improved Windows (Cygwin/MSYS) support (https://github.com/PeterMosmans)
 - Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)
