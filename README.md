@@ -26,7 +26,7 @@ in the build process. Changes in `*.h` files lead to recompilation of sources wh
 If you're using FreeBSD, Debian, Raspbian or Ubuntu, you can find this in the `arduino-mk`
 package which can be installed using `apt-get` or `aptitude`.
 
-```
+```sh
 sudo apt-get install arduino-mk
 ```
 
@@ -37,7 +37,7 @@ If you're using homebrew (or [linuxbrew](https://github.com/Homebrew/linuxbrew))
 
 Also make sure you have the necessary dependencies installed. Refer to the Requirements section below to install the dependencies.
 
-```shell
+```sh
 # add tap
 $ brew tap sudar/arduino-mk
 
@@ -53,7 +53,7 @@ $ brew install --HEAD arduino-mk
 Arch Linux users can use the unofficial AUR package [arduino-mk](https://aur.archlinux.org/packages/arduino-mk/).
 It can be installed using the following command.
 
-```
+```sh
 yaourt -S arduino-mk
 ```
 
@@ -78,33 +78,45 @@ You'll need to install `pySerial` to use it though.
 
 On Debian or Ubuntu:
 
-       apt-get install python-serial
+```sh
+apt-get install python-serial
+```
 
 On Fedora:
 
-       yum install pyserial
+```sh
+yum install pyserial
+```
 
 On openSUSE:
 
-      zypper install python-serial
+```sh
+zypper install python-serial
+```
 
 On Mac using MacPorts:
 
-      sudo port install py27-serial
+```sh
+sudo port install py27-serial
+```
 
 On Windows:
 
 You need to install Cygwin and its packages for Make, Perl and the following Serial library.
 
-       pySerial can be downloaded from PyPi
+```sh
+pySerial can be downloaded from PyPi
+```
 
 On other systems:
 
-       pip install pyserial
+```sh
+pip install pyserial
 
-        or
+# or
 
-       easy_install -U pyserial
+easy_install -U pyserial
+```
 
 ## Usage
 
@@ -116,33 +128,43 @@ Download a copy of this repo some where in your system or install it through a p
 
 On the Mac you might want to set:
 
+```make
     ARDUINO_DIR   = /Applications/Arduino.app/Contents/Resources/Java
     ARDMK_DIR     = /usr/local
     AVR_TOOLS_DIR = /usr
     MONITOR_PORT  = /dev/ttyACM0
     BOARD_TAG     = mega2560
+```
 
 On Linux (if you have installed through package), you shouldn't need to set anything other than your board type and port:
 
+```make
     BOARD_TAG     = mega2560
     MONITOR_PORT  = /dev/ttyACM0
+```
 
 On Windows (using cygwin), you might want to set:
 
+```make
     ARDUINO_DIR   = ../../arduino
     ARDMK_DIR     = path/to/mkfile
     MONITOR_PORT  = com3
     BOARD_TAG     = mega2560
+```
 
 On Windows (using MSYS and PuTTY), you might want to set the following extra parameters:
 
+```make
     MONITOR_CMD   = putty
     MONITOR_PARMS = 8,1,n,N
+```
 
 On Arduino 1.5.x installs, you should set the architecture to either `avr` or `sam` and if using a submenu CPU, then also set that:
 
+```make
 	ARCHITECTURE  = avr
     BOARD_SUB     = atmega168
+```
 
 It is recommended in Windows that you create a symbolic link to avoid problems with file naming conventions on Windows. For example, if your your Arduino directory is in:
 
@@ -152,16 +174,21 @@ You will get problems with the special characters on the directory name. More de
 
 To create a symbolic link, you can use the command “mklink” on Windows, e.g.
 
+```sh
     mklink /d c:\Arduino c:\Program Files (x86)\Arduino
+```
 
 After which, the variables should be:
 
+```make
     ARDUINO_DIR=../../../../../Arduino
+```
 
 Instead of:
 
+```make
     ARDUINO_DIR=../../../../../Program\ Files\ \(x86\)/Arduino
-
+```
 
 - `BOARD_TAG` - Type of board, for a list see boards.txt or `make show_boards`
 - `MONITOR_PORT` - The port where your Arduino is plugged in, usually `/dev/ttyACM0` or `/dev/ttyUSB0` in Linux or Mac OS X and `com3`, `com4`, etc. in Windows.
@@ -176,7 +203,9 @@ The list of all variables that can be overridden is available at [arduino-mk-var
 
 You can specify space separated list of libraries that are needed for your sketch to the variable `ARDUINO_LIBS`.
 
-`ARDUINO_LIBS = Wire SoftwareSerial`
+```make
+	ARDUINO_LIBS = Wire SoftwareSerial
+```
 
 The libraries will be searched in the following places in the following order.
 
@@ -191,8 +220,10 @@ The makefile can autodetect the libraries that are included from your sketch and
 
 To upload compiled files, `avrdude` is used. This Makefile tries to find `avrdude` and it's config (`avrdude.conf`) below `ARDUINO_DIR`. If you like to use the one installed on your system instead of the one which came with Arduino, you can try to set the variables `AVRDUDE` and `AVRDUDE_CONF`. On a typical Linux system these could be set to
 
-      AVRDUDE     = /usr/bin/avrdude
+```make
+      AVRDUDE      = /usr/bin/avrdude
       AVRDUDE_CONF = /etc/avrdude.conf
+```
 
 ## Teensy 3.x
 
@@ -257,7 +288,7 @@ Then click on "Apply and Save" button
 
 Then, the following line must be added to the project Makefile :
 
-```
+```make
     check-syntax:
         $(CXX) -c -include Arduino.h   -x c++ $(CXXFLAGS)   $(CPPFLAGS)  -fsyntax-only $(CHK_SOURCES)
 ```
@@ -270,23 +301,23 @@ Now go to Settings -> Environment -> Environment variables -> Add
 
 Add three keys with paths as values, using full paths (!):
 
-```
-ARDUINO_DIR=/full/path/to/arduino-1.0.6
-ARDMK_DIR=/full/path/to/sketchbook
-AVR_TOOLS_DIR=/usr
+```make
+	ARDUINO_DIR=/full/path/to/arduino-1.0.6
+	ARDMK_DIR=/full/path/to/sketchbook
+	AVR_TOOLS_DIR=/usr
 ```
 
 Now to set DEBUG target (this will compile the project) go to Build options -> Debug -> "Make" commands
 
 In Build Project/Target remove $target:
 
-```
+```sh
 $make -f $makefile
 ```
 
 In Clean Project/Target remove $target:
 
-```
+```sh
 $make -f $makefile clean
 ```
 
@@ -294,13 +325,13 @@ To set the RELEASE target (which will compile and upload) go to Build options ->
 
 In Build Project/Target put:
 
-```
+```sh
 $make -f $makefile upload
 ```
 
 In Clean Project/Target remove $target:
 
-```
+```sh
 $make -f $makefile clean
 ```
 
