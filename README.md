@@ -35,7 +35,7 @@ sudo apt-get install arduino-mk
 If you're using homebrew (or [linuxbrew](https://github.com/Homebrew/linuxbrew)) then you can find this in the
 `arduino-mk` package which can be installed using the following commands.
 
-Also make sure you have the necessary dependencies installed. Refer to the Requirements section below to install the dependencies.
+Also make sure you have the necessary dependencies installed. Refer to the [Requirements](#requirements) section below to install the dependencies.
 
 ```sh
 # add tap
