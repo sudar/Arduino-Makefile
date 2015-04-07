@@ -6,7 +6,7 @@ First install the dependencies as root:
 
 From the top-level Arduino-Makefile directory you've checked out of github, run the following (as unprivileged user) to create a compressed tarball using the naming conventions required by rpmbuild:
 
-    git archive HEAD --prefix=arduino-mk-1.3.4/ -o ../arduino-mk-1.3.4.tar.gz
+    git archive HEAD --prefix=arduino-mk-1.5/ -o ../arduino-mk-1.5.tar.gz
 
 If you don't already have a rpmbuild setup (e.g. you've not installed the SRPM) you will need to create the directories:
 
@@ -14,7 +14,7 @@ If you don't already have a rpmbuild setup (e.g. you've not installed the SRPM) 
 
 Then copy the tarball and specfile into those directories:
 
-    cp ../arduino-mk-1.3.4.tar.gz ~/rpmbuild/SOURCES/
+    cp ../arduino-mk-1.5.tar.gz ~/rpmbuild/SOURCES/
     cp packaging/fedora/arduino-mk.spec ~/rpmbuild/SPECS/
 
 Then compile. This will create a binary and source RPM:

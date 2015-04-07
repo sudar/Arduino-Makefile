@@ -4,7 +4,7 @@ A Makefile for Arduino Sketches
 The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
-### In development
+### 1.5 (2015-04-07)
 - New: Add support for new 1.5.x library layout (Issue #275) (https://github.com/lukasz-e)
 - New: Add support for 1.5.x vendor/hardware architecture library location (Issue #276) (https://github.com/lukasz-e)
 - New: Added test suite and integration with travis CI. (https://github.com/peplin)
@@ -17,7 +17,6 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Support for PuTTY under Windows (https://github.com/PeterMosmans)
 - New: Add support for installation using homebrew(https://github.com/ladislas)
 - New: Add support and example for flashing on a remote RPi. (https://github.com/Gaboose)
-
 - Tweak: Update Makefile-example.mk with STD flags (https://github.com/ladislas)
 - Tweak: Allow remove of any OBJDIR with `$(REMOVE) $(OBJDIR)`. (https://github.com/ladislas)
 - Tweak: Add cpp to extensions supported by "make generate_assembly". (https://github.com/sej7278)
@@ -33,7 +32,6 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Add = to PARSE_BOARD regex to make it less greedy and not match vid.0, vid.1 and vid (https://github.com/sej7278)
 - Tweak: Added note about clock submenu's being used as F_CPU (https://github.com/sej7278)
 - Tweak: Better autodetection of ARDUINO_SKETCHBOOK and ARDUINO_DIR on OSX (https://github.com/sej7278)
-
 - Fix: Improved Windows (Cygwin/MSYS) support (https://github.com/PeterMosmans)
 - Fix: Change "tinyladi" username to "ladislas" in HISTORY.md. (https://github.com/ladislas)
 - Fix: Make avr-g++ use CXXFLAGS instead of CFLAGS. (https://github.com/sej7278)

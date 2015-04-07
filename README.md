@@ -236,7 +236,7 @@ See examples/BlinkTeensy for example usage.
 
 ## Versioning
 
-The current version of the makefile is `1.3.4`. You can find the full history in the [HISTORY.md](HISTORY.md) file
+The current version of the makefile is `1.5`. You can find the full history in the [HISTORY.md](HISTORY.md) file
 
 This project adheres to Semantic [Versioning 2.0](http://semver.org/).
 

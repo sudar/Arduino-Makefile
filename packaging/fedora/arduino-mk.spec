@@ -1,5 +1,5 @@
 Name:			arduino-mk
-Version:		1.3.4
+Version:		1.5
 Release:		1%{dist}
 Summary:		Program your Arduino from the command line
 Packager:		Simon John <git@the-jedi.co.uk>

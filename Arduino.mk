@@ -19,7 +19,7 @@
 #
 # Original Arduino adaptation by mellis, eighthave, oli.keller
 #
-# Current version: 1.3.4
+# Current version: 1.5
 #
 # Refer to HISTORY.md file for complete history of changes
 #
@@ -1134,7 +1134,7 @@ endif
 
 ########################################################################
 # Tools version info
-ARDMK_VERSION = 1.3.4
+ARDMK_VERSION = 1.5
 $(call show_config_variable,ARDMK_VERSION,[COMPUTED])
 
 CC_VERSION := $(shell $(CC) -dumpversion)
