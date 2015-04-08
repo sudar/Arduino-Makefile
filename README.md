@@ -12,8 +12,8 @@ This is a very simple Makefile which knows how to build Arduino sketches. It def
 - Works on all three major OS (Mac, Linux, Windows)
 - Auto detects serial baud rate and libraries used
 - Support for `*.ino` and `*.pde` sketches as well as raw `*.c` and `*.cpp`
-- Support for Arduino Software versions 1.0.x as well as 0.x.
-Support for Arduino 1.5.x is still work in progress
+- Support for Arduino Software versions 0.x, 1.0.x, 1.5.x and 1.6.x except 1.6.2.
+We recommend 1.6.3 or above version of Arduino IDE.
 - Automatic dependency tracking. Referred libraries are automatically included
 in the build process. Changes in `*.h` files lead to recompilation of sources which include them
 
