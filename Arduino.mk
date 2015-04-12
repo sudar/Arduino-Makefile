@@ -579,10 +579,9 @@ ifeq ($(strip $(NO_CORE)),)
 
     # Which variant ? This affects the include path
     ifndef VARIANT
-        VARIANT := $(call PARSE_BOARD,$(BOARD_TAG),build.variant)
+        VARIANT := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).build.variant)
         ifndef VARIANT
-            # might be a submenu
-            VARIANT := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).build.variant)
+            VARIANT := $(call PARSE_BOARD,$(BOARD_TAG),build.variant)
         endif
         $(call show_config_variable,VARIANT,[COMPUTED],(from build.variant))
     else
@@ -590,30 +589,28 @@ ifeq ($(strip $(NO_CORE)),)
     endif
 
     # see if we are a caterina device like leonardo or micro
-    CATERINA := $(findstring caterina,$(call PARSE_BOARD,$(BOARD_TAG),bootloader.path))
+    CATERINA := $(findstring caterina,$(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).bootloader.file))
     ifndef CATERINA
-        # bootloader.path is deprecated in 1.5, its now part of bootloader.file
+        # 1.5+ method if not a submenu
         CATERINA := $(findstring caterina,$(call PARSE_BOARD,$(BOARD_TAG),bootloader.file))
     endif
     ifndef CATERINA
-        # might be a submenu
-        CATERINA := $(findstring caterina,$(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).bootloader.file))
+        # 1.0 method uses deprecated bootloader.path
+        CATERINA := $(findstring caterina,$(call PARSE_BOARD,$(BOARD_TAG),bootloader.path))
     endif
 
     # processor stuff
     ifndef MCU
-        MCU := $(call PARSE_BOARD,$(BOARD_TAG),build.mcu)
+        MCU := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).build.mcu)
         ifndef MCU
-		    # might be a submenu
-            MCU := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).build.mcu)
+            MCU := $(call PARSE_BOARD,$(BOARD_TAG),build.mcu)
         endif
     endif
 
     ifndef F_CPU
-        F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),build.f_cpu)
+        F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).build.f_cpu)
         ifndef F_CPU
-		    # might be a submenu
-            F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).build.f_cpu)
+            F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),build.f_cpu)
         endif
     endif
 
@@ -630,18 +627,16 @@ ifeq ($(strip $(NO_CORE)),)
 
     # normal programming info
     ifndef AVRDUDE_ARD_PROGRAMMER
-        AVRDUDE_ARD_PROGRAMMER := $(call PARSE_BOARD,$(BOARD_TAG),upload.protocol)
+        AVRDUDE_ARD_PROGRAMMER := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).upload.protocol)
         ifndef AVRDUDE_ARD_PROGRAMMER
-		    # might be a submenu
-            AVRDUDE_ARD_PROGRAMMER := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).upload.protocol)
+            AVRDUDE_ARD_PROGRAMMER := $(call PARSE_BOARD,$(BOARD_TAG),upload.protocol)
         endif
     endif
 
     ifndef AVRDUDE_ARD_BAUDRATE
-        AVRDUDE_ARD_BAUDRATE := $(call PARSE_BOARD,$(BOARD_TAG),upload.speed)
+        AVRDUDE_ARD_BAUDRATE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).upload.speed)
         ifndef AVRDUDE_ARD_BAUDRATE
-		    # might be a submenu
-            AVRDUDE_ARD_BAUDRATE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).upload.speed)
+            AVRDUDE_ARD_BAUDRATE := $(call PARSE_BOARD,$(BOARD_TAG),upload.speed)
         endif
     endif
 
@@ -651,26 +646,23 @@ ifeq ($(strip $(NO_CORE)),)
     endif
 
     ifndef ISP_HIGH_FUSE
-        ISP_HIGH_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.high_fuses)
+        ISP_HIGH_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).bootloader.high_fuses)
         ifndef ISP_HIGH_FUSE
-		    # might be a submenu
-            ISP_HIGH_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).bootloader.high_fuses)
+            ISP_HIGH_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.high_fuses)
         endif
     endif
 
     ifndef ISP_LOW_FUSE
-        ISP_LOW_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.low_fuses)
+        ISP_LOW_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).bootloader.low_fuses)
         ifndef ISP_LOW_FUSE
-		    # might be a submenu
-            ISP_LOW_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).bootloader.low_fuses)
+            ISP_LOW_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.low_fuses)
         endif
     endif
 
     ifndef ISP_EXT_FUSE
-        ISP_EXT_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.extended_fuses)
+        ISP_EXT_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).bootloader.extended_fuses)
         ifndef ISP_EXT_FUSE
-		    # might be a submenu
-            ISP_EXT_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).bootloader.extended_fuses)
+            ISP_EXT_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.extended_fuses)
         endif
     endif
 
@@ -679,10 +671,9 @@ ifeq ($(strip $(NO_CORE)),)
     endif
 
     ifndef BOOTLOADER_FILE
-        BOOTLOADER_FILE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.file)
+        BOOTLOADER_FILE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).bootloader.file)
         ifndef BOOTLOADER_FILE
-		    # might be a submenu
-            BOOTLOADER_FILE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).bootloader.file)
+            BOOTLOADER_FILE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.file)
         endif
     endif
 
@@ -691,10 +682,9 @@ ifeq ($(strip $(NO_CORE)),)
     endif
 
     ifndef HEX_MAXIMUM_SIZE
-        HEX_MAXIMUM_SIZE := $(call PARSE_BOARD,$(BOARD_TAG),upload.maximum_size)
+        HEX_MAXIMUM_SIZE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).upload.maximum_size)
         ifndef HEX_MAXIMUM_SIZE
-		    # might be a submenu
-            HEX_MAXIMUM_SIZE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).upload.maximum_size)
+            HEX_MAXIMUM_SIZE := $(call PARSE_BOARD,$(BOARD_TAG),upload.maximum_size)
         endif
     endif
 
