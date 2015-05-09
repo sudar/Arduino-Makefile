@@ -1,7 +1,7 @@
 ### DISCLAIMER
 ### This is an example Makefile and it MUST be configured to suit your needs.
-### For detailed explanations about all the avalaible options,
-### please refer to https://github.com/sudar/Arduino-Makefile/blob/master/arduino-mk-vars.md
+### For detailed explanations about all of the available options, please refer
+### to https://github.com/sudar/Arduino-Makefile/blob/master/arduino-mk-vars.md
 ### Original project where this Makefile comes from: https://github.com/WeAreLeka/Bare-Arduino-Project
 
 ### PROJECT_DIR
@@ -13,7 +13,7 @@ PROJECT_DIR       = /Users/MyUserName/path/to/my/Project
 ARDMK_DIR         = $(PROJECT_DIR)/Arduino-Makefile
 
 ### ARDUINO_DIR
-### Path to the Arduino application and ressources directory.
+### Path to the Arduino application and resources directory.
 ### On OS X:
 ARDUINO_DIR       = /Applications/Arduino.app/Contents/Resources/Java
 ### or on Linux: (remove the one you don't want)
@@ -66,9 +66,9 @@ MONITOR_PORT      = /dev/tty.usbmodem*
 CURRENT_DIR       = $(shell basename $(CURDIR))
 
 ### OBJDIR
-### This is were you put the binaries you just compile using 'make'
+### This is where you put the binaries you just compile using 'make'
 OBJDIR            = $(PROJECT_DIR)/bin/$(BOARD_TAG)/$(CURRENT_DIR)
 
-### path to Arduino.mk, inside the ARDMK_DIR, don't touch.
+### Do not touch - the path to Arduino.mk, inside the ARDMK_DIR
 include $(ARDMK_DIR)/Arduino.mk
 
