@@ -162,10 +162,11 @@ On Windows (using MSYS and PuTTY), you might want to set the following extra par
     MONITOR_PARMS = 8,1,n,N
 ```
 
-On Arduino 1.5.x installs, you should set the architecture to either `avr` or `sam` and if using a submenu CPU, then also set that:
+On Arduino 1.5+ installs, you should set the architecture to either `avr` or `sam` and if using a submenu CPU type, then also set that:
 
 ```make
 	ARCHITECTURE  = avr
+    BOARD_TAG     = atmegang
     BOARD_SUB     = atmega168
 ```
 

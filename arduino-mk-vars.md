@@ -40,7 +40,7 @@ ARDUINO_QUIET = 1
 
 Directory where the `*.mk` files are stored.
 
-Usually can be auto-detected as `AUTO_ARDUINO_DIR` (parent of `Arduino.mk`).
+Usually can be auto-detected as parent of `Arduino.mk`.
 
 **Example:**
 
@@ -96,7 +96,7 @@ RESET_CMD = ~/gertduino/reset
 
 **Description:**
 
-Directory where the Arduino IDE and/or core files are stored.
+Directory where the Arduino IDE and/or core files are stored. Usually can be auto-detected as `AUTO_ARDUINO_DIR`.
 
 **Example:**
 
@@ -105,6 +105,8 @@ Directory where the Arduino IDE and/or core files are stored.
 ARDUINO_DIR = /usr/share/arduino
 # Mac OS X
 ARDUINO_DIR = /Applications/Arduino.app/Contents/Resources/Java
+# Mac OSX with IDE 1.5+
+ARDUINO_DIR = /Applications/Arduino.app/Contents/Java
 ```
 
 **Requirement:** *Optional*
@@ -116,7 +118,7 @@ ARDUINO_DIR = /Applications/Arduino.app/Contents/Resources/Java
 **Description:**
 
 Directory where the Arduino platform dependent libraries are stored.
-(Used only for Arduino 1.5.x)
+(Used only for Arduino 1.5+)
 
 **Example:**
 
@@ -150,9 +152,9 @@ ARDUINO_VERSION = 105
 
 **Description:**
 
-Architecture for Arduino 1.5
+Architecture for Arduino 1.5+
 
-Defaults to unset for 1.0 or `avr` for 1.5
+Defaults to unset for 1.0 or `avr` for 1.5+
 
 **Example:**
 
@@ -208,8 +210,10 @@ Path to Arduino `preferences.txt` file.
 
 Usually can be auto-detected as `AUTO_ARDUINO_PREFERENCES` from the defaults:
 
-*	on Linux : `~/.arduino/preferences.txt`
-*	on Mac OS X : `~/Library/Arduino/preferences.txt`
+*	on Linux (1.0):     `~/.arduino/preferences.txt`
+*	on Linux (1.5+):    `~/.arduino15/preferences.txt`
+*	on Mac OS X (1.0):  `~/Library/Arduino/preferences.txt`
+*	on Mac OS X (1.5+): `~/Library/Arduino15/preferences.txt`
 
 **Example:**
 
@@ -277,7 +281,7 @@ BOARD_TAG = uno or mega2560
 
 **Description:**
 
-1.5 submenu as listed in `boards.txt`
+1.5+ submenu as listed in `boards.txt`
 
 **Example:**
 
@@ -289,7 +293,7 @@ BOARD_TAG=diecimila
 BOARD_SUB=atmega168
 ```
 
-**Requirement:** *Mandatory for 1.5 if using a submenu CPU*
+**Requirement:** *Mandatory for 1.5+ if using a submenu CPU*
 
 ----
 
@@ -521,7 +525,7 @@ USB_PID = 0x8039
 CPU speed in Hz
 
 Usually can be auto-detected as `build.f_cpu` from `boards.txt`, except in
-some 1.6 cores like attiny where there is a clock submenu.
+some 1.5+ cores like attiny where there is a clock submenu.
 
 **Example:**
 
