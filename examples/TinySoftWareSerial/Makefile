@@ -5,10 +5,16 @@ ALTERNATE_CORE = attiny
 # If not, you might have to include the full path.
 #ALTERNATE_CORE_PATH = /home/sudar/Dropbox/code/arduino-sketches/hardware/attiny/
 
-BOARD_TAG    = attiny85-8
+# !!! Important. You have to use "make ispload" to upload when using ISP programmer
+ISP_PROG = usbasp
+
+# 1.5+ example of submenu cpu
+BOARD_TAG    = attiny
+BOARD_SUB    = attiny85
+
+# clock is a submenu too
+F_CPU        = 16000000L
 
 ARDUINO_LIBS = SoftwareSerial
 
-include $(ARDMK_DIR)/Arduino.mk
-
-# !!! Important. You have to use make ispload to upload when using ISP programmer
+include /usr/share/arduino/Arduino.mk
