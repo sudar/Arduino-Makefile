@@ -9,6 +9,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Looks for submenu items first when parsing BOARDS_TXT (Issue #347) (https://github.com/sej7278)
 - Tweak: Various spelling/grammar/typo fixes (https://github.com/dcousens)
 - Tweak: Clarified some 1.5+ issues in docs (Issue #352) (https://github.com/sej7278)
+- Tweak: Added some more Continuous Integration tests (https://github.com/sej7278)
 
 ### 1.5 (2015-04-07)
 - New: Add support for new 1.5.x library layout (Issue #275) (https://github.com/lukasz-e)

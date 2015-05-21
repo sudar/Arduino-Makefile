@@ -7,7 +7,7 @@ failures=()
 # These examples cannot be tested easily at the moment as they require
 # alternate cores. The MakefileExample doesn't actually contain any source code
 # to compile.
-NON_TESTABLE_EXAMPLES=(ATtinyBlink MakefileExample TinySoftWareSerial BlinkTeensy BlinkNetworkRPi)
+NON_TESTABLE_EXAMPLES=(ATtinyBlink MakefileExample TinySoftWareSerial BlinkTeensy BlinkNetworkRPi BlinkInAVRC)
 
 for dir in $TESTS_DIR/*/
 do
@@ -34,6 +34,25 @@ do
         failures+=("$example")
         echo "Example $example failed"
     fi
+
+    make_output=`make disasm TEST=1`
+    if [[ $? -ne 0 ]]; then
+        failures+=("$example disasm")
+        echo "Example $example disasm failed"
+    fi
+
+    make_output=`make generate_assembly TEST=1`
+    if [[ $? -ne 0 ]]; then
+        failures+=("$example generate_assembly")
+        echo "Example $example generate_assembly failed"
+    fi
+
+    make_output=`make symbol_sizes TEST=1`
+    if [[ $? -ne 0 ]]; then
+        failures+=("$example symbol_sizes")
+        echo "Example $example symbol_sizes failed"
+    fi
+
     popd
 done
 
