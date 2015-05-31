@@ -1282,14 +1282,26 @@ ifndef AVRDUDE_OPTS
     AVRDUDE_OPTS = -q -V
 endif
 
-AVRDUDE_COM_OPTS = $(AVRDUDE_OPTS) -p $(MCU)
+# We avrdude uses attiny84 to upload to the 84a, but we want to be able to set the gcc mmcu flag to attiny84a.
+ifeq ($(MCU), attiny84a)
+  AVRDUDE_MCU = attiny84
+else
+  AVRDUDE_MCU = $(MCU)
+endif
+
+# -D - Disable auto erase for flash memory
+# -D is needed for Mega boards. (See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
+# -D must not be present for attiny84a (unknown for attiny84)
+ifneq ($(AVRDUDE_MCU), attiny84)
+    AVRDUDE_OPTS += -D
+endif
+
+AVRDUDE_COM_OPTS = $(AVRDUDE_OPTS) -p $(AVRDUDE_MCU)
 ifdef AVRDUDE_CONF
     AVRDUDE_COM_OPTS += -C $(AVRDUDE_CONF)
 endif
 
-# -D - Disable auto erase for flash memory
-# (-D is needed for Mega boards. See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
-AVRDUDE_ARD_OPTS = -D -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P
+AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P
 ifeq ($(CURRENT_OS), WINDOWS)
     # get_monitor_port checks to see if the monitor port exists, assuming it is
     # a file. In Windows, avrdude needs the port in the format 'com1' which is
