@@ -1290,21 +1290,14 @@ ifndef AVRDUDE_MCU
   AVRDUDE_MCU = $(MCU)
 endif
 
-# -D - Disable auto erase for flash memory
-# -D is needed for Mega boards. (See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
-# -D must NOT be present for attiny84a (unknown for attiny84)
-ifeq ($(AVRDUDE_MCU), attiny84)
-    AVRDUDE_ERASE_FLASH_OPT =
-else
-    AVRDUDE_ERASE_FLASH_OPT = -D
-endif
-
-AVRDUDE_COM_OPTS = $(AVRDUDE_OPTS) $(AVRDUDE_ERASE_FLASH_OPT) -p $(AVRDUDE_MCU)
+AVRDUDE_COM_OPTS = $(AVRDUDE_OPTS) -p $(AVRDUDE_MCU)
 ifdef AVRDUDE_CONF
     AVRDUDE_COM_OPTS += -C $(AVRDUDE_CONF)
 endif
 
-AVRDUDE_ARD_OPTS = -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P
+# -D - Disable auto erase for flash memory
+# -D is needed for Mega boards. (See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
+AVRDUDE_ARD_OPTS = -D -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P
 ifeq ($(CURRENT_OS), WINDOWS)
     # get_monitor_port checks to see if the monitor port exists, assuming it is
     # a file. In Windows, avrdude needs the port in the format 'com1' which is
@@ -1368,6 +1361,7 @@ ifndef AVRDUDE_ISP_FUSES_POST
     endif
 endif
 
+# -D may cause issues with some boards like attiny84a.
 AVRDUDE_ISP_OPTS = -c $(ISP_PROG) -b $(AVRDUDE_ISP_BAUDRATE)
 
 ifndef $(ISP_PORT)
