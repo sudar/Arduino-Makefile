@@ -24,6 +24,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Support for PuTTY under Windows (https://github.com/PeterMosmans)
 - New: Add support for installation using homebrew(https://github.com/ladislas)
 - New: Add support and example for flashing on a remote RPi. (https://github.com/Gaboose)
+- New: Add option to split avrdude MCU from avr-gcc MCU (Issue #357) (https://github.com/hhgarnes)
 - Tweak: Update Makefile-example.mk with STD flags (https://github.com/ladislas)
 - Tweak: Allow remove of any OBJDIR with `$(REMOVE) $(OBJDIR)`. (https://github.com/ladislas)
 - Tweak: Add cpp to extensions supported by "make generate_assembly". (https://github.com/sej7278)
