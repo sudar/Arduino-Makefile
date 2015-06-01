@@ -1284,20 +1284,22 @@ endif
 
 # Decouple the mcu between the compiler options (-mmcu) and the avrdude options (-p).
 # This is needed to be able to compile for attiny84a but specify the upload mcu as attiny84.
-ifeq ($(MCU), attiny84a)
-  AVRDUDE_MCU = attiny84
-else
+# We default to picking the -mmcu flag, but you can override this by setting
+# AVRDUDE_MCU in your makefile.
+ifndef AVRDUDE_MCU
   AVRDUDE_MCU = $(MCU)
 endif
 
 # -D - Disable auto erase for flash memory
 # -D is needed for Mega boards. (See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
-# -D must not be present for attiny84a (unknown for attiny84)
-ifneq ($(AVRDUDE_MCU), attiny84)
-    AVRDUDE_OPTS += -D
+# -D must NOT be present for attiny84a (unknown for attiny84)
+ifeq ($(AVRDUDE_MCU), attiny84)
+    AVRDUDE_ERASE_FLASH_OPT =
+else
+    AVRDUDE_ERASE_FLASH_OPT = -D
 endif
 
-AVRDUDE_COM_OPTS = $(AVRDUDE_OPTS) -p $(AVRDUDE_MCU)
+AVRDUDE_COM_OPTS = $(AVRDUDE_OPTS) $(AVRDUDE_ERASE_FLASH_OPT) -p $(AVRDUDE_MCU)
 ifdef AVRDUDE_CONF
     AVRDUDE_COM_OPTS += -C $(AVRDUDE_CONF)
 endif
