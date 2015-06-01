@@ -1282,8 +1282,8 @@ ifndef AVRDUDE_OPTS
     AVRDUDE_OPTS = -q -V
 endif
 
-# Avrdude uses mcu attiny84 to upload to the attiny84a, but we want to be able to set
-# the gcc mmcu flag to attiny84a.
+# Decouple the mcu between the compiler options (-mmcu) and the avrdude options (-p).
+# This is needed to be able to compile for attiny84a but specify the upload mcu as attiny84.
 ifeq ($(MCU), attiny84a)
   AVRDUDE_MCU = attiny84
 else
