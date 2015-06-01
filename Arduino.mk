@@ -1282,13 +1282,22 @@ ifndef AVRDUDE_OPTS
     AVRDUDE_OPTS = -q -V
 endif
 
-AVRDUDE_COM_OPTS = $(AVRDUDE_OPTS) -p $(MCU)
+# Decouple the mcu between the compiler options (-mmcu) and the avrdude options (-p).
+# This is needed to be able to compile for attiny84a but specify the upload mcu as attiny84.
+# We default to picking the -mmcu flag, but you can override this by setting
+# AVRDUDE_MCU in your makefile.
+ifndef AVRDUDE_MCU
+  AVRDUDE_MCU = $(MCU)
+endif
+
+AVRDUDE_COM_OPTS = $(AVRDUDE_OPTS) -p $(AVRDUDE_MCU)
 ifdef AVRDUDE_CONF
     AVRDUDE_COM_OPTS += -C $(AVRDUDE_CONF)
 endif
 
 # -D - Disable auto erase for flash memory
-# (-D is needed for Mega boards. See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
+# Note: -D is needed for Mega boards.
+#       (See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
 AVRDUDE_ARD_OPTS = -D -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P
 ifeq ($(CURRENT_OS), WINDOWS)
     # get_monitor_port checks to see if the monitor port exists, assuming it is
@@ -1353,6 +1362,9 @@ ifndef AVRDUDE_ISP_FUSES_POST
     endif
 endif
 
+# Note: setting -D to disable flash erase before programming may cause issues
+# with some boards like attiny84a, making the program not "take",
+# so we do not set it by default.
 AVRDUDE_ISP_OPTS = -c $(ISP_PROG) -b $(AVRDUDE_ISP_BAUDRATE)
 
 ifndef $(ISP_PORT)

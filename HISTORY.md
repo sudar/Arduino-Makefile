@@ -10,6 +10,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Various spelling/grammar/typo fixes (https://github.com/dcousens)
 - Tweak: Clarified some 1.5+ issues in docs (Issue #352) (https://github.com/sej7278)
 - Tweak: Added some more Continuous Integration tests (https://github.com/sej7278)
+- New: Add option to split avrdude MCU from avr-gcc MCU (Issue #357) (https://github.com/hhgarnes)
 
 ### 1.5 (2015-04-07)
 - New: Add support for new 1.5.x library layout (Issue #275) (https://github.com/lukasz-e)
