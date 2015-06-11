@@ -1060,7 +1060,7 @@ else
     # If no port is specified, try to guess it from wildcards.
     # Will only work if the Arduino is the only/first device matched.
     DEVICE_PATH = $(firstword $(wildcard \
-			/dev/ttyACM? /dev/ttyUSB? /dev/tty.usbserial* /dev/tty.usbmodem*))
+			/dev/ttyACM? /dev/ttyUSB? /dev/tty.usbserial* /dev/tty.usbmodem* /dev/tty.wchusbserial*))
     $(call show_config_variable,DEVICE_PATH,[AUTODETECTED])
 endif
 
