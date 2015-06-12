@@ -1060,7 +1060,7 @@ else
     # If no port is specified, try to guess it from wildcards.
     # Will only work if the Arduino is the only/first device matched.
     DEVICE_PATH = $(firstword $(wildcard \
-			/dev/ttyACM? /dev/ttyUSB? /dev/tty.usbserial* /dev/tty.usbmodem*))
+			/dev/ttyACM? /dev/ttyUSB? /dev/tty.usbserial* /dev/tty.usbmodem* /dev/tty.wchusbserial*))
     $(call show_config_variable,DEVICE_PATH,[AUTODETECTED])
 endif
 
@@ -1488,14 +1488,16 @@ show_boards:
 		@$(CAT) $(BOARDS_TXT) | grep -E '^[a-zA-Z0-9_]+.name' | sort -uf | sed 's/.name=/:/' | column -s: -t
 
 monitor:
-ifneq ($(MONITOR_CMD), 'putty')
-	$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
+ifeq ($(MONITOR_CMD), 'putty')
+	ifneq ($(strip $(MONITOR_PARMS)),)
+	$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE),$(MONITOR_PARMS) $(call get_monitor_port)
+	else
+	$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE) $(call get_monitor_port)
+	endif
+else ifeq ($(MONITOR_CMD), picocom)
+		$(MONITOR_CMD) -b $(MONITOR_BAUDRATE) $(MONITOR_PARAMS) $(call get_monitor_port)
 else
-    ifneq ($(strip $(MONITOR_PARMS)),)
-		$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE),$(MONITOR_PARMS) $(call get_monitor_port)
-    else
-		$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE) $(call get_monitor_port)
-    endif
+		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
 endif
 
 disasm: $(OBJDIR)/$(TARGET).lss
