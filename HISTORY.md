@@ -6,13 +6,14 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 
 ### In Development
 
+- New: Add option to split avrdude MCU from avr-gcc MCU (Issue #357) (https://github.com/hhgarnes)
 - New: Add support for /dev/tty.wchusbserial* (comes with cheap clones - DCCduino) (https://github.com/biesiad)
 - New: Add support for picocom as serial monitor(https://github.com/biesiad)
 - Tweak: Looks for submenu items first when parsing BOARDS_TXT (Issue #347) (https://github.com/sej7278)
 - Tweak: Various spelling/grammar/typo fixes (https://github.com/dcousens)
 - Tweak: Clarified some 1.5+ issues in docs (Issue #352) (https://github.com/sej7278)
 - Tweak: Added some more Continuous Integration tests (https://github.com/sej7278)
-- New: Add option to split avrdude MCU from avr-gcc MCU (Issue #357) (https://github.com/hhgarnes)
+- Tweak: Updated Fedora instructions (https://github.com/sej7278)
 
 ### 1.5 (2015-04-07)
 - New: Add support for new 1.5.x library layout (Issue #275) (https://github.com/lukasz-e)

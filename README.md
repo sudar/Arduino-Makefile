@@ -102,6 +102,10 @@ On Fedora:
 
 ```sh
 yum install pyserial
+
+# or on Fedora 22+
+
+dnf install pyserial
 ```
 
 On openSUSE:

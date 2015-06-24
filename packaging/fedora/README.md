@@ -2,7 +2,13 @@
 
 First install the dependencies as root:
 
+```sh
     yum install arduino-core rpm-build
+
+    # or on Fedora 22+
+
+    dnf install arduino-core rpmdevtools
+```
 
 From the top-level Arduino-Makefile directory you've checked out of github, run the following (as unprivileged user) to create a compressed tarball using the naming conventions required by rpmbuild:
 
