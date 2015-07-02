@@ -129,7 +129,8 @@ or you can install it using the [pre-built package installer](https://pypi.pytho
 
 You can also find more [detailed instructions in this guide](http://hardwarefun.com/tutorials/compiling-arduino-sketches-using-makefile).
 
-You can also checkout the sample makefiles inside the `examples/` directory, e.g. [Makefile-example](examples/MakefileExample/Makefile-example.mk).
+You can also checkout the sample makefiles inside the `examples/` directory, e.g. [Makefile-example](examples/MakefileExample/Makefile-example.mk) demonstrates some of the more advanced options,
+whilst [Blink](examples/Blink/Makefile) demonstrates the minimal settings required for various boards like the Uno, Nano, Mega, Teensy, ATtiny etc.
 
 Download a copy of this repo some where in your system or install it through a package.
 
