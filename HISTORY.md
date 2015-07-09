@@ -15,7 +15,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Clarified some 1.5+ issues in docs (Issue #352) (https://github.com/sej7278)
 - Tweak: Added some more Continuous Integration tests (https://github.com/sej7278)
 - Tweak: Updated Fedora instructions (https://github.com/sej7278)
-- Fix: Preserve original extension for object files, fixes parseIntASM (Issue #255, #364) (https://github.com/sej7278)
+- Fix: Preserve original extension for object files, support asm sources in core, fixes pulseInASM (Issue #255, #364) (https://github.com/sej7278)
 
 ### 1.5 (2015-04-07)
 - New: Add support for new 1.5.x library layout (Issue #275) (https://github.com/lukasz-e)
