@@ -38,12 +38,12 @@ AVR_TOOLS_DIR     = /usr/local
 ### or on Linux: (remove the one you don't want)
 AVR_TOOLS_DIR     = /usr
 
-### AVRDDUDE
+### AVRDUDE
 ### Path to avrdude directory.
 ### On OS X with `homebrew`:
-AVRDDUDE          = /usr/local/bin/avrdude
+AVRDUDE          = /usr/local/bin/avrdude
 ### or on Linux: (remove the one you don't want)
-AVRDDUDE          = /usr/bin/avrdude
+AVRDUDE          = /usr/bin/avrdude
 
 ### CFLAGS_STD
 ### Set the C standard to be used during compilation. Documentation (https://github.com/WeAreLeka/Arduino-Makefile/blob/std-flags/arduino-mk-vars.md#cflags_std)
