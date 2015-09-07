@@ -378,6 +378,26 @@ OBJDIR = /path/to/my/project-directory/bin
 
 ----
 
+### TARGET
+
+**Description:**
+
+What name you would like for generated target files.
+
+Defaults to the name of your current working directory, but with underscores (_) instead of spaces.
+
+**Example:**
+
+```Makefile
+TARGET = my-project
+```
+
+Will generate targets like `my-project.hex` and `my-project.elf`.
+
+**Requirement:** *Optional*
+
+----
+
 ### ALTERNATE_CORE
 
 **Description:**
