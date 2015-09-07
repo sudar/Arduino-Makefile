@@ -266,7 +266,9 @@ endif
 # Default TARGET to pwd (ex Daniele Vergini)
 
 ifndef TARGET
-    TARGET  = $(notdir $(CURDIR))
+    space :=
+    space +=
+    TARGET = $(notdir $(subst $(space),_,$(CURDIR)))
 endif
 
 ########################################################################
