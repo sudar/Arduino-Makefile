@@ -454,10 +454,8 @@ else
 
     # Check in Windows as Cygwin is being used, that the configuration file for the AVRDUDE is set
     # Check if it works on MAC
-    ifeq ($(CURRENT_OS),WINDOWS)
-        ifndef AVRDUDE_CONF
-            AVRDUDE_CONF  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
-        endif
+    ifndef AVRDUDE_CONF
+        AVRDUDE_CONF  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
     endif
 
 endif #ndef AVR_TOOLS_DIR
