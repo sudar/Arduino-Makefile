@@ -452,11 +452,12 @@ ifndef AVR_TOOLS_DIR
 else
     $(call show_config_variable,AVR_TOOLS_DIR,[USER])
 
-    # Check in Windows as Cygwin is being used, that the configuration file for the AVRDUDE is set
-    # Check if it works on MAC
-    ifeq ($(CURRENT_OS),WINDOWS)
-        ifndef AVRDUDE_CONF
-            AVRDUDE_CONF  = $(AVR_TOOLS_DIR)/etc/avrdude.conf
+    # ensure we can still find avrdude.conf
+    ifndef AVRDUDE_CONF
+        ifeq ($(shell expr $(ARDUINO_VERSION) '>' 157), 1)
+            AVRDUDE_CONF = $(AVR_TOOLS_DIR)/etc/avrdude.conf
+        else
+            AVRDUDE_CONF = $(AVR_TOOLS_DIR)/../avrdude.conf
         endif
     endif
 
