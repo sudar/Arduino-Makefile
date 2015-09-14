@@ -319,11 +319,11 @@ endif
 
 ########################################################################
 # 1.5.x vendor - defaults to arduino
-ifndef VENDOR
-	VENDOR = arduino
-    $(call show_config_variable,VENDOR,[DEFAULT])
+ifndef ARDMK_VENDOR
+	ARDMK_VENDOR = arduino
+    $(call show_config_variable,ARDMK_VENDOR,[DEFAULT])
 else
-    $(call show_config_variable,VENDOR,[USER])
+    $(call show_config_variable,ARDMK_VENDOR,[USER])
 endif
 
 ########################################################################
@@ -474,7 +474,7 @@ $(call show_config_variable,ARDUINO_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
 ifndef ARDUINO_PLATFORM_LIB_PATH
     ifeq ($(shell expr $(ARDUINO_VERSION) '>' 150), 1)
         # only for 1.5
-        ARDUINO_PLATFORM_LIB_PATH = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/libraries
+        ARDUINO_PLATFORM_LIB_PATH = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/libraries
         $(call show_config_variable,ARDUINO_PLATFORM_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
     endif
 else
@@ -511,14 +511,14 @@ ifdef ALTERNATE_CORE_PATH
 else
 
     ifndef ARDUINO_VAR_PATH
-        ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/variants
+        ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/variants
         $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ARDUINO_DIR))
     else
         $(call show_config_variable,ARDUINO_VAR_PATH,[USER])
     endif
 
     ifndef BOARDS_TXT
-        BOARDS_TXT  = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/boards.txt
+        BOARDS_TXT  = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/boards.txt
         $(call show_config_variable,BOARDS_TXT,[COMPUTED],(from ARDUINO_DIR))
     else
         $(call show_config_variable,BOARDS_TXT,[USER])
@@ -704,16 +704,16 @@ else
     $(call show_config_variable,OBJDIR,[USER])
 endif
 
-# Now that we have ARDUINO_DIR, VENDOR, ARCHITECTURE and CORE,
+# Now that we have ARDUINO_DIR, ARDMK_VENDOR, ARCHITECTURE and CORE,
 # we can set ARDUINO_CORE_PATH.
 ifndef ARDUINO_CORE_PATH
     ifeq ($(strip $(CORE)),)
-        ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/cores/arduino
+        ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/cores/arduino
         $(call show_config_variable,ARDUINO_CORE_PATH,[DEFAULT])
     else
         ARDUINO_CORE_PATH = $(ALTERNATE_CORE_PATH)/cores/$(CORE)
         ifeq ($(wildcard $(ARDUINO_CORE_PATH)),)
-            ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/cores/$(CORE)
+            ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/cores/$(CORE)
             $(call show_config_variable,ARDUINO_CORE_PATH,[COMPUTED],(from ARDUINO_DIR, BOARD_TAG and boards.txt))
         else
             $(call show_config_variable,ARDUINO_CORE_PATH,[COMPUTED],(from ALTERNATE_CORE_PATH, BOARD_TAG and boards.txt))
@@ -1121,7 +1121,7 @@ endif
 
 # either calculate parent dir from arduino dir, or user-defined path
 ifndef BOOTLOADER_PARENT
-    BOOTLOADER_PARENT = $(ARDUINO_DIR)/hardware/$(VENDOR)/$(ARCHITECTURE)/bootloaders
+    BOOTLOADER_PARENT = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/bootloaders
     $(call show_config_variable,BOOTLOADER_PARENT,[COMPUTED],(from ARDUINO_DIR))
 else
     $(call show_config_variable,BOOTLOADER_PARENT,[USER])

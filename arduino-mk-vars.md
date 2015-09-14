@@ -166,7 +166,7 @@ ARCHITECTURE = sam
 
 ----
 
-### VENDOR
+### ARDMK_VENDOR
 
 **Description:**
 
@@ -177,7 +177,7 @@ Defaults to `arduino`
 **Example:**
 
 ```Makefile
-VENDOR = sparkfun
+ARDMK_VENDOR = sparkfun
 ```
 
 **Requirement:** *Optional*
