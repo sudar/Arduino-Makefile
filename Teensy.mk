@@ -33,9 +33,9 @@ endif
 # include Common.mk now we know where it is
 include $(ARDMK_DIR)/Common.mk
 
-VENDOR              = teensy
+ARDMK_VENDOR        = teensy
 ARDUINO_CORE_PATH   = $(ARDUINO_DIR)/hardware/teensy/cores/teensy3
-BOARDS_TXT          = $(ARDUINO_DIR)/hardware/$(VENDOR)/boards.txt
+BOARDS_TXT          = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/boards.txt
 
 ifndef F_CPU
     F_CPU=96000000
