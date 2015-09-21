@@ -15,7 +15,7 @@ ARDMK_DIR         = $(PROJECT_DIR)/Arduino-Makefile
 ### ARDUINO_DIR
 ### Path to the Arduino application and resources directory.
 ### On OS X:
-ARDUINO_DIR       = /Applications/Arduino.app/Contents/Resources/Java
+ARDUINO_DIR       = /Applications/Arduino.app/Contents/Java
 ### or on Linux: (remove the one you don't want)
 ARDUINO_DIR       = /usr/share/arduino
 
