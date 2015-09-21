@@ -45,9 +45,14 @@
 # that things are canonically arranged beneath the directories defined
 # above.
 #
-# On the Mac you might want to set:
+# On the Mac with IDE 1.0 you might want to set:
 #
 #   ARDUINO_DIR   = /Applications/Arduino.app/Contents/Resources/Java
+#   ARDMK_DIR     = /usr/local
+#
+# On the Mac with IDE 1.5+ you might want to set:
+#
+#   ARDUINO_DIR   = /Applications/Arduino.app/Contents/Java
 #   ARDMK_DIR     = /usr/local
 #
 # On Linux, you might prefer:
