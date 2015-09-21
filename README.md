@@ -146,6 +146,7 @@ On the Mac with IDE 1.0 you might want to set:
 
 On the Mac with IDE 1.5+ it's like above but with
 
+```
     ARDUINO_DIR   = /Applications/Arduino.app/Contents/Java
 ```
 
