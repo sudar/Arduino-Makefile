@@ -11,6 +11,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Add option to split avrdude MCU from avr-gcc MCU (Issue #357) (https://github.com/hhgarnes)
 - New: Add support for /dev/tty.wchusbserial* (comes with cheap clones - DCCduino) (https://github.com/biesiad)
 - New: Add support for picocom as serial monitor (https://github.com/biesiad)
+- Tweak: Add support for Adafruit trinket3/trinket5/protrinket3/protrinket5 by improved BOARDS_TXT parsing (Issue #393) (https://github/com/zabereer)
 - Tweak: Looks for submenu items first when parsing BOARDS_TXT (Issue #347) (https://github.com/sej7278)
 - Tweak: Various spelling/grammar/typo fixes (https://github.com/dcousens)
 - Tweak: Clarified some 1.5+ issues in docs (Issue #352) (https://github.com/sej7278)
