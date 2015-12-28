@@ -1358,10 +1358,8 @@ endif
 
 # Bootloader file settings
 ifndef AVRDUDE_ISP_BURN_BOOTLOADER
-    ifneq ($(strip $(BOOTLOADER_PATH)),)
-        ifneq ($(strip $(BOOTLOADER_FILE)),)
-            AVRDUDE_ISP_BURN_BOOTLOADER += -U flash:w:$(BOOTLOADER_PARENT)/$(BOOTLOADER_PATH)/$(BOOTLOADER_FILE):i
-        endif
+    ifneq ($(strip $(BOOTLOADER_FILE)),)
+        AVRDUDE_ISP_BURN_BOOTLOADER += -U flash:w:$(BOOTLOADER_PARENT)/$(BOOTLOADER_PATH)/$(BOOTLOADER_FILE):i
     endif
 endif
 
