@@ -23,6 +23,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Rename VENDOR to ARDMK_VENDOR to workaround tcsh issue (Issue #386) (https://github.com/sej7278)
 - Fix: Document OSX 1.0/1.6 ARDUINO_DIR differences (https://github.com/thomaskilian)
 - Fix: Fix regex to support BOARD_TAGs with hyphens e.g. attiny44-20 (https://github.com/sej7278)
+- Fix: Remove check for BOOTLOADER_PATH, just check for BOOTLOADER_FILE (Issue #402) (https://github.com/sej7278)
 
 ### 1.5 (2015-04-07)
 - New: Add support for new 1.5.x library layout (Issue #275) (https://github.com/lukasz-e)
