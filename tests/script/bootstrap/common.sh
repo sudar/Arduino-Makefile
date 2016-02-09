@@ -184,7 +184,6 @@ if [ -z $COMMON_SOURCED ]; then
         PIP_SUDO_CMD=$SUDO_CMD
     fi
 
-    $PIP_SUDO_CMD pip install --upgrade setuptools
     $PIP_SUDO_CMD pip install --src dependencies --pre -Ur $BOOTSTRAP_DIR/pip-requirements.txt
 
     COMMON_SOURCED=1
