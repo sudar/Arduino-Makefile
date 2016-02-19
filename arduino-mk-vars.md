@@ -281,7 +281,7 @@ BOARD_TAG = uno or mega2560
 
 **Description:**
 
-1.5+ submenu as listed in `boards.txt`
+1.5+ submenu as listed in `boards.txt` or `make show_submenu`.
 
 **Example:**
 
