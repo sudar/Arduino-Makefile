@@ -6,6 +6,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 
 ### In Development
 
+- New: Add show_submenu target (https://github.com/drewhutchison)
 - New: Add AVR Dragon to list of ISP's without a port (https://github.com/mtnocean)
 - New: Add more board examples to Blink demo (https://github.com/sej7278)
 - New: Add option to split avrdude MCU from avr-gcc MCU (Issue #357) (https://github.com/hhgarnes)

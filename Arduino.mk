@@ -1495,6 +1495,9 @@ size:	$(TARGET_HEX)
 show_boards:
 		@$(CAT) $(BOARDS_TXT) | grep -E '^[a-zA-Z0-9_\-]+.name' | sort -uf | sed 's/.name=/:/' | column -s: -t
 
+show_submenu:
+	@$(CAT) $(BOARDS_TXT) | grep -E '[a-zA-Z0-9_\-]+.menu.cpu.[a-zA-Z0-9_\-]+=' | sort -uf | sed 's/.menu.cpu./:/' | sed 's/=/:/' | column -s: -t
+
 monitor:
 ifeq ($(MONITOR_CMD), 'putty')
 	ifneq ($(strip $(MONITOR_PARMS)),)
@@ -1543,6 +1546,7 @@ help:
   make reset             - reset the Arduino by tickling DTR or changing baud\n\
                            rate on the serial port.\n\
   make show_boards       - list all the boards defined in boards.txt\n\
+  make show_submenu      - list all board submenus defined in boards.txt\n\
   make monitor           - connect to the Arduino's serial port\n\
   make size              - show the size of the compiled output (relative to\n\
                            resources, if you have a patched avr-size).\n\
