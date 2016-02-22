@@ -4,7 +4,7 @@ A Makefile for Arduino Sketches
 The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
-### In Development
+### 1.5.1 (Debian version: 1.5-3) (2016-02-22)
 
 - New: Add show_submenu target (https://github.com/drewhutchison)
 - New: Add AVR Dragon to list of ISP's without a port (https://github.com/mtnocean)

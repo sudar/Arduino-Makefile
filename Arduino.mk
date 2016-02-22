@@ -19,7 +19,7 @@
 #
 # Original Arduino adaptation by mellis, eighthave, oli.keller
 #
-# Current version: 1.5
+# Current version: 1.5.1
 #
 # Refer to HISTORY.md file for complete history of changes
 #
