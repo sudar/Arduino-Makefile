@@ -773,7 +773,7 @@ LOCAL_SRCS      = $(LOCAL_C_SRCS)   $(LOCAL_CPP_SRCS) \
 		$(LOCAL_INO_SRCS) $(LOCAL_AS_SRCS)
 LOCAL_OBJ_FILES = $(LOCAL_C_SRCS:.c=.c.o)   $(LOCAL_CPP_SRCS:.cpp=.cpp.o) \
 		$(LOCAL_CC_SRCS:.cc=.cc.o)   $(LOCAL_PDE_SRCS:.pde=.pde.o) \
-		$(LOCAL_INO_SRCS:.ino=.ino.o) $(LOCAL_AS_SRCS:.S=.S.o) $(LOCAL_AS_SRCS:.s=.s.o)
+		$(LOCAL_INO_SRCS:.ino=.ino.o) $(LOCAL_AS_SRCS:%=%.o)
 LOCAL_OBJS      = $(patsubst %,$(OBJDIR)/%,$(LOCAL_OBJ_FILES))
 
 ifeq ($(words $(LOCAL_SRCS)), 0)
