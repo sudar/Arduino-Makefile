@@ -27,18 +27,18 @@
 #
 # PATHS YOU NEED TO SET UP
 #
-# We need to worry about three different sorts of file:
+# We need to worry about three different sorts of files:
 #
 # 1. The directory where the *.mk files are stored
 #    => ARDMK_DIR
 #
 # 2. Things which are always in the Arduino distribution e.g.
-#    boards.txt, libraries, &c.
+#    boards.txt, libraries, etc.
 #    => ARDUINO_DIR
 #
 # 3. Things which might be bundled with the Arduino distribution, but
 #    might come from the system. Most of the toolchain is like this:
-#    on Linux it's supplied by the system.
+#    on Linux it is supplied by the system.
 #    => AVR_TOOLS_DIR
 #
 # Having set these three variables, we can work out the rest assuming
@@ -91,8 +91,8 @@
 #
 # DEPENDENCIES
 #
-# The Perl programs need a couple of libraries:
-#    Device::SerialPort
+#  to reset a board the (python)  pySerial program is used.
+#  please install it prior to continue.
 #
 ########################################################################
 #
