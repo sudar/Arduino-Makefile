@@ -127,7 +127,7 @@ or you can install it using the [pre-built package installer](https://pypi.pytho
 
 ## Usage
 
-Download a copy of this repo somewhere in your system or install it through a package.
+Download a copy of this repo somewhere to your system or install it through a package.
 
 Sample makefiles are provided in the `examples/` directory.  E.g. [Makefile-example](examples/MakefileExample/Makefile-example.mk) demonstrates some of the more advanced options,
 whilst [Blink](examples/Blink/Makefile) demonstrates the minimal settings required for various boards like the Uno, Nano, Mega, Teensy, ATtiny etc.
@@ -150,17 +150,22 @@ On the Mac with IDE 1.5+ it's like above but with
     ARDUINO_DIR   = /Applications/Arduino.app/Contents/Java
 ```
 LINUX:
-You can either declare following variables in your child makefile or set them as environmental variables.
+
+You can either declare following variables in your project's makefile or set them as environmental variables.
 
     ARDUINO_DIR – Directory where Arduino is installed
     ARDMK_DIR – Directory where you have copied the makefile
     AVR_TOOLS_DIR – Directory where avr tools are installed
+    
 Keep in mind, that for Arduino 1.5.x+ comes with it's own copy of avr tools which you can leverage here.
 
 Example of  ~/.bashrc file:
+
 	export ARDUINO_DIR=/home/sudar/apps/arduino-1.0.5
 	export ARDMK_DIR=/home/sudar/Dropbox/code/Arduino-Makefile
 	export AVR_TOOLS_DIR=/usr/include
+
+Example of the project's make file:
 
 ```make
     BOARD_TAG     = mega2560
@@ -168,6 +173,7 @@ Example of  ~/.bashrc file:
 ```
 
 WINDOWS:
+
 On Windows (using cygwin), you might want to set:
 
 ```make
