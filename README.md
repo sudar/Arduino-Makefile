@@ -157,7 +157,7 @@ You can either declare following variables in your project's makefile or set the
     ARDMK_DIR – Directory where you have copied the makefile
     AVR_TOOLS_DIR – Directory where avr tools are installed
     
-Keep in mind, that for Arduino 1.5.x+ comes with it's own copy of avr tools which you can leverage here.
+Keep in mind, that Arduino 1.5.x+ comes with it's own copy of avr tools which you can leverage in your build process here.
 
 Example of  ~/.bashrc file:
 
