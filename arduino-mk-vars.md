@@ -166,7 +166,7 @@ ARCHITECTURE = sam
 
 ----
 
-### VENDOR
+### ARDMK_VENDOR
 
 **Description:**
 
@@ -177,7 +177,7 @@ Defaults to `arduino`
 **Example:**
 
 ```Makefile
-VENDOR = sparkfun
+ARDMK_VENDOR = sparkfun
 ```
 
 **Requirement:** *Optional*
@@ -281,7 +281,7 @@ BOARD_TAG = uno or mega2560
 
 **Description:**
 
-1.5+ submenu as listed in `boards.txt`
+1.5+ submenu as listed in `boards.txt` or `make show_submenu`.
 
 **Example:**
 
@@ -373,6 +373,26 @@ Defaults to `build-$(BOARD_TAG)` in your `Makefile` directory.
 ```Makefile
 OBJDIR = /path/to/my/project-directory/bin
 ```
+
+**Requirement:** *Optional*
+
+----
+
+### TARGET
+
+**Description:**
+
+What name you would like for generated target files.
+
+Defaults to the name of your current working directory, but with underscores (_) instead of spaces.
+
+**Example:**
+
+```Makefile
+TARGET = my-project
+```
+
+Will generate targets like `my-project.hex` and `my-project.elf`.
 
 **Requirement:** *Optional*
 

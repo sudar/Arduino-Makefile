@@ -4,17 +4,28 @@ A Makefile for Arduino Sketches
 The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
-### In Development
+### 1.5.1 (Debian version: 1.5-3) (2016-02-22)
 
+- New: Add show_submenu target (https://github.com/drewhutchison)
+- New: Add AVR Dragon to list of ISP's without a port (https://github.com/mtnocean)
 - New: Add more board examples to Blink demo (https://github.com/sej7278)
 - New: Add option to split avrdude MCU from avr-gcc MCU (Issue #357) (https://github.com/hhgarnes)
 - New: Add support for /dev/tty.wchusbserial* (comes with cheap clones - DCCduino) (https://github.com/biesiad)
-- New: Add support for picocom as serial monitor(https://github.com/biesiad)
+- New: Add support for picocom as serial monitor (https://github.com/biesiad)
+- Tweak: Add support for Adafruit trinket3/trinket5/protrinket3/protrinket5 by improved BOARDS_TXT parsing (Issue #393) (https://github/com/zabereer)
 - Tweak: Looks for submenu items first when parsing BOARDS_TXT (Issue #347) (https://github.com/sej7278)
 - Tweak: Various spelling/grammar/typo fixes (https://github.com/dcousens)
 - Tweak: Clarified some 1.5+ issues in docs (Issue #352) (https://github.com/sej7278)
 - Tweak: Added some more Continuous Integration tests (https://github.com/sej7278)
 - Tweak: Updated Fedora instructions (https://github.com/sej7278)
+- Fix: Preserve original extension for object files, support asm sources in core, fixes pulseInASM (Issue #255, #364) (https://github.com/sej7278)
+- Fix: Make sure TARGET is set correctly when CURDIR contains spaces (https://github.com/svendahlstrand)
+- Fix: Ensure AVRDUDE_CONF is set when AVR_TOOLS_DIR is, not just on Windows (Issue #381) (https://github.com/sej7278)
+- Fix: Rename VENDOR to ARDMK_VENDOR to workaround tcsh issue (Issue #386) (https://github.com/sej7278)
+- Fix: Document OSX 1.0/1.6 ARDUINO_DIR differences (https://github.com/thomaskilian)
+- Fix: Fix regex to support BOARD_TAGs with hyphens e.g. attiny44-20 (https://github.com/sej7278)
+- Fix: Remove check for BOOTLOADER_PATH, just check for BOOTLOADER_FILE (Issue #402) (https://github.com/sej7278)
+- Fix: Port ard-reset-arduino to pyserial 3.0 (#407, #408) (https://github.com/gauteh)
 
 ### 1.5 (2015-04-07)
 - New: Add support for new 1.5.x library layout (Issue #275) (https://github.com/lukasz-e)

@@ -15,7 +15,7 @@ ARDMK_DIR         = $(PROJECT_DIR)/Arduino-Makefile
 ### ARDUINO_DIR
 ### Path to the Arduino application and resources directory.
 ### On OS X:
-ARDUINO_DIR       = /Applications/Arduino.app/Contents/Resources/Java
+ARDUINO_DIR       = /Applications/Arduino.app/Contents/Java
 ### or on Linux: (remove the one you don't want)
 ARDUINO_DIR       = /usr/share/arduino
 
@@ -38,12 +38,12 @@ AVR_TOOLS_DIR     = /usr/local
 ### or on Linux: (remove the one you don't want)
 AVR_TOOLS_DIR     = /usr
 
-### AVRDDUDE
+### AVRDUDE
 ### Path to avrdude directory.
 ### On OS X with `homebrew`:
-AVRDDUDE          = /usr/local/bin/avrdude
+AVRDUDE          = /usr/local/bin/avrdude
 ### or on Linux: (remove the one you don't want)
-AVRDDUDE          = /usr/bin/avrdude
+AVRDUDE          = /usr/bin/avrdude
 
 ### CFLAGS_STD
 ### Set the C standard to be used during compilation. Documentation (https://github.com/WeAreLeka/Arduino-Makefile/blob/std-flags/arduino-mk-vars.md#cflags_std)

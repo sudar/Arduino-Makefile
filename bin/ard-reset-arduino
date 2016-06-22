@@ -6,6 +6,12 @@ import os.path
 import argparse
 from time import sleep
 
+pyserial_version = None
+try:
+  pyserial_version = int(serial.VERSION[0])
+except:
+  pyserial_version = 2  # less than 2.3
+
 parser = argparse.ArgumentParser(description='Reset an Arduino')
 parser.add_argument('--caterina', action='store_true', help='Reset a Leonardo, Micro, Robot or LilyPadUSB.')
 parser.add_argument('--verbose', action='store_true', help="Watch what's going on on STDERR.")
@@ -17,7 +23,12 @@ if args.caterina:
     if args.verbose: print('Forcing reset using 1200bps open/close on port %s' % args.port[0])
     ser = serial.Serial(args.port[0], 57600)
     ser.close()
-    ser.setBaudrate(1200)
+
+    if pyserial_version < 3:
+      ser.setBaudrate (1200)
+    else:
+      ser.baudrate = 1200
+
     ser.open()
     ser.setRTS(True)  # RTS line needs to be held high and DTR low
     ser.setDTR(False) # (see Arduino IDE source code)

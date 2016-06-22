@@ -134,7 +134,7 @@ whilst [Blink](examples/Blink/Makefile) demonstrates the minimal settings requir
 
 Download a copy of this repo some where in your system or install it through a package.
 
-On the Mac you might want to set:
+On the Mac with IDE 1.0 you might want to set:
 
 ```make
     ARDUINO_DIR   = /Applications/Arduino.app/Contents/Resources/Java
@@ -142,6 +142,12 @@ On the Mac you might want to set:
     AVR_TOOLS_DIR = /usr
     MONITOR_PORT  = /dev/ttyACM0
     BOARD_TAG     = mega2560
+```
+
+On the Mac with IDE 1.5+ it's like above but with
+
+```
+    ARDUINO_DIR   = /Applications/Arduino.app/Contents/Java
 ```
 
 On Linux (if you have installed through package), you shouldn't need to set anything other than your board type and port:
@@ -242,7 +248,7 @@ See examples/BlinkTeensy for example usage.
 
 ## Versioning
 
-The current version of the makefile is `1.5`. You can find the full history in the [HISTORY.md](HISTORY.md) file
+The current version of the makefile is `1.5.1`. You can find the full history in the [HISTORY.md](HISTORY.md) file
 
 This project adheres to Semantic [Versioning 2.0](http://semver.org/).
 
