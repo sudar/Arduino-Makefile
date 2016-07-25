@@ -929,7 +929,7 @@ CFLAGS_STD = = -std=gnu89
 
 Controls, *exclusively*, which C++ standard is to be used for compilation.
 
-Defaults to `undefined`
+Defaults to `undefined` on 1.0 or `-std=gnu++11 -fno-threadsafe-statics` on 1.5+
 
 Possible values:
 
