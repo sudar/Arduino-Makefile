@@ -472,8 +472,12 @@ ifndef AVR_TOOLS_PATH
     AVR_TOOLS_PATH    = $(AVR_TOOLS_DIR)/bin
 endif
 
-ARDUINO_LIB_PATH  = $(ARDUINO_DIR)/libraries
-$(call show_config_variable,ARDUINO_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
+ifndef ARDUINO_LIB_PATH
+    ARDUINO_LIB_PATH = $(ARDUINO_DIR)/libraries
+    $(call show_config_variable,ARDUINO_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
+else
+    $(call show_config_variable,ARDUINO_LIB_PATH,[USER])
+endif
 
 # 1.5.x platform dependent libs path
 ifndef ARDUINO_PLATFORM_LIB_PATH
@@ -1035,7 +1039,11 @@ else
 endif
 
 ifndef CXXFLAGS_STD
-    CXXFLAGS_STD      =
+    ifeq ($(shell expr $(ARDUINO_VERSION) '>' 150), 1)
+        CXXFLAGS_STD      = -std=gnu++11 -fno-threadsafe-statics
+    else
+        CXXFLAGS_STD      =
+    endif
     $(call show_config_variable,CXXFLAGS_STD,[DEFAULT])
 else
     $(call show_config_variable,CXXFLAGS_STD,[USER])
