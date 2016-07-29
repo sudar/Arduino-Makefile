@@ -280,10 +280,10 @@ endif
 # Arduino version number
 
 ifndef ARDUINO_VERSION
-    # Remove all the decimals, and right-pad with zeros, and finally grab the first 3 bytes.
-    # Works for 1.0 and 1.0.1
+    # Remove all the decimals, remove anything before/including ":", remove anything after/including "+" and finally grab the last 5 bytes.
+    # Works for 1.0 and 1.0.1 and 1.6.10 and debian-style 2:1.0.5+dfsg2-4
     VERSION_FILE := $(ARDUINO_DIR)/lib/version.txt
-    AUTO_ARDUINO_VERSION := $(shell [ -e $(VERSION_FILE) ] && cat $(VERSION_FILE) | sed -e 's/^[0-9]://g' -e 's/[.]//g' -e 's/$$/0000/' | head -c3)
+    AUTO_ARDUINO_VERSION := $(shell [ -e $(VERSION_FILE) ] && cat $(VERSION_FILE) | sed -e 's/^[0-9]://g' -e 's/[.]//g' -e 's/\+.*//g' | head -c5)
     ifdef AUTO_ARDUINO_VERSION
         ARDUINO_VERSION = $(AUTO_ARDUINO_VERSION)
         $(call show_config_variable,ARDUINO_VERSION,[AUTODETECTED])
