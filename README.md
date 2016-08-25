@@ -126,12 +126,14 @@ You need to install Cygwin and its packages for Make, Perl and the following Ser
 Assuming you included Puthon in your Cygwin installation:
 
 1. download PySerial source package from [https://pypi.python.org/pypi/pyserial](https://pypi.python.org/pypi/pyserial)
-2. extract downloaded package
+2. extract downloaded package running
+```tar xvfz dowloaded_package_name.tar.gz```
 3. navigate to extracted package folder
-4. start 
-
-```python setup.py build
-python setup.py instal
+4. build and install Python module 
+ 
+```
+python setup.py build
+python setup.py install
 ```
 
 ## Usage
