@@ -9,7 +9,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Updated CXXFLAGS_STD to match upstream 1.6 (issue #424) (https://github.com/calvinli)
 - Fix: Added support for attiny core's use of chip instead of cpu in submenus (https://github.com/straccio)
 - Fix: ARDUINO_VERSION can cope with the longer 1.6.10 version string (issue #444) (https://github.com/sej7278)
-- Tweak: Documentation for Windows updated to include installation of PySerial (https://github/sovcik)
+- Tweak: Documentation for Windows updated to include installation of PySerial (https://github.com/sovcik) 
 
 ### 1.5.1 (Debian version: 1.5-3) (2016-02-22)
 
