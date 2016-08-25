@@ -123,13 +123,14 @@ sudo port install py27-serial
 On Windows:
 
 You need to install Cygwin and its packages for Make, Perl and the following Serial library.
-Assuming you included Puthon in your Cygwin installation:
+
+Assuming you included Python in your Cygwin installation:
 
 1. download PySerial source package from [https://pypi.python.org/pypi/pyserial](https://pypi.python.org/pypi/pyserial)
 2. extract downloaded package running
 ```tar xvfz dowloaded_package_name.tar.gz```
 3. navigate to extracted package folder
-4. build and install Python module 
+4. build and install Python module: 
  
 ```
 python setup.py build
