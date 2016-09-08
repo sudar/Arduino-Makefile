@@ -392,10 +392,6 @@ ifndef OBJDUMP_NAME
 OBJDUMP_NAME = avr-objdump
 endif
 
-ifndef AR_NAME
-AR_NAME      = avr-ar
-endif
-
 ifndef SIZE_NAME
 SIZE_NAME    = avr-size
 endif
@@ -1031,16 +1027,32 @@ ifneq ($(CATERINA),)
     CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
 endif
 
+# avr-gcc version that we can do maths on
+CC_VERNUM = $(shell $(CC) -dumpversion | sed 's/\.//g')
+
+# moved from above so we can find version-dependant ar
+ifndef AR_NAME
+    ifeq ($(shell expr $(CC_VERNUM) '>' 480), 1)
+        AR_NAME      = avr-gcc-ar
+    else
+        AR_NAME      = avr-ar
+    endif
+endif
+
 ifndef CFLAGS_STD
-    CFLAGS_STD        =
+    ifeq ($(shell expr $(CC_VERNUM) '>' 480), 1)
+        CFLAGS_STD      = -std=gnu11 -flto -fno-fat-lto-objects
+    else
+        CFLAGS_STD        =
+    endif
     $(call show_config_variable,CFLAGS_STD,[DEFAULT])
 else
     $(call show_config_variable,CFLAGS_STD,[USER])
 endif
 
 ifndef CXXFLAGS_STD
-    ifeq ($(shell expr $(ARDUINO_VERSION) '>' 150), 1)
-        CXXFLAGS_STD      = -std=gnu++11 -fno-threadsafe-statics
+    ifeq ($(shell expr $(CC_VERNUM) '>' 480), 1)
+        CXXFLAGS_STD      = -std=gnu++11 -fno-threadsafe-statics -flto
     else
         CXXFLAGS_STD      =
     endif
@@ -1050,9 +1062,15 @@ else
 endif
 
 CFLAGS        += $(CFLAGS_STD)
-CXXFLAGS      += -fno-exceptions $(CXXFLAGS_STD)
+CXXFLAGS      += -fpermissive -fno-exceptions $(CXXFLAGS_STD)
 ASFLAGS       += -x assembler-with-cpp
+ifeq ($(shell expr $(CC_VERNUM) '>' 480), 1)
+    ASFLAGS += -flto
+endif
 LDFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL)
+ifeq ($(shell expr $(CC_VERNUM) '>' 480), 1)
+    LDFLAGS += -flto -fuse-linker-plugin
+endif
 SIZEFLAGS     ?= --mcu=$(MCU) -C
 
 # for backwards compatibility, grab ARDUINO_PORT if the user has it set
