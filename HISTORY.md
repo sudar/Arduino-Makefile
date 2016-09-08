@@ -5,6 +5,7 @@ The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### In Development
+- New: Add LTO support for users with avr-gcc > 4.8 (issue #446) (https://github.com/sej7278)
 - Tweak: Updated Linux instructions and sync documentation from the old blog(), README.md and Arduino.mk (https://github.com/az-z)
 - Fix: Updated CXXFLAGS_STD to match upstream 1.6 (issue #424) (https://github.com/calvinli)
 - Fix: Added support for attiny core's use of chip instead of cpu in submenus (https://github.com/straccio)
