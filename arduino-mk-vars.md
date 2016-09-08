@@ -822,7 +822,7 @@ OBJDUMP_NAME = pic32-objdump
 
 Archive utility.
 
-Defaults to `avr-ar`
+Defaults to `avr-ar` unless you're using toolchain > 4.8.0 in which case we use avr-gcc-ar.
 
 **Example:**
 
@@ -894,22 +894,22 @@ OPTIMIZATION_LEVEL = 3
 
 Controls, *exclusively*, which C standard is to be used for compilation.
 
-Defaults to `undefined`
+Defaults to `undefined` on 1.0.x or `-std=gnu11 -flto -fno-fat-lto-objects` on 1.5+ or if you install AVR toolchain > 4.8.0
 
 Possible values:
 
-*	With `avr-gcc 4.3`, shipped with the Arduino IDE:
+*	With `avr-gcc 4.3`, shipped with the 1.0 Arduino IDE:
 	*	`undefined`
 	*	`-std=c99`
 	*	`-std=gnu89` - This is the default for C code
 	*	`-std=gnu99`
-*	With `avr-gcc 4.7, 4.8 or 4.9`, installed by you
+*	With `avr-gcc 4.7, 4.8 or 4.9`, installed by you or 1.5+ IDE:
 	*	`undefined`
 	*	`-std=c99`
 	*	`-std=c11`
-	*	`-std=gnu89` - This is the default for C code
+	*	`-std=gnu89`
 	*	`-std=gnu99`
-	*	`-std=gnu11`
+	*	`-std=gnu11 -flto -fno-fat-lto-objects` - This is the default for C code
 
 For more information, please refer to the [Options Controlling C Dialect](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html)
 
@@ -929,24 +929,24 @@ CFLAGS_STD = = -std=gnu89
 
 Controls, *exclusively*, which C++ standard is to be used for compilation.
 
-Defaults to `undefined` on 1.0 or `-std=gnu++11 -fno-threadsafe-statics` on 1.5+
+Defaults to `undefined` on 1.0 or `-std=gnu++11 -fno-threadsafe-statics -flto` on AVR toolchain > 4.8.0 (e.g. IDE 1.5+)
 
 Possible values:
 
-*	With `avr-gcc 4.3`, shipped with the Arduino IDE:
+*	With `avr-gcc 4.3`, shipped with the 1.0 Arduino IDE:
 	*	`undefined`
 	*	`-std=c++98`
 	*	`-std=c++0x`
 	*	`-std=gnu++98` - This is the default for C code
 	*	`-std=gnu++0x`
-*	With `avr-gcc 4.7, 4.8 or 4.9`, installed by you
+*	With `avr-gcc 4.7, 4.8 or 4.9`, installed by you or 1.5+ IDE:
 	*	`undefined`
 	*	`-std=c++98`
 	*	`-std=c++11`
 	*	`-std=c++1y`
 	*	`-std=c++14`
-	*	`-std=gnu++98` - This is the default for C++ code
-	*	`-std=gnu++11`
+	*	`-std=gnu++98`
+	*	`-std=gnu++11 -fno-threadsafe-statics -flto` - This is the default for C++ code
 	*	`-std=gnu++1y`
 	*	`-std=gnu++14`
 
@@ -988,7 +988,7 @@ CFLAGS += -my-c-only-flag
 Flags passed to the compiler for files compiled as C++. Add more flags to this
 variable using `+=`.
 
-Defaults to all flags required for a typical build.
+Defaults to `-fpermissive -fno-exceptions`
 
 **Example:**
 
