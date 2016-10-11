@@ -1032,7 +1032,7 @@ CC_VERNUM = $(shell $(CC) -dumpversion | sed 's/\.//g')
 
 # moved from above so we can find version-dependant ar
 ifndef AR_NAME
-    ifeq ($(shell expr $(CC_VERNUM) '>' 480), 1)
+    ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
         AR_NAME      = avr-gcc-ar
     else
         AR_NAME      = avr-ar
@@ -1040,7 +1040,7 @@ ifndef AR_NAME
 endif
 
 ifndef CFLAGS_STD
-    ifeq ($(shell expr $(CC_VERNUM) '>' 480), 1)
+    ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
         CFLAGS_STD      = -std=gnu11 -flto -fno-fat-lto-objects
     else
         CFLAGS_STD        =
@@ -1051,7 +1051,7 @@ else
 endif
 
 ifndef CXXFLAGS_STD
-    ifeq ($(shell expr $(CC_VERNUM) '>' 480), 1)
+    ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
         CXXFLAGS_STD      = -std=gnu++11 -fno-threadsafe-statics -flto
     else
         CXXFLAGS_STD      =
@@ -1064,11 +1064,11 @@ endif
 CFLAGS        += $(CFLAGS_STD)
 CXXFLAGS      += -fpermissive -fno-exceptions $(CXXFLAGS_STD)
 ASFLAGS       += -x assembler-with-cpp
-ifeq ($(shell expr $(CC_VERNUM) '>' 480), 1)
+ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
     ASFLAGS += -flto
 endif
 LDFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL)
-ifeq ($(shell expr $(CC_VERNUM) '>' 480), 1)
+ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
     LDFLAGS += -flto -fuse-linker-plugin
 endif
 SIZEFLAGS     ?= --mcu=$(MCU) -C
