@@ -822,7 +822,7 @@ OBJDUMP_NAME = pic32-objdump
 
 Archive utility.
 
-Defaults to `avr-ar` unless you're using toolchain > 4.8.0 in which case we use avr-gcc-ar.
+Defaults to `avr-ar` unless you're using toolchain > 4.9.0 in which case we use avr-gcc-ar.
 
 **Example:**
 
@@ -894,7 +894,7 @@ OPTIMIZATION_LEVEL = 3
 
 Controls, *exclusively*, which C standard is to be used for compilation.
 
-Defaults to `undefined` on 1.0.x or `-std=gnu11 -flto -fno-fat-lto-objects` on 1.5+ or if you install AVR toolchain > 4.8.0
+Defaults to `undefined` on 1.0.x or `-std=gnu11 -flto -fno-fat-lto-objects` on 1.5+ or if you install AVR toolchain > 4.9.0
 
 Possible values:
 
@@ -929,7 +929,7 @@ CFLAGS_STD = = -std=gnu89
 
 Controls, *exclusively*, which C++ standard is to be used for compilation.
 
-Defaults to `undefined` on 1.0 or `-std=gnu++11 -fno-threadsafe-statics -flto` on AVR toolchain > 4.8.0 (e.g. IDE 1.5+)
+Defaults to `undefined` on 1.0 or `-std=gnu++11 -fno-threadsafe-statics -flto` on AVR toolchain > 4.9.0 (e.g. IDE 1.6.10+)
 
 Possible values:
 
