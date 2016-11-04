@@ -179,6 +179,10 @@ LDFLAGS += -Wl,--gc-sections,--relax
 LINKER_SCRIPTS = -T${ARDUINO_CORE_PATH}/${AMCU}.ld
 OTHER_LIBS = $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.libs)
 
+CPUFLAGS = $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.cpu)
+# usually defined as per teensy31.build.mcu=mk20dx256 but that isn't valid switch
+MCU := $(shell echo ${CPUFLAGS} | sed -n -e 's/.*-mcpu=\([a-zA-Z0-9_-]*\).*/\1/p')
+
 ########################################################################
 # some fairly odd settings so that 'make upload' works
 #
