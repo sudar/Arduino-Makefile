@@ -888,6 +888,24 @@ OPTIMIZATION_LEVEL = 3
 
 ----
 
+### OTHER_LIBS
+
+**Description:**
+
+Additional Linker lib flags, for platform support
+
+Defaults to ""
+
+**Example:**
+
+```Makefile
+OTHER_LIBS = -lsomeplatformlib
+```
+
+**Requirement:** *Optional*
+
+----
+
 ### CFLAGS_STD
 
 **Description:**
