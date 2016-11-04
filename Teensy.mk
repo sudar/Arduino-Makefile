@@ -49,6 +49,12 @@ endif
 ARCHITECTURE  = $(call PARSE_TEENSY,$(BOARD_TAG),build.architecture)
 AVR_TOOLS_DIR = $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/$(ARCHITECTURE))
 
+# define plaform lib dir ignoring teensy's oversight on putting it all in avr
+ifndef ARDUINO_PLATFORM_LIB_PATH
+    ARDUINO_PLATFORM_LIB_PATH = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/avr/libraries
+    $(call show_config_variable,ARDUINO_PLATFORM_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
+endif
+
 ########################################################################
 # command names
 
