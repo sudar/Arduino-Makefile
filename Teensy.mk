@@ -48,7 +48,7 @@ endif
 
 # if boards.txt gets modified, look there, else hard code it
 ARCHITECTURE  = $(call PARSE_TEENSY,$(BOARD_TAG),build.architecture)
-ifeq ($(strip $(MONITOR_PORT)),)
+ifeq ($(strip $(ARCHITECTURE)),)
 	ARCHITECTURE = arm
 endif
 
