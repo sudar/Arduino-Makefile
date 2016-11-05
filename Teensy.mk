@@ -46,7 +46,12 @@ ifndef PARSE_TEENSY
     PARSE_TEENSY = $(shell grep -v "^\#" "$(BOARDS_TXT)" | grep $(1).$(2) | cut -d = -f 2,3 )
 endif
 
+# if boards.txt gets modified, look there, else hard code it
 ARCHITECTURE  = $(call PARSE_TEENSY,$(BOARD_TAG),build.architecture)
+ifeq ($(strip $(MONITOR_PORT)),)
+	ARCHITECTURE = arm
+endif
+
 AVR_TOOLS_DIR = $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/$(ARCHITECTURE))
 
 # define plaform lib dir ignoring teensy's oversight on putting it all in avr
