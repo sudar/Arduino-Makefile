@@ -12,6 +12,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: ARDUINO_VERSION can cope with the longer 1.6.10 version string (issue #444) (https://github.com/sej7278)
 - Fix: Changed PARSE_BOARD to handle colons in e.g. CORE or VARIANT (issue #461) (https://github.com/sej7278)
 - Tweak: Documentation for Windows updated to include installation of PySerial (https://github.com/sovcik) 
+- FIX: Changed Teensy.mk to support Arduino 1.6.12 and Teensyduino 1.30 (issues #383 , #431) (https://github.com/georgeharker)
 
 ### 1.5.1 (Debian version: 1.5-3) (2016-02-22)
 

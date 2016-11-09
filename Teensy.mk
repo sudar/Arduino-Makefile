@@ -34,8 +34,8 @@ endif
 include $(ARDMK_DIR)/Common.mk
 
 ARDMK_VENDOR        = teensy
-ARDUINO_CORE_PATH   = $(ARDUINO_DIR)/hardware/teensy/cores/teensy3
-BOARDS_TXT          = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/boards.txt
+ARDUINO_CORE_PATH   = $(ARDUINO_DIR)/hardware/teensy/avr/cores/teensy3
+BOARDS_TXT          = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/avr/boards.txt
 
 ifndef F_CPU
     F_CPU=96000000
@@ -46,8 +46,19 @@ ifndef PARSE_TEENSY
     PARSE_TEENSY = $(shell grep -v "^\#" "$(BOARDS_TXT)" | grep $(1).$(2) | cut -d = -f 2,3 )
 endif
 
+# if boards.txt gets modified, look there, else hard code it
 ARCHITECTURE  = $(call PARSE_TEENSY,$(BOARD_TAG),build.architecture)
+ifeq ($(strip $(ARCHITECTURE)),)
+	ARCHITECTURE = arm
+endif
+
 AVR_TOOLS_DIR = $(call dir_if_exists,$(ARDUINO_DIR)/hardware/tools/$(ARCHITECTURE))
+
+# define plaform lib dir ignoring teensy's oversight on putting it all in avr
+ifndef ARDUINO_PLATFORM_LIB_PATH
+    ARDUINO_PLATFORM_LIB_PATH = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/avr/libraries
+    $(call show_config_variable,ARDUINO_PLATFORM_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
+endif
 
 ########################################################################
 # command names
@@ -152,11 +163,30 @@ ifeq ("$(call PARSE_TEENSY,$(BOARD_TAG),build.elide_constructors)", "true")
     CXXFLAGS      += -felide-constructors
 endif
 
-LDFLAGS +=  $(call PARSE_TEENSY,$(BOARD_TAG),build.linkoption) $(call PARSE_TEENSY,$(BOARD_TAG),build.additionalobject)
+CXXFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.common)
+CXXFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.cpu)
+CXXFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.defs)
+CXXFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.cpp)
 
-ifneq ("$(call PARSE_TEENSY,$(BOARD_TAG),build.linkscript)",)
-    LDFLAGS   += -T$(ARDUINO_CORE_PATH)/$(call PARSE_TEENSY,$(BOARD_TAG),build.linkscript)
-endif
+CFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.common)
+CFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.cpu)
+CFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.defs)
+
+ASFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.common)
+ASFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.cpu)
+ASFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.defs)
+ASFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.S)
+
+LDFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.cpu)
+
+AMCU := $(call PARSE_TEENSY,$(BOARD_TAG),build.mcu)
+LDFLAGS += -Wl,--gc-sections,--relax
+LINKER_SCRIPTS = -T${ARDUINO_CORE_PATH}/${AMCU}.ld
+OTHER_LIBS = $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.libs)
+
+CPUFLAGS = $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.cpu)
+# usually defined as per teensy31.build.mcu=mk20dx256 but that isn't valid switch
+MCU := $(shell echo ${CPUFLAGS} | sed -n -e 's/.*-mcpu=\([a-zA-Z0-9_-]*\).*/\1/p')
 
 ########################################################################
 # some fairly odd settings so that 'make upload' works
@@ -171,3 +201,4 @@ RESET_CMD = nohup $(ARDUINO_DIR)/hardware/tools/teensy_post_compile -board=$(BOA
 # automatially include Arduino.mk for the user
 
 include $(ARDMK_DIR)/Arduino.mk
+
