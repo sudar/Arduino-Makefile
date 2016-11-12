@@ -43,7 +43,7 @@ endif
 
 ifndef PARSE_TEENSY
     # result = $(call READ_BOARD_TXT, 'boardname', 'parameter')
-    PARSE_TEENSY = $(shell grep -v "^\#" "$(BOARDS_TXT)" | grep $(1).$(2) | cut -d = -f 2,3 )
+    PARSE_TEENSY = $(shell grep -v "^\#" "$(BOARDS_TXT)" | grep $(1).$(2) | cut -d = -f 2- )
 endif
 
 # if boards.txt gets modified, look there, else hard code it
