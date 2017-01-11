@@ -4,7 +4,8 @@ A Makefile for Arduino Sketches
 The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
-### In Development
+### 1.5.2 (2017-01-11)
+
 - New: Add LTO support for users with avr-gcc > 4.9 (issue #446 & #456) (https://github.com/sej7278)
 - Tweak: Updated Linux instructions and sync documentation from the old blog(), README.md and Arduino.mk (https://github.com/az-z)
 - Fix: Updated CXXFLAGS_STD to match upstream 1.6 (issue #424) (https://github.com/calvinli)
