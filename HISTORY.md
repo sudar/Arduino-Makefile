@@ -4,6 +4,9 @@ A Makefile for Arduino Sketches
 The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
+### In Development
+- Fix: Do not include the Arduino header when calling generate_assembly on .cpp files. (https://github.com/Batchyx)
+
 ### 1.5.2 (2017-01-11)
 
 - New: Add LTO support for users with avr-gcc > 4.9 (issue #446 & #456) (https://github.com/sej7278)
