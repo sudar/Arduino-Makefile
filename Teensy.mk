@@ -37,13 +37,22 @@ ARDMK_VENDOR        = teensy
 ARDUINO_CORE_PATH   = $(ARDUINO_DIR)/hardware/teensy/avr/cores/teensy3
 BOARDS_TXT          = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/avr/boards.txt
 
-ifndef F_CPU
-    F_CPU=96000000
-endif
 
 ifndef PARSE_TEENSY
     # result = $(call READ_BOARD_TXT, 'boardname', 'parameter')
     PARSE_TEENSY = $(shell grep -v "^\#" "$(BOARDS_TXT)" | grep $(1).$(2) | cut -d = -f 2- )
+endif
+
+
+ifndef F_CPU
+  ifndef BOARD_SUB
+    SPEEDS := $(call PARSE_TEENSY,"$(BOARD_TAG),menu.speed.*.build.fcpu") # Obtain sequence of supported frequencies.
+    SPEEDS := $(shell printf "%d\n" $(SPEEDS) | sort -g) # Sort it, just in case. Printf to re-append newlines so that sort works.
+    F_CPU := $(lastword $(SPEEDS)) # List is sorted in ascending order. Take the fastest speed.
+    #$(info "speeds is " $(SPEEDS))  # Good for debugging
+  else
+    F_CPU := $(call PARSE_TEENSY,$(BOARD_TAG),menu.speed.$(BOARD_SUB).build.fcpu)
+  endif
 endif
 
 # if boards.txt gets modified, look there, else hard code it
