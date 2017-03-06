@@ -1046,7 +1046,12 @@ ifndef AR_NAME
 endif
 
 ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
-    USE_LTO ?= 1
+    DISTRO=$(if $(wildcard /etc/os-release),$(shell sed -n "/^ID=/ s/ID=//p" /etc/os-release),unknown)
+    ifeq ($(DISTRO),fedora)
+        USE_LTO ?= 0
+    else
+        USE_LTO ?= 1
+    endif
 endif
 
 
