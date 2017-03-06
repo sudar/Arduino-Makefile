@@ -7,6 +7,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 ### In Development
 - Fix: Do not include the Arduino header when calling generate_assembly on .cpp files. (https://github.com/Batchyx)
 - Fix: Auto-detect F_CPU on Teensy from boards.txt (https://github.com/DaWelter)
+- Tweak: Allow to disable LTO (currently crashes on Fedora 25)
 
 ### 1.5.2 (2017-01-11)
 
