@@ -444,6 +444,9 @@ ifndef AVR_TOOLS_DIR
         ifdef SYSTEMPATH_AVR_TOOLS_DIR
             AVR_TOOLS_DIR = $(SYSTEMPATH_AVR_TOOLS_DIR)
             $(call show_config_variable,AVR_TOOLS_DIR,[AUTODETECTED],(found in $$PATH))
+            ifndef AVRDUDE_CONF
+                AVRDUDED_CONF := $(call dir_if_exists,/etc/avrdude/avrdude.conf)
+            endif
         else
             echo $(error No AVR tools directory found)
         endif # SYSTEMPATH_AVR_TOOLS_DIR
