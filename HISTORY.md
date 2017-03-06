@@ -9,6 +9,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Auto-detect F_CPU on Teensy from boards.txt (https://github.com/DaWelter)
 - Tweak: Allow to disable LTO (currently crashes on Fedora 25)
 - Fix: find AVRDUDE_CONF for system avrdude
+- Fix: properly detect tool paths
 
 ### 1.5.2 (2017-01-11)
 

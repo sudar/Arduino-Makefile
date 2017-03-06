@@ -902,6 +902,9 @@ ifndef OVERRIDE_EXECUTABLES
     AR      = $(AVR_TOOLS_PATH)/$(AR_NAME)
     SIZE    = $(AVR_TOOLS_PATH)/$(SIZE_NAME)
     NM      = $(AVR_TOOLS_PATH)/$(NM_NAME)
+
+    # Check if the default exist, otherwise try to find in PATH
+    $(foreach C,CC CXX AS OBJCOPY OBJDUMP AR SIZE NM,$(if $(wildcard $C),,$(eval $C = $$(shell type -p $$($(C)_NAME)))))
 endif
 
 REMOVE  = rm -rf
