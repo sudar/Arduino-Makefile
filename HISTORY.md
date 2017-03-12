@@ -12,12 +12,13 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 
 - New: Add LTO support for users with avr-gcc > 4.9 (issue #446 & #456) (https://github.com/sej7278)
 - Tweak: Updated Linux instructions and sync documentation from the old blog(), README.md and Arduino.mk (https://github.com/az-z)
+- Tweak: Documentation for Windows updated to include installation of PySerial (https://github.com/sovcik) 
 - Fix: Updated CXXFLAGS_STD to match upstream 1.6 (issue #424) (https://github.com/calvinli)
 - Fix: Added support for attiny core's use of chip instead of cpu in submenus (https://github.com/straccio)
 - Fix: ARDUINO_VERSION can cope with the longer 1.6.10 version string (issue #444) (https://github.com/sej7278)
 - Fix: Changed PARSE_BOARD to handle colons in e.g. CORE or VARIANT (issue #461) (https://github.com/sej7278)
-- Tweak: Documentation for Windows updated to include installation of PySerial (https://github.com/sovcik) 
-- FIX: Changed Teensy.mk to support Arduino 1.6.12 and Teensyduino 1.30 (issues #383 , #431) (https://github.com/georgeharker)
+- Fix: Changed Teensy.mk to support Arduino 1.6.12 and Teensyduino 1.30 (issues #383 , #431) (https://github.com/georgeharker)
+- Fix: params typo in PuTTY section (issue #487) (https://github.com/ericdand)
 
 ### 1.5.1 (Debian version: 1.5-3) (2016-02-22)
 
