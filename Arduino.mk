@@ -444,6 +444,9 @@ ifndef AVR_TOOLS_DIR
         ifdef SYSTEMPATH_AVR_TOOLS_DIR
             AVR_TOOLS_DIR = $(SYSTEMPATH_AVR_TOOLS_DIR)
             $(call show_config_variable,AVR_TOOLS_DIR,[AUTODETECTED],(found in $$PATH))
+            ifndef AVRDUDE_CONF
+                AVRDUDED_CONF := $(call dir_if_exists,/etc/avrdude/avrdude.conf)
+            endif
         else
             echo $(error No AVR tools directory found)
         endif # SYSTEMPATH_AVR_TOOLS_DIR
@@ -899,6 +902,9 @@ ifndef OVERRIDE_EXECUTABLES
     AR      = $(AVR_TOOLS_PATH)/$(AR_NAME)
     SIZE    = $(AVR_TOOLS_PATH)/$(SIZE_NAME)
     NM      = $(AVR_TOOLS_PATH)/$(NM_NAME)
+
+    # Check if the default exist, otherwise try to find in PATH
+    $(foreach C,CC CXX AS OBJCOPY OBJDUMP AR SIZE NM,$(if $(wildcard $C),,$(eval $C = $$(shell type -p $$($(C)_NAME)))))
 endif
 
 REMOVE  = rm -rf
@@ -1039,9 +1045,22 @@ ifndef AR_NAME
     endif
 endif
 
+ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
+    DISTRO=$(if $(wildcard /etc/os-release),$(shell sed -n "/^ID=/ s/ID=//p" /etc/os-release),unknown)
+    ifeq ($(DISTRO),fedora)
+        USE_LTO ?= 0
+    else
+        USE_LTO ?= 1
+    endif
+endif
+
+
 ifndef CFLAGS_STD
     ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
-        CFLAGS_STD      = -std=gnu11 -flto -fno-fat-lto-objects
+        CFLAGS_STD      = -std=gnu11
+        ifeq ($(USE_LTO),1)
+            CFLAGS_STD += -flto -fno-fat-lto-objects
+        endif
     else
         CFLAGS_STD        =
     endif
@@ -1052,7 +1071,10 @@ endif
 
 ifndef CXXFLAGS_STD
     ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
-        CXXFLAGS_STD      = -std=gnu++11 -fno-threadsafe-statics -flto
+        CXXFLAGS_STD      = -std=gnu++11 -fno-threadsafe-statics
+        ifeq ($(USE_LTO),1)
+            CXXFLAGS_STD += -flto
+        endif
     else
         CXXFLAGS_STD      =
     endif
@@ -1064,11 +1086,11 @@ endif
 CFLAGS        += $(CFLAGS_STD)
 CXXFLAGS      += -fpermissive -fno-exceptions $(CXXFLAGS_STD)
 ASFLAGS       += -x assembler-with-cpp
-ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
+ifeq ($(USE_LTO), 1)
     ASFLAGS += -flto
 endif
 LDFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL)
-ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
+ifeq ($(USE_LTO), 1)
     LDFLAGS += -flto -fuse-linker-plugin
 endif
 SIZEFLAGS     ?= --mcu=$(MCU) -C
