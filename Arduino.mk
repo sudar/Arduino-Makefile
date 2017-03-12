@@ -1526,8 +1526,8 @@ show_submenu:
 
 monitor:
 ifeq ($(MONITOR_CMD), 'putty')
-	ifneq ($(strip $(MONITOR_PARMS)),)
-	$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE),$(MONITOR_PARMS) $(call get_monitor_port)
+	ifneq ($(strip $(MONITOR_PARAMS)),)
+	$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE),$(MONITOR_PARAMS) $(call get_monitor_port)
 	else
 	$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE) $(call get_monitor_port)
 	endif
