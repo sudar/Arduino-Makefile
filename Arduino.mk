@@ -1522,7 +1522,7 @@ show_boards:
 		@$(CAT) $(BOARDS_TXT) | grep -E '^[a-zA-Z0-9_\-]+.name' | sort -uf | sed 's/.name=/:/' | column -s: -t
 
 show_submenu:
-	@$(CAT) $(BOARDS_TXT) | grep -E '[a-zA-Z0-9_\-]+.menu.(cpu|chip).[a-zA-Z0-9_\-]+=' | sort -uf | sed 's/.menu.(cpu|chip)./:/' | sed 's/=/:/' | column -s: -t
+	@$(CAT) $(BOARDS_TXT) | grep -E '[a-zA-Z0-9_\-]+.menu.(cpu|chip).[a-zA-Z0-9_\-]+=' | sort -uf | sed 's/.menu.\(cpu\|chip\)./:/' | sed 's/=/:/' | column -s: -t
 
 monitor:
 ifeq ($(MONITOR_CMD), 'putty')
