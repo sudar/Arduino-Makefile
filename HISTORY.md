@@ -7,6 +7,8 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 ### In Development
 - Fix: Do not include the Arduino header when calling generate_assembly on .cpp files. (https://github.com/Batchyx)
 - Fix: Auto-detect F_CPU on Teensy from boards.txt (https://github.com/DaWelter)
+- Fix: params typo in PuTTY section (issue #487) (https://github.com/ericdand)
+- Fix: Fixed sed expression to properly format show_submenu (issue #488) (https://github.com/cbosdo)
 
 ### 1.5.2 (2017-01-11)
 
@@ -18,7 +20,6 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: ARDUINO_VERSION can cope with the longer 1.6.10 version string (issue #444) (https://github.com/sej7278)
 - Fix: Changed PARSE_BOARD to handle colons in e.g. CORE or VARIANT (issue #461) (https://github.com/sej7278)
 - Fix: Changed Teensy.mk to support Arduino 1.6.12 and Teensyduino 1.30 (issues #383 , #431) (https://github.com/georgeharker)
-- Fix: params typo in PuTTY section (issue #487) (https://github.com/ericdand)
 
 ### 1.5.1 (Debian version: 1.5-3) (2016-02-22)
 
