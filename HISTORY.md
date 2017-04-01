@@ -9,6 +9,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Auto-detect F_CPU on Teensy from boards.txt (https://github.com/DaWelter)
 - Fix: params typo in PuTTY section (issue #487) (https://github.com/ericdand)
 - Fix: Fixed sed expression to properly format show_submenu (issue #488) (https://github.com/cbosdo)
+- New: Add support for good old cu as monitor command (issue #492) (https://github.com/mwm)
 
 ### 1.5.2 (2017-01-11)
 
