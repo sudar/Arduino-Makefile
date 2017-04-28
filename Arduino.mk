@@ -1451,12 +1451,12 @@ error_on_caterina:
 # Use submake so we can guarantee the reset happens
 # before the upload, even with make -j
 upload:		$(TARGET_HEX) verify_size
-		$(MAKE) reset
-		$(MAKE) do_upload
+		$(MAKE) -f $(firstword $(MAKEFILE_LIST)) reset
+		$(MAKE) -f $(firstword $(MAKEFILE_LIST)) do_upload
 
 raw_upload:	$(TARGET_HEX) verify_size
-		$(MAKE) error_on_caterina
-		$(MAKE) do_upload
+		$(MAKE) -f $(firstword $(MAKEFILE_LIST)) error_on_caterina
+		$(MAKE) -f $(firstword $(MAKEFILE_LIST)) do_upload
 
 do_upload:
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
@@ -1467,12 +1467,12 @@ do_eeprom:	$(TARGET_EEP) $(TARGET_HEX)
 			$(AVRDUDE_UPLOAD_EEP)
 
 eeprom:		$(TARGET_HEX) verify_size
-		$(MAKE) reset
-		$(MAKE) do_eeprom
+		$(MAKE) -f $(firstword $(MAKEFILE_LIST)) reset
+		$(MAKE) -f $(firstword $(MAKEFILE_LIST)) do_eeprom
 
 raw_eeprom:	$(TARGET_HEX) verify_size
-		$(MAKE) error_on_caterina
-		$(MAKE) do_eeprom
+		$(MAKE) -f $(firstword $(MAKEFILE_LIST)) error_on_caterina
+		$(MAKE) -f $(firstword $(MAKEFILE_LIST)) do_eeprom
 
 reset:
 		$(call arduino_output,Resetting Arduino...)
