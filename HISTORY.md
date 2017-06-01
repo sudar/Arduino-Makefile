@@ -12,6 +12,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Fixed sed expression to properly format show_submenu (issue #488) (https://github.com/cbosdo)
 - New: Add support for good old cu as monitor command (issue #492) (https://github.com/mwm)
 - Tweak: Removed tilde from documentation (issue #497). (https://github.com/sej7278)
+- New: Add a documentation how to setup Makefile for 3rd party boards (issue #499). (https://github.com/MilanV)
 
 ### 1.5.2 (2017-01-11)
 
