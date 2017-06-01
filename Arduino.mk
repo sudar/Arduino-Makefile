@@ -628,8 +628,12 @@ ifeq ($(strip $(NO_CORE)),)
             USB_VID = $(call PARSE_BOARD,$(BOARD_TAG),build.vid)
         endif
 
+        # coping with 2-3 methods sparkfun use for usb.pid
         ifndef USB_PID
-            USB_PID = $(call PARSE_BOARD,$(BOARD_TAG),build.pid)
+            USB_PID := $(call PARSE_BOARD,$(BOARD_TAG),build.pid)
+            ifndef USB_PID
+                USB_PID := $(call PARSE_BOARD,$(BOARD_TAG),menu.(chip|cpu).$(BOARD_SUB).build.pid)
+            endif
         endif
     endif
 
