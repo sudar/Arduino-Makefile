@@ -83,7 +83,7 @@ Defaults to `ard-reset-arduino` with the extra `--caterina` flag for atmega32u4 
 **Example:**
 
 ```Makefile
-RESET_CMD = ~/gertduino/reset
+RESET_CMD = $(HOME)/gertduino/reset
 ```
 
 **Requirement:** *Optional*
@@ -190,12 +190,12 @@ ARDMK_VENDOR = sparkfun
 
 Path to `sketchbook` directory.
 
-Usually can be auto-detected from the Arduino `preferences.txt` file or the default `~/sketchbook`
+Usually can be auto-detected from the Arduino `preferences.txt` file or the default `$(HOME)/sketchbook`
 
 **Example:**
 
 ```Makefile
-ARDUINO_SKETCHBOOK = ~/sketches
+ARDUINO_SKETCHBOOK = $(HOME)/sketches
 ```
 
 **Requirement:** *Optional*
@@ -210,15 +210,15 @@ Path to Arduino `preferences.txt` file.
 
 Usually can be auto-detected as `AUTO_ARDUINO_PREFERENCES` from the defaults:
 
-*	on Linux (1.0):     `~/.arduino/preferences.txt`
-*	on Linux (1.5+):    `~/.arduino15/preferences.txt`
-*	on Mac OS X (1.0):  `~/Library/Arduino/preferences.txt`
-*	on Mac OS X (1.5+): `~/Library/Arduino15/preferences.txt`
+*	on Linux (1.0):     `$(HOME)/.arduino/preferences.txt`
+*	on Linux (1.5+):    `$(HOME)/.arduino15/preferences.txt`
+*	on Mac OS X (1.0):  `$(HOME)/Library/Arduino/preferences.txt`
+*	on Mac OS X (1.5+): `$(HOME)/Library/Arduino15/preferences.txt`
 
 **Example:**
 
 ```Makefile
-ARDUINO_PREFERENCES_PATH = ~/sketches/preferences.txt
+ARDUINO_PREFERENCES_PATH = $(HOME)/sketches/preferences.txt
 ```
 
 **Requirement:** *Optional*
@@ -351,7 +351,7 @@ Defaults to `libraries` directory within user's sketchbook.
 
 ```Makefile
 # Linux
-USER_LIB_PATH = ~/sketchbook/libraries
+USER_LIB_PATH = $(HOME)/sketchbook/libraries
 # For a random project on *nix
 USER_LIB_PATH = /path/to/my/project
 ```
@@ -428,7 +428,7 @@ Path to non-standard core's variant files.
 **Example:**
 
 ```Makefile
-ARDUINO_VAR_PATH = ~/sketchbook/hardware/arduino-tiny/cores/tiny
+ARDUINO_VAR_PATH = $(HOME)/sketchbook/hardware/arduino-tiny/cores/tiny
 ```
 
 **Requirement:** *Optional*
@@ -1104,7 +1104,7 @@ Defaults to `pre-build-hook.sh`
 **Example:**
 
 ```Makefile
-PRE_BUILD_HOOK = ~/bin/bump-revision.sh
+PRE_BUILD_HOOK = $(HOME)/bin/bump-revision.sh
 ```
 
 **Requirement:** *Optional*
@@ -1219,7 +1219,7 @@ Defaults to `ARDUINO_SKETCHBOOK/hardware/ALTERNATE_CORE`
 **Example:**
 
 ```Makefile
-ALTERNATE_CORE_PATH = ~/sketchbook/hardware/arduino-tiny/cores/tiny
+ALTERNATE_CORE_PATH = $(HOME)/sketchbook/hardware/arduino-tiny/cores/tiny
 ```
 
 **Requirement:** *Optional*
@@ -1237,7 +1237,7 @@ Defaults to `ARDUINO_DIR/hardware/arduino/boards.txt`
 **Example:**
 
 ```Makefile
-BOARD_TXT = ~/sketchbook/hardware/boards.txt
+BOARD_TXT = $(HOME)/sketchbook/hardware/boards.txt
 # or
 BOARD_TXT = /usr/share/arduino/hardware/arduino/boards.txt
 ```
@@ -1371,12 +1371,12 @@ Defaults to `/usr/share/arduino/hardware/arduino/bootloaders` (Linux)
 **Example:**
 
 ```Makefile
-BOOTLOADER_PARENT = ~/sketchbook/hardware/promicro/bootloaders
+BOOTLOADER_PARENT = $(HOME)/sketchbook/hardware/promicro/bootloaders
 BOOTLOADER_PATH  = caterina
 BOOTLOADER_FILE  = Caterina-promicro16.hex
 ```
 
-Would result in an absolute path to the bootloader hex file of `~/sketchbook/hardware/promicro/bootloaders/caterina/Caterina-promicro16.hex`
+Would result in an absolute path to the bootloader hex file of `$(HOME)/sketchbook/hardware/promicro/bootloaders/caterina/Caterina-promicro16.hex`
 
 **Requirement:** *Optional, unless BOOTLOADER_FILE and/or BOOTLOADER_PATH are user-defined*
 
@@ -1395,7 +1395,7 @@ Usually can be auto-detected as `AUTO_MPIDE_DIR` from the defaults `/usr/share/m
 **Example:**
 
 ```Makefile
-MPIDE_DIR = ~/mpide
+MPIDE_DIR = $(HOME)/mpide
 ```
 
 **Requirement:** *Optional*
@@ -1408,12 +1408,12 @@ MPIDE_DIR = ~/mpide
 
 Path to chipKIT `preferences.txt` file.
 
-Usually can be auto-detected as `AUTO_MPIDE_PREFERENCES_PATH` from the defaults `~/.mpide/preferences.txt` (Linux) or `~/Library/Mpide/preferences.txt` (OSX)
+Usually can be auto-detected as `AUTO_MPIDE_PREFERENCES_PATH` from the defaults `$(HOME)/.mpide/preferences.txt` (Linux) or `$(HOME)/Library/Mpide/preferences.txt` (OSX)
 
 **Example:**
 
 ```Makefile
-MPIDE_PREFERENCES_PATH = ~/chipkit/preferences.txt
+MPIDE_PREFERENCES_PATH = $(HOME)/chipkit/preferences.txt
 ```
 
 **Requirement:** *Optional*
