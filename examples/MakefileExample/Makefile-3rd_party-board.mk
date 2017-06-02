@@ -31,7 +31,7 @@
 ### 3. Create this Makefile (use your vendor/package name)
 
 ###        ALTERNATE_CORE      = sparkfun
-###        include ~/Arduino-Makefile/Arduino.mk
+###        include $(HOME)/Arduino-Makefile/Arduino.mk
 
 ### 4. run 'make show_boards'
 ###    check that you can see (only) boards provided by this vendor
@@ -52,5 +52,5 @@ ARDUINO_SKETCHBOOK  = $(HOME)/sketchbook
 ALTERNATE_CORE      = sparkfun
 BOARD_TAG           = promicro
 BOARD_SUB	    = 8MHzatmega32U4
-include $(ARDMK_DIR)/Arduino.mk
+include /usr/share/arduino/Arduino.mk
 
