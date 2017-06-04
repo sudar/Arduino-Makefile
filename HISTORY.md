@@ -13,6 +13,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Add support for good old cu as monitor command (issue #492) (https://github.com/mwm)
 - Tweak: Removed tilde from documentation (issue #497). (https://github.com/sej7278)
 - New: Add a documentation how to setup Makefile for 3rd party boards (issue #499). (https://github.com/MilanV)
+- New: Add generation of tags file using ctags, which automatically includes project libs and Arduino core. (https://github.com/tuna-f1sh)
 
 ### 1.5.2 (2017-01-11)
 

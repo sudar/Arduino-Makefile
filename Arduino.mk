@@ -1308,6 +1308,22 @@ $(OBJDIR)/%.sym: $(OBJDIR)/%.elf $(COMMON_DEPS)
 	$(NM) --size-sort --demangle --reverse-sort --line-numbers $< > $@
 
 ########################################################################
+# Ctags
+
+# Assume ctags is on path unless has been specified
+ifndef CTAGS_EXEC
+    CTAGS_EXEC = ctags
+endif
+
+# Default to 'tags' unless user has specified a tags file
+ifndef TAGS_FILE
+    TAGS_FILE = tags
+endif
+
+# ctags command: append file with user options before
+CTAGS_CMD = $(CTAGS_EXEC) $(CTAGS_OPTS) -auf
+
+########################################################################
 # Avrdude
 
 # If avrdude is installed separately, it can find its own config file
@@ -1562,6 +1578,21 @@ generate_assembly: $(OBJDIR)/$(TARGET).s
 generated_assembly: generate_assembly
 		@$(ECHO) "\"generated_assembly\" target is deprecated. Use \"generate_assembly\" target instead\n\n"
 
+.PHONY: tags
+tags:
+	rm -f $(shell pwd)/$(TAGS_FILE)
+	@$(ECHO) "Generating tags for source files: "
+	$(CTAGS_CMD) $(TAGS_FILE) $(shell find "`pwd`" -name "*.cpp" -o -name "*.h" -o -name "*.c") 
+	@$(ECHO) "Generating tags for IDO an PDE files as C++: "
+	$(CTAGS_CMD) $(TAGS_FILE) --langmap=c++:.ino --langmap=c++:.pde $(shell find "`pwd`" -name "*.ino" -o -name "*.pde")
+	@$(ECHO) "Generating tags for project libraries: "
+	$(CTAGS_CMD) $(TAGS_FILE) $(foreach lib, $(ARDUINO_LIBS),$(USER_LIB_PATH)/$(lib)/*)
+	@$(ECHO) "Generating tags for Arduino core: "
+	$(CTAGS_CMD) $(TAGS_FILE) $(ARDUINO_CORE_PATH)/*
+	@$(ECHO) "Sorting..\n"
+	@sort $(TAGS_FILE) -o $(TAGS_FILE)
+	@$(ECHO) "Tag file generation complete, output: $(TAGS_FILE)"
+
 help_vars:
 		@$(CAT) $(ARDMK_DIR)/arduino-mk-vars.md
 
@@ -1593,6 +1624,7 @@ help:
                            generated assembly of the main sketch.\n\
   make burn_bootloader   - burn bootloader and fuses\n\
   make set_fuses         - set fuses without burning bootloader\n\
+  make tags              - generate tags file including project libs and Arduino core\n\
   make help_vars         - print all variables that can be overridden\n\
   make help              - show this help\n\
 "
