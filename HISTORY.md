@@ -5,14 +5,18 @@ The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### In Development
+- TBC
+
+### 1.6.0 (2017-07-11)
 - Fix: Allowed for SparkFun's weird usb pid/vid submenu shenanigans (issue #499). (https://github.com/sej7278)
 - Fix: Do not include the Arduino header when calling generate_assembly on .cpp files. (https://github.com/Batchyx)
 - Fix: Auto-detect F_CPU on Teensy from boards.txt (https://github.com/DaWelter)
 - Fix: params typo in PuTTY section (issue #487) (https://github.com/ericdand)
 - Fix: Fixed sed expression to properly format show_submenu (issue #488) (https://github.com/cbosdo)
-- New: Add support for good old cu as monitor command (issue #492) (https://github.com/mwm)
 - Tweak: Removed tilde from documentation (issue #497). (https://github.com/sej7278)
+- New: Add support for good old cu as monitor command (issue #492) (https://github.com/mwm)
 - New: Add a documentation how to setup Makefile for 3rd party boards (issue #499). (https://github.com/MilanV)
+- New: Add support for Robotis OpenCM boards
 
 ### 1.5.2 (2017-01-11)
 

@@ -1,5 +1,5 @@
 Name:			arduino-mk
-Version:		1.5.2
+Version:		1.6.0
 Release:		1%{dist}
 Summary:		Program your Arduino from the command line
 Packager:		Simon John <git@the-jedi.co.uk>
@@ -37,6 +37,8 @@ install -m 644 *.mk arduino-mk-vars.md %{buildroot}/%{_datadir}/arduino
 install -m 644 licence.txt %{buildroot}/%{_docdir}/%{name}
 install -m 755 bin/ard-reset-arduino %{buildroot}/%{_bindir}/ard-reset-arduino
 install -m 644 ard-reset-arduino.1 %{buildroot}/%{_mandir}/man1
+install -m 755 bin/robotis-loader %{buildroot}/%{_bindir}/robotis-loader
+install -m 644 robotis-loader.1 %{buildroot}/%{_mandir}/man1
 
 %clean
 rm -rf %{buildroot}
@@ -45,6 +47,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_bindir}/ard-reset-arduino
 %{_mandir}/man1/ard-reset-arduino.1*
+%{_bindir}/robotis-loader
+%{_mandir}/man1/robotis-loader.1*
 %{_datadir}/arduino/*.mk
 %{_datadir}/arduino/arduino-mk-vars.md
 %doc %{_docdir}/%{name}/licence.txt
@@ -52,6 +56,8 @@ rm -rf %{buildroot}
 %{_docdir}/%{name}/examples
 
 %changelog
+* Tue Jul 11 2017 Karl Semich <fuzzyTew@gmail.com>
+- Added robotis-loader binary and manpage
 * Sat Apr 12 2014 Simon John <git@the-jedi.co.uk>
 - Put manpage back.
 * Fri Apr 04 2014 Simon John <git@the-jedi.co.uk>

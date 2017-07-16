@@ -279,9 +279,17 @@ For Teensy 3.x support you must first install [Teensyduino](http://www.pjrc.com/
 
 See examples/BlinkTeensy for example usage.
 
+## Robotis OpenCM
+
+For Robotis OpenCM support you must first install [the OpenCM IDE](http://support.robotis.com/en/software/robotis_opencm/robotis_opencm.htm)
+
+See examples/BlinkOpenCM for example usage.
+
+For large Robotis projects, [libmaple](https://github.com/Rhoban/Maple) may be more appropriate, as the OpenCM IDE uses a very old compiler release.
+
 ## Versioning
 
-The current version of the makefile is `1.5.2`. You can find the full history in the [HISTORY.md](HISTORY.md) file
+The current version of the makefile is `1.6.0`. You can find the full history in the [HISTORY.md](HISTORY.md) file
 
 This project adheres to Semantic [Versioning 2.0](http://semver.org/).
 
