@@ -1045,7 +1045,7 @@ endif
 
 ifndef CFLAGS_STD
     ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
-        CFLAGS_STD      = -std=gnu11 -flto -fno-fat-lto-objects
+        CFLAGS_STD      = -std=gnu11 -flto -fno-fat-lto-objects -fdiagnostics-color
     else
         CFLAGS_STD        =
     endif
@@ -1056,7 +1056,7 @@ endif
 
 ifndef CXXFLAGS_STD
     ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
-        CXXFLAGS_STD      = -std=gnu++11 -fno-threadsafe-statics -flto
+        CXXFLAGS_STD      = -std=gnu++11 -fno-threadsafe-statics -flto -fno-devirtualize -fdiagnostics-color
     else
         CXXFLAGS_STD      =
     endif
@@ -1164,7 +1164,7 @@ endif
 
 ########################################################################
 # Tools version info
-ARDMK_VERSION = 1.5
+ARDMK_VERSION = 1.6
 $(call show_config_variable,ARDMK_VERSION,[COMPUTED])
 
 CC_VERSION := $(shell $(CC) -dumpversion)

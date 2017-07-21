@@ -5,7 +5,9 @@ The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### In Development
-- TBC
+- Fix: Add -fno-devirtualize flag to workaround g++ segfault bug (issue #486). (https://github.com/sej7278)
+- Tweak: Set ARDMK_VERSION to 1.6 (https://github.com/sej7278)
+- New: Added -fdiagnostics-color to *STD flags (https://github.com/sej7278)
 
 ### 1.6.0 (2017-07-11)
 - Fix: Allowed for SparkFun's weird usb pid/vid submenu shenanigans (issue #499). (https://github.com/sej7278)
