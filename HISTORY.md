@@ -6,6 +6,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 
 ### In Development
 - Fix: Add -fno-devirtualize flag to workaround g++ segfault bug (issue #486). (https://github.com/sej7278)
+- Fix: Quote the prefix tag in the space_pad_to function
 - Tweak: Set ARDMK_VERSION to 1.6 (https://github.com/sej7278)
 - New: Added -fdiagnostics-color to *STD flags (https://github.com/sej7278)
 
