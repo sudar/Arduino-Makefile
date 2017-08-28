@@ -924,16 +924,17 @@ rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst 
 # and library.properties file
 
 # Gets include flags for library
-get_library_includes = $(if $(and $(wildcard $(1)/src), $(wildcard $(1)/library.properties)), \
+get_library_includes = $(sort $(if $(and $(wildcard $(1)/src), $(wildcard $(1)/library.properties)), \
                            -I$(1)/src, \
-                           $(addprefix -I,$(1) $(wildcard $(1)/utility)))
+                           $(addprefix -I,$(1) $(wildcard $(1)/utility)) \
+                           $(addprefix -I,$(1) $(dir $(wildcard $(1)/*/)))))
 
 # Gets all sources with given extension (param2) for library (path = param1)
 # for old (1.0.x) layout looks in . and "utility" directories
 # for new (1.5.x) layout looks in src and recursively its subdirectories
-get_library_files  = $(if $(and $(wildcard $(1)/src), $(wildcard $(1)/library.properties)), \
+get_library_files  = $(sort $(if $(and $(wildcard $(1)/src), $(wildcard $(1)/library.properties)), \
                         $(call rwildcard,$(1)/src/,*.$(2)), \
-                        $(wildcard $(1)/*.$(2) $(1)/utility/*.$(2)))
+                        $(wildcard $(1)/*.$(2) $(1)/utility/*.$(2) $(1)/*/*.$(2))))
 
 # General arguments
 USER_LIBS      := $(sort $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(ARDUINO_LIBS))))
