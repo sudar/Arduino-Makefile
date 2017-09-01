@@ -14,7 +14,7 @@ runscript_if_exists =                                                          \
 
 # For message printing: pad the right side of the first argument with spaces to
 # the number of bytes indicated by the second argument.
-space_pad_to = $(shell echo $(1) "                                                      " | head -c$(2))
+space_pad_to = $(shell echo "$(1)                                                       " | head -c$(2))
 
 # Call with some text, and a prefix tag if desired (like [AUTODETECTED]),
 show_config_info = $(call arduino_output,- $(call space_pad_to,$(2),20) $(1))

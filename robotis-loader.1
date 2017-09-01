@@ -1,0 +1,27 @@
+.TH ROBOTIS-LOADER "1" "July 2017" "robotis-loader" "Robotis CLI Uploader"
+
+.SH NAME
+robotis-loader - Flash Robotis boards
+
+.SH SYNOPSIS
+.B robotis-loader
+PORT BINARY
+
+.SH DESCRIPTION
+Sends a program on a Robotis board (OpenCM9.04 or CM900) using the
+Robotis bootloader (used in OpenCM IDE).
+
+.SH EXAMPLE
+robotis-loader /dev/ttyACM0 firmware.bin
+
+.SH BUGS
+Problems may reported on the github project page at:
+.PP
+https://github.com/Gregwar/robotis-loader
+
+.SH AUTHOR
+Grégoire Passault, g.passault@gmail.com
+
+.SH LICENSE
+This is under MIT license.
+

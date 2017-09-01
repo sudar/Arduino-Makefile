@@ -5,15 +5,22 @@ The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### In Development
+- Fix: Add -fno-devirtualize flag to workaround g++ segfault bug (issue #486). (https://github.com/sej7278)
+- Fix: Quote the prefix tag in the space_pad_to function
+- Tweak: Set ARDMK_VERSION to 1.6 (https://github.com/sej7278)
+- New: Added -fdiagnostics-color to *STD flags (https://github.com/sej7278)
+- New: Add generation of tags file using ctags, which automatically includes project libs and Arduino core. (https://github.com/tuna-f1sh)
+
+### 1.6.0 (2017-07-11)
 - Fix: Allowed for SparkFun's weird usb pid/vid submenu shenanigans (issue #499). (https://github.com/sej7278)
 - Fix: Do not include the Arduino header when calling generate_assembly on .cpp files. (https://github.com/Batchyx)
 - Fix: Auto-detect F_CPU on Teensy from boards.txt (https://github.com/DaWelter)
 - Fix: params typo in PuTTY section (issue #487) (https://github.com/ericdand)
 - Fix: Fixed sed expression to properly format show_submenu (issue #488) (https://github.com/cbosdo)
-- New: Add support for good old cu as monitor command (issue #492) (https://github.com/mwm)
 - Tweak: Removed tilde from documentation (issue #497). (https://github.com/sej7278)
+- New: Add support for good old cu as monitor command (issue #492) (https://github.com/mwm)
 - New: Add a documentation how to setup Makefile for 3rd party boards (issue #499). (https://github.com/MilanV)
-- New: Add generation of tags file using ctags, which automatically includes project libs and Arduino core. (https://github.com/tuna-f1sh)
+- New: Add support for Robotis OpenCM boards
 
 ### 1.5.2 (2017-01-11)
 
