@@ -1581,17 +1581,17 @@ generated_assembly: generate_assembly
 .PHONY: tags
 tags:
 	rm -f $(shell pwd)/$(TAGS_FILE)
-	@$(ECHO) "Generating tags for source files: "
-	$(CTAGS_CMD) $(TAGS_FILE) $(shell find "`pwd`" -name "*.cpp" -o -name "*.h" -o -name "*.c") 
-	@$(ECHO) "Generating tags for IDO an PDE files as C++: "
-	$(CTAGS_CMD) $(TAGS_FILE) --langmap=c++:.ino --langmap=c++:.pde $(shell find "`pwd`" -name "*.ino" -o -name "*.pde")
-	@$(ECHO) "Generating tags for project libraries: "
-	$(CTAGS_CMD) $(TAGS_FILE) $(foreach lib, $(ARDUINO_LIBS),$(USER_LIB_PATH)/$(lib)/*)
+	@$(ECHO) "Generating tags for local sources (IDO an PDE files as C++): "
+	$(CTAGS_CMD) $(TAGS_FILE) --langmap=c++:.ino --langmap=c++:.pde $(LOCAL_SRCS)
+ifneq ($(words $(ARDUINO_LIBS)), 0)
+		@$(ECHO) "Generating tags for project libraries: "
+		$(CTAGS_CMD) $(TAGS_FILE) $(foreach lib, $(ARDUINO_LIBS),$(USER_LIB_PATH)/$(lib)/*)
+endif
 	@$(ECHO) "Generating tags for Arduino core: "
 	$(CTAGS_CMD) $(TAGS_FILE) $(ARDUINO_CORE_PATH)/*
 	@$(ECHO) "Sorting..\n"
 	@sort $(TAGS_FILE) -o $(TAGS_FILE)
-	@$(ECHO) "Tag file generation complete, output: $(TAGS_FILE)"
+	@$(ECHO) "Tag file generation complete, output: $(TAGS_FILE)\n"
 
 help_vars:
 		@$(CAT) $(ARDMK_DIR)/arduino-mk-vars.md
