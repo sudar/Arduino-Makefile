@@ -1045,7 +1045,7 @@ endif
 
 ifndef CFLAGS_STD
     ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
-        CFLAGS_STD      = -std=gnu11 -flto -fno-fat-lto-objects -fdiagnostics-color
+        CFLAGS_STD      = -std=gnu11
     else
         CFLAGS_STD        =
     endif
@@ -1056,7 +1056,7 @@ endif
 
 ifndef CXXFLAGS_STD
     ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
-        CXXFLAGS_STD      = -std=gnu++11 -fno-threadsafe-statics -flto -fno-devirtualize -fdiagnostics-color
+        CXXFLAGS_STD      = -std=gnu++11
     else
         CXXFLAGS_STD      =
     endif
@@ -1069,7 +1069,9 @@ CFLAGS        += $(CFLAGS_STD)
 CXXFLAGS      += -fpermissive -fno-exceptions $(CXXFLAGS_STD)
 ASFLAGS       += -x assembler-with-cpp
 ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
-    ASFLAGS += -flto
+    ASFLAGS  += -flto
+    CXXFLAGS += -fno-threadsafe-statics -flto -fno-devirtualize -fdiagnostics-color
+    CFLAGS   += -flto -fno-fat-lto-objects -fdiagnostics-color
 endif
 LDFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL)
 ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
