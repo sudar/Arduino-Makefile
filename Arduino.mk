@@ -1581,7 +1581,7 @@ generated_assembly: generate_assembly
 .PHONY: tags
 tags:
 	rm -f $(shell pwd)/$(TAGS_FILE)
-	@$(ECHO) "Generating tags for local sources (IDO an PDE files as C++): "
+	@$(ECHO) "Generating tags for local sources (INO an PDE files as C++): "
 	$(CTAGS_CMD) $(TAGS_FILE) --langmap=c++:.ino --langmap=c++:.pde $(LOCAL_SRCS)
 ifneq ($(words $(ARDUINO_LIBS)), 0)
 		@$(ECHO) "Generating tags for project libraries: "
