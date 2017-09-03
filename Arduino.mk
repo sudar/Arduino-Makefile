@@ -1320,7 +1320,7 @@ ifndef TAGS_FILE
     TAGS_FILE = tags
 endif
 
-# ctags command: append file with user options before
+# ctags command: append, flags unsort (as will be sorted after) and specify filename
 CTAGS_CMD = $(CTAGS_EXEC) $(CTAGS_OPTS) -auf
 
 ########################################################################
@@ -1580,7 +1580,9 @@ generated_assembly: generate_assembly
 
 .PHONY: tags
 tags:
-	rm -f $(shell pwd)/$(TAGS_FILE)
+ifneq ($(words $(wildcard $(TAGS_FILE))), 0)
+	rm -f $(TAGS_FILE)
+endif
 	@$(ECHO) "Generating tags for local sources (INO an PDE files as C++): "
 	$(CTAGS_CMD) $(TAGS_FILE) --langmap=c++:.ino --langmap=c++:.pde $(LOCAL_SRCS)
 ifneq ($(words $(ARDUINO_LIBS)), 0)
