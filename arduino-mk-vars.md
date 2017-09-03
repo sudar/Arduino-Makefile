@@ -913,7 +913,7 @@ OTHER_LIBS = -lsomeplatformlib
 
 Controls, *exclusively*, which C standard is to be used for compilation.
 
-Defaults to `undefined` on 1.0.x or `-std=gnu11 -flto -fno-fat-lto-objects` on 1.5+ or if you install AVR toolchain > 4.9.0
+Defaults to `undefined` on 1.0.x or `-std=gnu11` on 1.5+ or if you install AVR toolchain > 4.9.0
 
 Possible values:
 
@@ -928,14 +928,14 @@ Possible values:
 	*	`-std=c11`
 	*	`-std=gnu89`
 	*	`-std=gnu99`
-	*	`-std=gnu11 -flto -fno-fat-lto-objects` - This is the default for C code
+	*	`-std=gnu11` - This is the default for C code
 
 For more information, please refer to the [Options Controlling C Dialect](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html)
 
 **Example:**
 
 ```Makefile
-CFLAGS_STD = = -std=gnu89
+CFLAGS_STD = -std=gnu89
 ```
 
 **Requirement:** *Optional*
@@ -948,7 +948,7 @@ CFLAGS_STD = = -std=gnu89
 
 Controls, *exclusively*, which C++ standard is to be used for compilation.
 
-Defaults to `undefined` on 1.0 or `-std=gnu++11 -fno-threadsafe-statics -flto` on AVR toolchain > 4.9.0 (e.g. IDE 1.6.10+)
+Defaults to `undefined` on 1.0 or `-std=gnu++11` on AVR toolchain > 4.9.0 (e.g. IDE 1.6.10+)
 
 Possible values:
 
@@ -965,7 +965,7 @@ Possible values:
 	*	`-std=c++1y`
 	*	`-std=c++14`
 	*	`-std=gnu++98`
-	*	`-std=gnu++11 -fno-threadsafe-statics -flto` - This is the default for C++ code
+	*	`-std=gnu++11` - This is the default for C++ code
 	*	`-std=gnu++1y`
 	*	`-std=gnu++14`
 
@@ -974,7 +974,7 @@ For more information, please refer to the [Options Controlling C Dialect](https:
 **Example:**
 
 ```Makefile
-CXXFLAGS_STD = = -std=gnu++98
+CXXFLAGS_STD = -std=gnu++98
 ```
 
 **Requirement:** *Optional*
@@ -988,7 +988,7 @@ CXXFLAGS_STD = = -std=gnu++98
 Flags passed to compiler for files compiled as C. Add more flags to this
 variable using `+=`.
 
-Defaults to all flags required for a typical build.
+Defaults to `undefined` on 1.0 or `-flto -fno-fat-lto-objects -fdiagnostics-color` on AVR toolchain > 4.9.0 (e.g. IDE 1.6.10+)
 
 **Example:**
 
@@ -1007,7 +1007,9 @@ CFLAGS += -my-c-only-flag
 Flags passed to the compiler for files compiled as C++. Add more flags to this
 variable using `+=`.
 
-Defaults to `-fpermissive -fno-exceptions`
+Defaults to `-fpermissive -fno-exceptions` on 1.0
+or `-fpermissive -fno-exceptions -fno-threadsafe-statics -flto -fno-devirtualize -fdiagnostics-color`
+on AVR toolchain > 4.9.0 (e.g. IDE 1.6.10+)
 
 **Example:**
 
