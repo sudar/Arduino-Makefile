@@ -65,12 +65,12 @@
 # configuration options. Control Panel > System > Advanced system settings
 # Also take into account that when you set them you have to add '\' on
 # all spaces and special characters.
-# ARDUINO_DIR and AVR_TOOLS_DIR have to be relative and not absolute.
 # This are just examples, you have to adapt this variables accordingly to
-# your system.
+# your system. Note the difference between ARDMK_DIR, which can use /cygdrive/
+# and USER_LIB_PATH, which cannnot due to invoking with the build tools
 #
-#   ARDUINO_DIR   =../../../../../Arduino
-#   AVR_TOOLS_DIR =../../../../../Arduino/hardware/tools/avr
+#   ARDUINO_DIR   = C:/Arduino
+#   AVR_TOOLS_DIR = C:/Arduino/hardware/tools/avr
 #   ARDMK_DIR     = /cygdrive/c/Users/"YourUser"/Arduino-Makefile
 #
 # On Windows it is highly recommended that you create a symbolic link directory

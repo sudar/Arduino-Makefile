@@ -79,9 +79,3 @@ ifndef ARDUINO_DIR
 else
     $(call show_config_variable,ARDUINO_DIR,[USER])
 endif
-
-ifeq ($(CURRENT_OS),WINDOWS)
-    ifneq ($(shell echo $(ARDUINO_DIR) | egrep '^(/|[a-zA-Z]:\\)'),)
-        echo $(error On Windows, ARDUINO_DIR must be a relative path)
-    endif
-endif
