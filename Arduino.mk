@@ -1310,6 +1310,22 @@ $(OBJDIR)/%.sym: $(OBJDIR)/%.elf $(COMMON_DEPS)
 	$(NM) --size-sort --demangle --reverse-sort --line-numbers $< > $@
 
 ########################################################################
+# Ctags
+
+# Assume ctags is on path unless has been specified
+ifndef CTAGS_EXEC
+    CTAGS_EXEC = ctags
+endif
+
+# Default to 'tags' unless user has specified a tags file
+ifndef TAGS_FILE
+    TAGS_FILE = tags
+endif
+
+# ctags command: append, flags unsort (as will be sorted after) and specify filename
+CTAGS_CMD = $(CTAGS_EXEC) $(CTAGS_OPTS) -auf
+
+########################################################################
 # Avrdude
 
 # If avrdude is installed separately, it can find its own config file
@@ -1564,6 +1580,23 @@ generate_assembly: $(OBJDIR)/$(TARGET).s
 generated_assembly: generate_assembly
 		@$(ECHO) "\"generated_assembly\" target is deprecated. Use \"generate_assembly\" target instead\n\n"
 
+.PHONY: tags
+tags:
+ifneq ($(words $(wildcard $(TAGS_FILE))), 0)
+	rm -f $(TAGS_FILE)
+endif
+	@$(ECHO) "Generating tags for local sources (INO an PDE files as C++): "
+	$(CTAGS_CMD) $(TAGS_FILE) --langmap=c++:.ino --langmap=c++:.pde $(LOCAL_SRCS)
+ifneq ($(words $(ARDUINO_LIBS)), 0)
+		@$(ECHO) "Generating tags for project libraries: "
+		$(CTAGS_CMD) $(TAGS_FILE) $(foreach lib, $(ARDUINO_LIBS),$(USER_LIB_PATH)/$(lib)/*)
+endif
+	@$(ECHO) "Generating tags for Arduino core: "
+	$(CTAGS_CMD) $(TAGS_FILE) $(ARDUINO_CORE_PATH)/*
+	@$(ECHO) "Sorting..\n"
+	@sort $(TAGS_FILE) -o $(TAGS_FILE)
+	@$(ECHO) "Tag file generation complete, output: $(TAGS_FILE)\n"
+
 help_vars:
 		@$(CAT) $(ARDMK_DIR)/arduino-mk-vars.md
 
@@ -1595,6 +1628,7 @@ help:
                            generated assembly of the main sketch.\n\
   make burn_bootloader   - burn bootloader and fuses\n\
   make set_fuses         - set fuses without burning bootloader\n\
+  make tags              - generate tags file including project libs and Arduino core\n\
   make help_vars         - print all variables that can be overridden\n\
   make help              - show this help\n\
 "

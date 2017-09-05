@@ -11,6 +11,7 @@ The following are the different variables that can be overwritten in the user ma
 *	[Avrdude setting variables](#avrdude-setting-variables)
 *	[Bootloader variables](#bootloader-variables)
 *	[ChipKIT variables](#chipkit-variables)
+*	[Ctags variables](#ctags-variables)
 
 ## Global variables
 
@@ -1398,6 +1399,57 @@ Usually can be auto-detected as `AUTO_MPIDE_DIR` from the defaults `/usr/share/m
 
 ```Makefile
 MPIDE_DIR = $(HOME)/mpide
+```
+
+**Requirement:** *Optional*
+
+----
+
+## Ctags variables
+
+### TAGS_FILE
+
+**Description:**
+
+Output file name for tags. Defaults to 'tags'.
+
+**Example:**
+
+```Makefile
+TAGS_FILE = .tags
+```
+
+**Requirement:** *Optional*
+
+----
+
+### CTAGS_OPTS
+
+**Description:**
+
+Additional options to pass to `ctags` command.
+
+**Example:**
+
+```Makefile
+# Run ctags in verbose mode
+CTAGS_OPTS = -V
+```
+
+**Requirement:** *Optional*
+
+----
+
+### CTAGS_CMD
+
+**Description:**
+
+Location of `ctags` binary. Defaults to user path.
+
+**Example:**
+
+```Makefile
+CTAGS_CMD = /usr/local/bin/
 ```
 
 **Requirement:** *Optional*
