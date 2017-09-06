@@ -205,16 +205,13 @@ On Windows (using Cygwin), you might want to set:
     # Symbolic link to Arduino installation directory - see below
     ARDUINO_DIR   = C:/Arduino
     ARDMK_DIR     = path/to/mkfile
-    ARDUINO_SKETCHBOOK = C:/Users/USERNAME/Documents/Arduino
     MONITOR_PORT  = com3
     BOARD_TAG     = mega2560
 ```
 
 **NOTE: Use forward slash not backslash and there should be no spaces or
 special characters in the Windows paths (due to Win/Unix crossover). The paths
-should not be *cygdrive* paths.** `ARDUINO_SKETCHBOOK` is defined to avoid
-automatic resolution, which resolve to *cygdrive* and is incompatable with the
-build tools.
+should not be *cygdrive* paths.**
 
 On Windows (using MSYS and PuTTY), you might want to set the following extra parameters:
 
@@ -262,7 +259,7 @@ Instead of:
     ARDUINO_DIR=C:/Program\ Files\ \(x86\)/Arduino
 ```
 
-### Usefull Variables
+### Useful Variables
 
 The list of all variables that can be overridden is available at [arduino-mk-vars.md](arduino-mk-vars.md) file.
 
@@ -271,8 +268,8 @@ The list of all variables that can be overridden is available at [arduino-mk-var
 - `ARDUINO_DIR` - Path to Arduino installation. Using Windows with Cygwin,
   this path must use Unix / and not Windows \\ (eg "C:/Arduino" not
   "C:\\Arduino).
-- `ARDMK_DIR`   - Path where the `*.mk` are present. If you installed the package, then it is usually `/usr/share/arduino`. On Windows, this should be a path without spaces and no special characters, it can be a *cygdrive* path if nessessary and must use / not \\.
-- `AVR_TOOLS_DIR` - Path where the avr tools chain binaries are present. If you are going to use the binaries that came with Arduino installation, then you don't have to set it. Otherwise set it realtive and not absolute.
+- `ARDMK_DIR`   - Path where the `*.mk` are present. If you installed the package, then it is usually `/usr/share/arduino`. On Windows, this should be a path without spaces and no special characters, it can be a *cygdrive* path if necessary and must use / not \\.
+- `AVR_TOOLS_DIR` - Path where the avr tools chain binaries are present. If you are going to use the binaries that came with Arduino installation, then you don't have to set it. Otherwise set it relative and not absolute.
 
 
 

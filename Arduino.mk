@@ -62,12 +62,15 @@
 #   AVR_TOOLS_DIR = /usr
 #
 # On Windows declare this environmental variables using the windows
-# configuration options. Control Panel > System > Advanced system settings
-# Also take into account that when you set them you have to add '\' on
-# all spaces and special characters.
+# configuration options or Cygwin .bashrc. Control Panel > System > Advanced system settings
+# The paths must use Unix style forward slash and not have any spaces 
+# or escape charactors. One must use a symbolic link if the path does
+# contain spaces.
+#
 # This are just examples, you have to adapt this variables accordingly to
 # your system. Note the difference between ARDMK_DIR, which can use /cygdrive/
-# and USER_LIB_PATH, which cannnot due to invoking with the build tools
+# and USER_LIB_PATH, which cannnot due to invoking with the build tools.
+# It is best practice to avoid cygdrive all together.
 #
 #   ARDUINO_DIR   = C:/Arduino
 #   AVR_TOOLS_DIR = C:/Arduino/hardware/tools/avr
@@ -75,7 +78,7 @@
 #
 # On Windows it is highly recommended that you create a symbolic link directory
 # for avoiding using the normal directories name of windows such as
-# c:\Program Files (x86)\Arduino
+# C:\Program Files (x86)\Arduino
 # For this use the command mklink on the console.
 #
 #
@@ -364,9 +367,15 @@ ifndef ARDUINO_SKETCHBOOK
     ifneq ($(ARDUINO_SKETCHBOOK),)
         $(call show_config_variable,ARDUINO_SKETCHBOOK,[AUTODETECTED],(from arduino preferences file))
     else
-        ARDUINO_SKETCHBOOK := $(firstword \
-            $(call dir_if_exists,$(HOME)/sketchbook) \
-            $(call dir_if_exists,$(HOME)/Documents/Arduino) )
+				ifeq ($(CURRENT_OS), WINDOWS)
+						ARDUINO_SKETCHBOOK := $(firstword \
+								$(call dir_if_exists,$(USERPROFILE)/sketchbook) \
+								$(call dir_if_exists,$(USERPROFILE)/Documents/Arduino) )
+				else
+						ARDUINO_SKETCHBOOK := $(firstword \
+								$(call dir_if_exists,$(HOME)/sketchbook) \
+								$(call dir_if_exists,$(HOME)/Documents/Arduino) )
+				endif
         $(call show_config_variable,ARDUINO_SKETCHBOOK,[DEFAULT])
     endif
 else
