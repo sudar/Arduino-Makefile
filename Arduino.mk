@@ -367,15 +367,15 @@ ifndef ARDUINO_SKETCHBOOK
     ifneq ($(ARDUINO_SKETCHBOOK),)
         $(call show_config_variable,ARDUINO_SKETCHBOOK,[AUTODETECTED],(from arduino preferences file))
     else
-				ifeq ($(CURRENT_OS), WINDOWS)
-						ARDUINO_SKETCHBOOK := $(firstword \
-								$(call dir_if_exists,$(USERPROFILE)/sketchbook) \
-								$(call dir_if_exists,$(USERPROFILE)/Documents/Arduino) )
-				else
-						ARDUINO_SKETCHBOOK := $(firstword \
-								$(call dir_if_exists,$(HOME)/sketchbook) \
-								$(call dir_if_exists,$(HOME)/Documents/Arduino) )
-				endif
+        ifeq ($(CURRENT_OS), WINDOWS)
+            ARDUINO_SKETCHBOOK := $(firstword \
+            $(call dir_if_exists,$(USERPROFILE)/sketchbook) \
+            $(call dir_if_exists,$(USERPROFILE)/Documents/Arduino) )
+        else
+            ARDUINO_SKETCHBOOK := $(firstword \
+              $(call dir_if_exists,$(HOME)/sketchbook) \
+              $(call dir_if_exists,$(HOME)/Documents/Arduino) )
+        endif
         $(call show_config_variable,ARDUINO_SKETCHBOOK,[DEFAULT])
     endif
 else
