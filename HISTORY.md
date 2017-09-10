@@ -9,6 +9,8 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: Quote the prefix tag in the space_pad_to function
 - Tweak: Set ARDMK_VERSION to 1.6 (https://github.com/sej7278)
 - Tweak: Move non-standard-related items from CxxFLAGS_STD to CxxFLAGS (issue #523) (https://github.com/sej7278)
+- Tweak: Update Windows usage documentation and allow non-relative paths (issue #519) (https://github.com/tuna-f1sh)
+- Tweak: Support Cygwin Unix Python and Windows installation on Windows to pass correct port binding. (https://github.com/tuna-f1sh)
 - New: Added -fdiagnostics-color to *STD flags (https://github.com/sej7278)
 - New: Add generation of tags file using ctags, which automatically includes project libs and Arduino core. (https://github.com/tuna-f1sh)
 

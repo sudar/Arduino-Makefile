@@ -127,8 +127,7 @@ You need to install Cygwin and its packages for Make, Perl and the following Ser
 Assuming you included Python in your Cygwin installation:
 
 1. download PySerial source package from [https://pypi.python.org/pypi/pyserial](https://pypi.python.org/pypi/pyserial)
-2. extract downloaded package running
-```tar xvzf dowloaded_package_name.tar.gz```
+2. extract downloaded package running `tar xvzf dowloaded_package_name.tar.gz`
 3. navigate to extracted package folder
 4. build and install Python module: 
  
@@ -137,6 +136,16 @@ python setup.py build
 python setup.py install
 ```
 
+Alternatively, if you have setup Cygwin to use a Windows Python installation,
+simply install using pip:
+
+```
+pip install pyserial
+```
+
+Arduino-Makefile should automatically detect the Python installation type and
+use the correct device port binding.
+
 ## Usage
 
 Download a copy of this repo somewhere to your system or install it through a package by following the above installation instruction.
@@ -144,7 +153,7 @@ Download a copy of this repo somewhere to your system or install it through a pa
 Sample makefiles are provided in the `examples/` directory.  E.g. [Makefile-example](examples/MakefileExample/Makefile-example.mk) demonstrates some of the more advanced options,
 whilst [Blink](examples/Blink/Makefile) demonstrates the minimal settings required for various boards like the Uno, Nano, Mega, Teensy, ATtiny etc.
 
-MAC:
+### Mac
 
 On the Mac with IDE 1.0 you might want to set:
 
@@ -158,24 +167,28 @@ On the Mac with IDE 1.0 you might want to set:
 
 On the Mac with IDE 1.5+ it's like above but with
 
-```
+```make
     ARDUINO_DIR   = /Applications/Arduino.app/Contents/Java
 ```
-LINUX:
+### Linux
 
 You can either declare following variables in your project's makefile or set them as environmental variables.
 
+```make
     ARDUINO_DIR – Directory where Arduino is installed
     ARDMK_DIR – Directory where you have copied the makefile
     AVR_TOOLS_DIR – Directory where avr tools are installed
+```
 
 Keep in mind, that Arduino 1.5.x+ comes with it's own copy of avr tools which you can leverage in your build process here.
 
 Example of  ~/.bashrc file:
 
-	export ARDUINO_DIR=/home/sudar/apps/arduino-1.0.5
-	export ARDMK_DIR=/home/sudar/Dropbox/code/Arduino-Makefile
-	export AVR_TOOLS_DIR=/usr/include
+```make
+    export ARDUINO_DIR=/home/sudar/apps/arduino-1.0.5
+    export ARDMK_DIR=/home/sudar/Dropbox/code/Arduino-Makefile
+    export AVR_TOOLS_DIR=/usr/include
+```
 
 Example of the project's make file:
 
@@ -184,16 +197,21 @@ Example of the project's make file:
     MONITOR_PORT  = /dev/ttyACM0
 ```
 
-WINDOWS:
+### Windows
 
-On Windows (using cygwin), you might want to set:
+On Windows (using Cygwin), you might want to set:
 
 ```make
-    ARDUINO_DIR   = ../../arduino
+    # Symbolic link to Arduino installation directory - see below
+    ARDUINO_DIR   = C:/Arduino
     ARDMK_DIR     = path/to/mkfile
     MONITOR_PORT  = com3
     BOARD_TAG     = mega2560
 ```
+
+**NOTE: Use forward slash not backslash and there should be no spaces or
+special characters in the Windows paths (due to Win/Unix crossover). The paths
+should not be *cygdrive* paths.**
 
 On Windows (using MSYS and PuTTY), you might want to set the following extra parameters:
 
@@ -205,45 +223,53 @@ On Windows (using MSYS and PuTTY), you might want to set the following extra par
 On Arduino 1.5+ installs, you should set the architecture to either `avr` or `sam` and if using a submenu CPU type, then also set that:
 
 ```make
-	ARCHITECTURE  = avr
+    ARCHITECTURE  = avr
     BOARD_TAG     = atmegang
     BOARD_SUB     = atmega168
 ```
 
-It is recommended in Windows that you create a symbolic link to avoid problems with file naming conventions on Windows. For example, if your your Arduino directory is in:
+#### Symbolic Link
 
-    c:\Program Files (x86)\Arduino
+It is recommended in Windows that you create a symbolic link to avoid problems with file naming conventions on Windows; unless one installs to a non-default location. For example, if your your Arduino directory is in:
+
+    C:\Program Files (x86)\Arduino
 
 You will get problems with the special characters on the directory name. More details about this can be found in [issue #94](https://github.com/sudar/Arduino-Makefile/issues/94)
 
 To create a symbolic link, you can use the command “mklink” on Windows, e.g.
 
 ```sh
-    mklink /d c:\Arduino c:\Program Files (x86)\Arduino
+mklink /d C:\Arduino C:\Program Files (x86)\Arduino
+```
+Alternatively if you've setup Cygwin hard symbolic links ([CYGWIN=winsymlinks:native](https://www.cygwin.com/cygwin-ug-net/using-cygwinenv.html)):
+
+```sh
+ln -s /cygdrive/c/Program Files\ \(x86\)/Arduino/ C:/Arduino
 ```
 
 After which, the variables should be:
 
 ```make
-    ARDUINO_DIR=../../../../../Arduino
+    ARDUINO_DIR=C:/Arduino
 ```
 
 Instead of:
 
 ```make
-    ARDUINO_DIR=../../../../../Program\ Files\ \(x86\)/Arduino
+    ARDUINO_DIR=C:/Program\ Files\ \(x86\)/Arduino
 ```
 
-Usefull Variables:
+### Useful Variables
 
 The list of all variables that can be overridden is available at [arduino-mk-vars.md](arduino-mk-vars.md) file.
 
 - `BOARD_TAG` - Type of board, for a list see boards.txt or `make show_boards`
 - `MONITOR_PORT` - The port where your Arduino is plugged in, usually `/dev/ttyACM0` or `/dev/ttyUSB0` in Linux or Mac OS X and `com3`, `com4`, etc. in Windows.
-- `ARDUINO_DIR` - Path to Arduino installation. In Cygwin in Windows this path must be
-  relative, not absolute (e.g. "../../arduino" and not "/c/cygwin/Arduino").
-- `ARDMK_DIR`   - Path where the `*.mk` are present. If you installed the package, then it is usually `/usr/share/arduino`
-- `AVR_TOOLS_DIR` - Path where the avr tools chain binaries are present. If you are going to use the binaries that came with Arduino installation, then you don't have to set it. Otherwise set it realtive and not absolute.
+- `ARDUINO_DIR` - Path to Arduino installation. Using Windows with Cygwin,
+  this path must use Unix / and not Windows \\ (eg "C:/Arduino" not
+  "C:\\Arduino).
+- `ARDMK_DIR`   - Path where the `*.mk` are present. If you installed the package, then it is usually `/usr/share/arduino`. On Windows, this should be a path without spaces and no special characters, it can be a *cygdrive* path if necessary and must use / not \\.
+- `AVR_TOOLS_DIR` - Path where the avr tools chain binaries are present. If you are going to use the binaries that came with Arduino installation, then you don't have to set it. Otherwise set it relative and not absolute.
 
 
 
