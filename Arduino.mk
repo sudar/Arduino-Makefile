@@ -1605,7 +1605,7 @@ ifneq ($(words $(wildcard $(TAGS_FILE))), 0)
 	rm -f $(TAGS_FILE)
 endif
 	@$(ECHO) "Generating tags for local sources (INO an PDE files as C++): "
-	$(CTAGS_CMD) $(TAGS_FILE) --langmap=c++:.ino --langmap=c++:.pde $(LOCAL_SRCS)
+	$(CTAGS_CMD) $(TAGS_FILE) --langmap=c++:+.ino.pde $(LOCAL_SRCS)
 ifneq ($(words $(ARDUINO_LIBS)), 0)
 		@$(ECHO) "Generating tags for project libraries: "
 		$(CTAGS_CMD) $(TAGS_FILE) $(foreach lib, $(ARDUINO_LIBS),$(USER_LIB_PATH)/$(lib)/*)
