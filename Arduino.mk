@@ -1687,6 +1687,28 @@ reset_stty:
 		(sleep 0.1 2>/dev/null || sleep 1) ; \
 		$$STTYF $(call get_monitor_port) -hupcl
 
+stty_params:
+	stty -F $(call get_monitor_port) \
+		cs8 \
+		$(MONITOR_BAUDRATE) \
+		ignbrk \
+		-brkint \
+		-icrnl \
+		-imaxbel \
+		-opost \
+		-onlcr \
+		-isig \
+		-icanon \
+		-iexten \
+		-echo \
+		-echoe \
+		-echok \
+		-echoctl \
+		-echoke \
+		noflsh \
+		-ixon \
+		-crtscts
+
 ispload:	$(TARGET_EEP) $(TARGET_HEX) verify_size
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e \
 			$(AVRDUDE_ISPLOAD_OPTS)
@@ -1730,8 +1752,8 @@ show_boards:
 show_submenu:
 	@$(CAT) $(BOARDS_TXT) | grep -E '[a-zA-Z0-9_\-]+.menu.(cpu|chip).[a-zA-Z0-9_\-]+=' | sort -uf | sed 's/.menu.\(cpu\|chip\)./:/' | sed 's/=/:/' | column -s: -t
 
-monitor:
-ifeq ($(notdir $(MONITOR_CMD)), putty)
+monitor: stty_params
+ifeq ($(MONITOR_CMD), 'putty')
 	ifneq ($(strip $(MONITOR_PARAMS)),)
 	$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE),$(MONITOR_PARAMS) $(call get_monitor_port)
 	else
