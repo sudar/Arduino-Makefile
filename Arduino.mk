@@ -936,11 +936,11 @@ ifndef ARDUINO_LIBS
 endif
 
 ########################################################################
-# Serial monitor (just a screen wrapper)
+# Serial monitor
 
-# Quite how to construct the monitor command seems intimately tied
-# to the command we're using (here screen). So, read the screen docs
-# for more information (search for 'character special device').
+# In order to construct a monitor command, we need to use either `less`,
+# `screen` or `cat`. With `less`, as the default fallback, we will use
+# `-f` flag. Read it's man page to get a better understanding.
 
 ifeq ($(strip $(NO_CORE)),)
     ifndef MONITOR_BAUDRATE
@@ -958,9 +958,8 @@ ifeq ($(strip $(NO_CORE)),)
     else
         $(call show_config_variable,MONITOR_BAUDRATE, [USER])
     endif
-
     ifndef MONITOR_CMD
-        MONITOR_CMD = screen
+        MONITOR_CMD = less
     endif
 endif
 
@@ -1763,6 +1762,10 @@ else ifeq ($(notdir $(MONITOR_CMD)), picocom)
 		$(MONITOR_CMD) -b $(MONITOR_BAUDRATE) $(MONITOR_PARAMS) $(call get_monitor_port)
 else ifeq ($(notdir $(MONITOR_CMD)), cu)
 		$(MONITOR_CMD) -l $(call get_monitor_port) -s $(MONITOR_BAUDRATE)
+else ifeq ($(MONITOR_CMD), less)
+		$(MONITOR_CMD) -f $(call get_monitor_port)
+else ifeq ($(MONITOR_CMD), cat)
+		$(MONITOR_CMD) $(call get_monitor_port)
 else
 		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
 endif
