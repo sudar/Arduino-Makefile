@@ -1566,15 +1566,15 @@ show_submenu:
 	@$(CAT) $(BOARDS_TXT) | grep -E '[a-zA-Z0-9_\-]+.menu.(cpu|chip).[a-zA-Z0-9_\-]+=' | sort -uf | sed 's/.menu.\(cpu\|chip\)./:/' | sed 's/=/:/' | column -s: -t
 
 monitor:
-ifeq ($(MONITOR_CMD), 'putty')
+ifeq ($(notdir $(MONITOR_CMD)), putty)
 	ifneq ($(strip $(MONITOR_PARAMS)),)
 	$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE),$(MONITOR_PARAMS) $(call get_monitor_port)
 	else
 	$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE) $(call get_monitor_port)
 	endif
-else ifeq ($(MONITOR_CMD), picocom)
+else ifeq ($(notdir $(MONITOR_CMD)), picocom)
 		$(MONITOR_CMD) -b $(MONITOR_BAUDRATE) $(MONITOR_PARAMS) $(call get_monitor_port)
-else ifeq ($(MONITOR_CMD), cu)
+else ifeq ($(notdir $(MONITOR_CMD)), cu)
 		$(MONITOR_CMD) -l $(call get_monitor_port) -s $(MONITOR_BAUDRATE)
 else
 		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
