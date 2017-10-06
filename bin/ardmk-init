@@ -2,7 +2,7 @@
 """
 Arduino-mk Makefile and project initialiser
 
-This script can be used in it's basic form create a project specific Makefile
+This script can be used in its basic form create a project specific Makefile
 for use with Arduino-mk. Addionally, it can be used to create a template
 Arduino source file and a traditional boilerplate project file structure.
 
@@ -46,7 +46,7 @@ PARSER.add_argument('-v', '--verbose', action='store_true',
 PARSER.add_argument('-d', '--directory', default=os.getcwd(), help='directory to run generator')
 PARSER.add_argument('-b', '--board', default='uno', help='board tag')
 PARSER.add_argument('-u', '--micro', default='AUTO', help='microcontroller on board')
-PARSER.add_argument('-f', '--freq', default='AUTO', help='mlock frequency')
+PARSER.add_argument('-f', '--freq', default='AUTO', help='clock frequency')
 PARSER.add_argument('-p', '--port', default='AUTO', help='monitor port')
 PARSER.add_argument('-n', '--name', default=os.path.basename(os.getcwd()), help='project name')
 PARSER.add_argument('-q', '--quiet', action='store_true', help='run quiet without user prompts')
