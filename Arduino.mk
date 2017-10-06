@@ -328,7 +328,12 @@ endif
 ########################################################################
 # 1.5.x vendor - defaults to arduino
 ifndef ARDMK_VENDOR
-	ARDMK_VENDOR = arduino
+    ARCH_LINUX := $(shell grep "Arch Linux" /etc/os-release 2>/dev/null)
+    ifdef ARCH_LINUX
+        ARDMK_VENDOR = archlinux-arduino
+    else
+        ARDMK_VENDOR = arduino
+    endif
     $(call show_config_variable,ARDMK_VENDOR,[DEFAULT])
 else
     $(call show_config_variable,ARDMK_VENDOR,[USER])
