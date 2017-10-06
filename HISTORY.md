@@ -5,6 +5,7 @@ The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### In Development
+- Tweak: recursively look for .h and .c/.cpp files in library subfolders (issue #521). (https://github.com/ladislas)
 - Fix: Add -fno-devirtualize flag to workaround g++ segfault bug (issue #486). (https://github.com/sej7278)
 - Fix: Quote the prefix tag in the space_pad_to function
 - Fix: recognize serial monitors with full path in MONITOR_CMD
