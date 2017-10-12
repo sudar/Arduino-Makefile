@@ -20,7 +20,6 @@ See `armk-init --help` for CLI arguments
 from __future__ import print_function
 import os
 import argparse
-from clint.textui import prompt, validators, colored, puts
 
 ## Global Vars
 VERSION = "1.0"
@@ -56,6 +55,14 @@ PARSER.add_argument('-t', '--template', action='store_true',
                     help='create bare minimum Arduino source file')
 ARGS = PARSER.parse_args()
 
+try:
+    from clint.textui import prompt, validators
+except ImportError:
+    if not ARGS.quiet:
+        print("Python module 'clint' is required for running prompted. Install the module or run with arguments only using --quiet")
+        quit()
+
+
 def generate_makefile():
     """
     Generate the Makefile content using prompts or parsed arguments
@@ -65,8 +72,8 @@ def generate_makefile():
 
     # Basic
     if not ARGS.quiet:
-        puts(colored.cyan("Generating Arduino Ard-Makefile project in "
-                          + os.path.abspath(ARGS.directory)))
+        print("Generating Arduino Ard-Makefile project in "
+                          + os.path.abspath(ARGS.directory))
         btag = prompt.query('Board tag?', default='uno')
         if btag != 'uno':
             bsub = prompt.query('Board sub micro?', default='atmega328')
@@ -188,9 +195,9 @@ def write_to_makefile(file_content, path):
     Write the Makefile file
     """
     makefile = open(path + "Makefile", 'w')
-    puts(colored.cyan("Writing Makefile..."))
+    print("Writing Makefile...")
     if ARGS.verbose:
-        puts(colored.yellow(file_content))
+        print(file_content)
     makefile.write(file_content)
     makefile.close()
 
@@ -198,17 +205,17 @@ def write_template(filename):
     """
     Write template Arduino .ino source
     """
-    puts(colored.cyan("Writing " + os.path.abspath(filename) + ".ino..."))
+    print("Writing " + os.path.abspath(filename) + ".ino...")
     if os.path.isfile(filename + '.ino'):
         if ARGS.quiet:
-            puts(colored.red(filename + '.ino' + ' already exists! Stopping.'))
+            print(filename + '.ino' + ' already exists! Stopping.')
             return
-        puts(colored.red(filename + '.ino' + ' already exists! Overwrite?'))
+        print(filename + '.ino' + ' already exists! Overwrite?')
         if prompt.yn('Continue?', default='n'):
             return
     src = open((filename + ".ino"), 'w')
     if ARGS.verbose:
-        puts(colored.yellow(ARD_TEMPLATE))
+        print(ARD_TEMPLATE)
     src.write("/* Project: " + filename + " */\n" + ARD_TEMPLATE)
     src.close()
 
@@ -218,7 +225,7 @@ def check_create_folder(folder):
     """
     if folder and not folder == 'AUTO':
         if not os.path.exists(folder):
-            puts(colored.cyan(("Creating " + os.path.abspath(folder) + " folder")))
+            print("Creating " + os.path.abspath(folder) + " folder")
             os.makedirs(folder)
 
 def check_define(define, user):
@@ -241,13 +248,13 @@ if __name__ == '__main__':
     os.chdir(ARGS.directory)
     if os.path.isfile('Makefile'):
         if ARGS.quiet:
-            puts(colored.red('Makefile in ' + os.path.abspath(ARGS.directory)
-                             + ' already exists! Stopping.'))
+            print('Makefile in ' + os.path.abspath(ARGS.directory)
+                             + ' already exists! Stopping.')
             quit()
 
         # Confirm with user if not quiet mode
-        puts(colored.red('Makefile in ' + os.path.abspath(ARGS.directory)
-                         + ' already exists! Overwrite?'))
+        print('Makefile in ' + os.path.abspath(ARGS.directory)
+                         + ' already exists! Overwrite?')
         if prompt.yn('Continue?', default='n'):
             quit()
     # Run it
