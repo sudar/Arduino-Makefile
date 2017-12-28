@@ -45,8 +45,8 @@ include ../../Arduino.mk
 #BOOTLOADER_PARENT = $(HOME)/arduino/hardware/promicro/bootloaders
 #BOOTLOADER_PATH   = caterina
 #BOOTLOADER_FILE   = Caterina-promicro16.hex
-#ISP_PROG     	   = usbasp
-#AVRDUDE_OPTS 	   = -v
+#ISP_PROG          = usbasp
+#AVRDUDE_OPTS      = -v
 #include /usr/share/arduino/Arduino.mk
 
 # --- chipkit
@@ -75,40 +75,8 @@ include ../../Arduino.mk
 #ARDUINO_DIR  = /where/you/installed/arduino-1.6.5
 #include /usr/share/arduino/Arduino.mk
 
-# --- arduino-tiny ide 1.0
-#ISP_PROG     	    = usbasp
-#BOARD_TAG          = attiny85at8
-#ALTERNATE_CORE     = tiny
-#ARDUINO_VAR_PATH   = $(HOME)/arduino/hardware/tiny/cores/tiny
-#ARDUINO_CORE_PATH  = $(HOME)/arduino/hardware/tiny/cores/tiny
-#AVRDUDE_OPTS 	    = -v
-#include /usr/share/arduino/Arduino.mk
-
-# --- arduino-tiny ide 1.6
-#ISP_PROG       = usbasp
-#BOARD_TAG      = attiny85at8
-#ALTERNATE_CORE = tiny
-#ARDUINO_DIR    = /where/you/installed/arduino-1.6.5
-#include /usr/share/arduino/Arduino.mk
-
-# --- damellis attiny ide 1.0
-#ISP_PROG       = usbasp
-#BOARD_TAG      = attiny85
-#ALTERNATE_CORE = attiny-master
-#AVRDUDE_OPTS   = -v
-#include /usr/share/arduino/Arduino.mk
-
-# --- damellis attiny ide 1.6
-#ISP_PROG       = usbasp
-#BOARD_TAG      = attiny
-#BOARD_SUB      = attiny85
-#ALTERNATE_CORE = attiny
-#F_CPU          = 16000000L
-#ARDUINO_DIR    = /where/you/installed/arduino-1.6.5
-#include /usr/share/arduino/Arduino.mk
-
 # --- teensy3
-#BOARD_TAG 	 = teensy31
+#BOARD_TAG   = teensy31
 #ARDUINO_DIR = /where/you/installed/the/patched/teensy/arduino-1.0.6
 #include /usr/share/arduino/Teensy.mk
 
@@ -118,8 +86,31 @@ include ../../Arduino.mk
 #BOOTLOADER_PARENT = $(HOME)/arduino/hardware/mighty-1284p/bootloaders
 #BOOTLOADER_PATH   = optiboot
 #BOOTLOADER_FILE   = optiboot_atmega1284p.hex
-#ISP_PROG     	   = usbasp
-#AVRDUDE_OPTS 	   = -v
+#ISP_PROG          = usbasp
+#AVRDUDE_OPTS      = -v
+#include /usr/share/arduino/Arduino.mk
+
+# --- mightycore
+#ALTERNATE_CORE = MightyCore
+#BOARD_TAG = 1284
+#MCU = atmega1284p
+#BOARD_TAG = 644
+#MCU = atmega644p
+#VARIANT = standard
+#F_CPU = 16000000L
+#include /usr/share/arduino/Arduino.mk
+
+# ---  megacore
+#BOARD_TAG      = 128
+#ALTERNATE_CORE = megacore
+#F_CPU          = 16000000L
+#include /usr/share/arduino/Arduino.mk
+
+# --- sanguino 644p
+#BOARD_TAG      = atmega644p
+#ALTERNATE_CORE = sanguino
+#ISP_PROG       = usbasp
+#AVRDUDE_OPTS   = -v
 #include /usr/share/arduino/Arduino.mk
 
 # --- atmega328p on breadboard
