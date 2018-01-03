@@ -1531,7 +1531,7 @@ reset_stty:
 		$$STTYF $(call get_monitor_port) -hupcl
 
 ispload:	$(TARGET_EEP) $(TARGET_HEX) verify_size
-		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) \
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e \
 			$(AVRDUDE_ISPLOAD_OPTS)
 
 burn_bootloader:
@@ -1547,7 +1547,7 @@ endif
 
 set_fuses:
 ifneq ($(strip $(AVRDUDE_ISP_FUSES_PRE)),)
-		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e $(AVRDUDE_ISP_FUSES_PRE)
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) $(AVRDUDE_ISP_FUSES_PRE)
 endif
 ifneq ($(strip $(AVRDUDE_ISP_FUSES_POST)),)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) $(AVRDUDE_ISP_FUSES_POST)

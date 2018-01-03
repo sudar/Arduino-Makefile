@@ -5,9 +5,11 @@ The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### In Development
+- Fix: Moved ATtiny examples to ATtinyBlink, updated alternate core instructions (issue #537) (https://github.com/sej7278)
 - Fix: Add -fno-devirtualize flag to workaround g++ segfault bug (issue #486). (https://github.com/sej7278)
 - Fix: Quote the prefix tag in the space_pad_to function
 - Fix: recognize serial monitors with full path in MONITOR_CMD
+- Tweak: Move chip erase flag from set_fuses to ispload to prevent sketch being nuked when setting fuses
 - Tweak: Set ARDMK_VERSION to 1.6 (https://github.com/sej7278)
 - Tweak: Move non-standard-related items from CxxFLAGS_STD to CxxFLAGS (issue #523) (https://github.com/sej7278)
 - Tweak: Update Windows usage documentation and allow non-relative paths (issue #519) (https://github.com/tuna-f1sh)
