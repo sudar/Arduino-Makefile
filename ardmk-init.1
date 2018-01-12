@@ -1,0 +1,60 @@
+.TH ARDMK-INIT "1" "Nov 2017" "ardmk-init" "Arduino Makefile Generator"
+
+.SH NAME
+ardmk-init - Generate Arduino Makefile environments
+
+.SH SYNOPSIS
+.B ardmk-init
+[OPTION]...
+
+.SH OPTIONS
+.B \-v, \-\-verbose
+Print file contents during creation.
+
+.B \-d, \-\-directory
+Directory to run generator.
+
+.B \-b, \-\-board
+Board tag.
+
+.B \-u, \-\-micro
+Microcontroller on board.
+
+.B \-f, \-\-freq
+Clock frequency.
+
+.B \-p, \-\-port
+Monitor port.
+
+.B \-n, \-\-name
+Project name.
+
+.B \-\-cli
+Run with user prompts rather than arguments.
+
+.B \-p, \-\-project
+Create boilerplate project with src, lib and bin folder structure.
+
+.B \-t, \-\-template
+Create bare minimum Arduino source file.
+
+.SH DESCRIPTION
+Creates a Makefile and project tree structure from templates.
+
+.SH EXAMPLE
+ardmk-init -b uno # create Arduino uno Makefile
+.PP
+ardmk-init --cli # run with user prompts
+.PP
+ardmk-init --board uno --project --template --name my-project # create Arduino uno project and template with name "my-project"
+
+.SH BUGS
+Problems may reported on the github project page at:
+.PP
+https://github.com/sudar/Arduino-Makefile
+
+.SH AUTHOR
+John Whittington, git@jbrengineering.co.uk
+
+.SH LICENSE
+This is under MIT license.

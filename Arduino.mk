@@ -1443,7 +1443,7 @@ endif
 AVRDUDE_ISP_OPTS = -c $(ISP_PROG) -b $(AVRDUDE_ISP_BAUDRATE)
 
 ifndef $(ISP_PORT)
-    ifneq ($(strip $(ISP_PROG)),$(filter $(ISP_PROG), usbasp usbtiny gpio linuxgpio avrispmkii dragon_isp dragon_dw))
+    ifneq ($(strip $(ISP_PROG)),$(filter $(ISP_PROG), atmelice_isp usbasp usbtiny gpio linuxgpio avrispmkii dragon_isp dragon_dw))
         AVRDUDE_ISP_OPTS += -P $(call get_isp_port)
     endif
 else
@@ -1605,7 +1605,7 @@ ifneq ($(words $(wildcard $(TAGS_FILE))), 0)
 	rm -f $(TAGS_FILE)
 endif
 	@$(ECHO) "Generating tags for local sources (INO an PDE files as C++): "
-	$(CTAGS_CMD) $(TAGS_FILE) --langmap=c++:.ino --langmap=c++:.pde $(LOCAL_SRCS)
+	$(CTAGS_CMD) $(TAGS_FILE) --langmap=c++:+.ino.pde $(LOCAL_SRCS)
 ifneq ($(words $(ARDUINO_LIBS)), 0)
 		@$(ECHO) "Generating tags for project libraries: "
 		$(CTAGS_CMD) $(TAGS_FILE) $(foreach lib, $(ARDUINO_LIBS),$(USER_LIB_PATH)/$(lib)/*)

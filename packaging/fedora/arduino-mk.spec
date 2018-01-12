@@ -39,6 +39,8 @@ install -m 755 bin/ard-reset-arduino %{buildroot}/%{_bindir}/ard-reset-arduino
 install -m 644 ard-reset-arduino.1 %{buildroot}/%{_mandir}/man1
 install -m 755 bin/robotis-loader %{buildroot}/%{_bindir}/robotis-loader
 install -m 644 robotis-loader.1 %{buildroot}/%{_mandir}/man1
+install -m 755 bin/ardmk-init %{buildroot}/%{_bindir}/ardmk-init
+install -m 644 ardmk-init.1 %{buildroot}/%{_mandir}/man1
 
 %clean
 rm -rf %{buildroot}
@@ -49,6 +51,8 @@ rm -rf %{buildroot}
 %{_mandir}/man1/ard-reset-arduino.1*
 %{_bindir}/robotis-loader
 %{_mandir}/man1/robotis-loader.1*
+%{_bindir}/ardmk-init
+%{_mandir}/man1/ardmk-init.1*
 %{_datadir}/arduino/*.mk
 %{_datadir}/arduino/arduino-mk-vars.md
 %doc %{_docdir}/%{name}/licence.txt
@@ -56,6 +60,8 @@ rm -rf %{buildroot}
 %{_docdir}/%{name}/examples
 
 %changelog
+* Thu Oct 05 2017 Simon John <git@the-jedi.co.uk>
+- Added ardmk-init binary and manpage
 * Tue Jul 11 2017 Karl Semich <fuzzyTew@gmail.com>
 - Added robotis-loader binary and manpage
 * Sat Apr 12 2014 Simon John <git@the-jedi.co.uk>

@@ -428,6 +428,20 @@ all of the examples. The bootstrap script is primarily intended for use by a
 continuous integration server, specifically Travis CI. It is not intended for
 normal users.
 
+## Makefile Generator and Project Initialisation
+
+`ardmk-init` within the bin/ folder is a utility Python script to create a
+Arduino-mk Makefile for a project and also has option to create a traditional *tree*
+organization (src, lib, bin). It can be used as with commanline arguments or
+prompted - see examples below (append `$ARDMK_DIR/bin/` to command if not on path):
+
+* Run prompted within current working directory: `ardmk-init`
+* Create Arduino Uno Makefile (useful within a library example): `ardmk-init -qb uno`
+* Create boilerplate Arduino Uno project in current working directory of same
+  name: `ardmk-init -b uno --quiet --project`
+* Create Arduino-mk nano Makefile in current working directory with template .ino: `ardmk-init -b nano -u atmega328 -qtn my-project`
+* See `ardmk-init --help` for more.
+
 ### Bare-Arduino–Project
 
 If you are planning on using this makefile in a larger/professional project, you might want to take a look at the [Bare-Arduino–Project](https://github.com/WeAreLeka/Bare-Arduino-Project) framework.
