@@ -1032,10 +1032,16 @@ else
 endif
 
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
-CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) $(ARDUINO_ARCH_FLAG) -D__PROG_TYPES_COMPAT__ \
+CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) $(ARDUINO_ARCH_FLAG) \
         -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
         $(SYS_INCLUDES) $(PLATFORM_INCLUDES) $(USER_INCLUDES) -Wall -ffunction-sections \
         -fdata-sections
+
+# PROG_TYPES_COMPAT is enabled by default for compatibility with the Arduino IDE.
+# By placing it before the user-provided CPPFLAGS rather than after, we allow the
+# the user to disable it if they like, by adding the negation of the flag
+# (-U__PROG_TYPES_COMPAT__) to the user-provided CPPFLAGS.
+CPPFLAGS := -D__PROG_TYPES_COMPAT__ $(CPPFLAGS)
 
 ifdef DEBUG
 OPTIMIZATION_FLAGS= $(DEBUG_FLAGS)
