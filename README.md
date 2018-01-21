@@ -332,7 +332,7 @@ Also checkout the [contribution guide](CONTRIBUTING.md) for more details.
 
 If you are looking for ideas to work on, then check out the following TODO items or the [issue tracker](https://github.com/sudar/Arduino-Makefile/issues/).
 
-## Limitations / Know Issues / TODO's
+## Limitations / Known Issues / TODO's
 
 - Doesn't support SAM boards yet.
 - Since it doesn't do any pre processing like Arduino IDE, you have to declare all methods before you use them ([issue #59](https://github.com/sudar/Arduino-Makefile/issues/59))
