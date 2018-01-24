@@ -1044,7 +1044,7 @@ ASFLAGS += -my-as-only-flag
 
 **Description:**
 
-Flags passed to the C pre-processor (for C, C++ and assembly source flies). Add
+Flags passed to the C pre-processor (for C, C++ and assembly source files). Add
 more flags to this variable using `+=`.
 
 Defaults to all flags required for a typical build.
