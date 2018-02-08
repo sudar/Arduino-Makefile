@@ -1485,39 +1485,47 @@ $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(PLATFORM_LIB_OBJS) $(USER_LIB_OBJS)
 		$(AR) rcs $@ $(CORE_OBJS) $(LIB_OBJS) $(PLATFORM_LIB_OBJS) $(USER_LIB_OBJS)
 
-error_on_caterina:
-		$(ERROR_ON_CATERINA)
+error_on_caterina: $(call error_on_caterina)
 
+error_on_caterina =	$(ERROR_ON_CATERINA)
 
 # Use submake so we can guarantee the reset happens
 # before the upload, even with make -j
 upload:		$(TARGET_HEX) verify_size
-		$(MAKE) reset
-		$(MAKE) do_upload
+		$(call reset)
+		$(call do_upload)
 
 raw_upload:	$(TARGET_HEX) verify_size
-		$(MAKE) error_on_caterina
-		$(MAKE) do_upload
+		$(call error_on_caterina)
+		$(call do_upload)
 
 do_upload:
-		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
+		$(call do_upload)
+
+do_upload =	$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_HEX)
 
-do_eeprom:	$(TARGET_EEP) $(TARGET_HEX)
-		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
+do_eeprom:
+		$(call do_eeprom)
+
+do_eeprom =	$(TARGET_EEP) $(TARGET_HEX) \
+			$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
 			$(AVRDUDE_UPLOAD_EEP)
 
 eeprom:		$(TARGET_HEX) verify_size
-		$(MAKE) reset
-		$(MAKE) do_eeprom
+		$(call reset)
+		$(call do_eeprom)
 
 raw_eeprom:	$(TARGET_HEX) verify_size
-		$(MAKE) error_on_caterina
-		$(MAKE) do_eeprom
+		$(call error_on_caterina)
+		$(call do_eeprom)
 
 reset:
-		$(call arduino_output,Resetting Arduino...)
+		$(call reset)
+
+reset =	$(call arduino_output,Resetting Arduino...) \
 		$(RESET_CMD)
+
 
 # stty on MacOS likes -F, but on Debian it likes -f redirecting
 # stdin/out appears to work but generates a spurious error on MacOS at
