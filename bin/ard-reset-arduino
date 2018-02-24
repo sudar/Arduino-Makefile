@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 import serial
+import serial.tools.list_ports
 import os.path
 import argparse
 from time import sleep
@@ -13,13 +14,100 @@ except:
   pyserial_version = 2  # less than 2.3
 
 parser = argparse.ArgumentParser(description='Reset an Arduino')
+parser.add_argument('--zero', action='store_true', help='Reset Arduino Zero or similar Native USB to enter bootloader')
 parser.add_argument('--caterina', action='store_true', help='Reset a Leonardo, Micro, Robot or LilyPadUSB.')
 parser.add_argument('--verbose', action='store_true', help="Watch what's going on on STDERR.")
 parser.add_argument('--period', default=0.1, help='Specify the DTR pulse width in seconds.')
 parser.add_argument('port', nargs=1, help='Serial device e.g. /dev/ttyACM0')
 args = parser.parse_args()
 
-if args.caterina:
+
+def list_ports(output=False):
+    """ Lists serial ports attached
+
+        :returns
+            A list of paths to serial ports on system
+    """
+    ports = serial.tools.list_ports.comports()
+    connected = [port[0] for port in ports]
+    if output:
+        print(connected)
+
+    return connected
+
+
+def new_port(old, new):
+    """ Checks if a new port has attached
+
+        Args:
+            old: previous list of ports to check
+            new: current list of ports to check
+        Returns:
+            index of port in 'new' if new port found, otherwise -1
+    """
+    new_port = -1
+
+    for port in new:
+        if port not in old:
+            new_port = new.index(port)
+            break
+
+    return new_port
+
+
+if args.zero:
+    # number of trys to attempt
+    zero_attempts = 20 # ~2 seconds
+    initial_ports = list_ports(args.verbose)
+
+    if args.verbose:
+        print('Attempting to enter bootloader using 1200 bps open/close on port %s' % args.port[0])
+
+    ser = serial.Serial(args.port[0], 57600)
+    ser.close()
+
+    if pyserial_version < 3:
+        ser.setBaudrate(1200)
+    else:
+        ser.baudrate = 1200
+
+    # do the open/close at 1200 BAUD
+    ser.open()
+    ser.close()
+
+    if args.verbose:
+        print('Done. Waiting for bootloader port to attach...')
+
+    # get new list of ports
+    reset_ports = list_ports(args.verbose)
+
+    # wait for new port or port to return
+    port_index = new_port(initial_ports, reset_ports)
+
+    # keep checking until new port appears or timeout
+    while port_index < 0:
+        # count down attempts and leave if expired
+        zero_attempts -= 1
+        if zero_attempts < 0:
+            break
+        sleep(0.1)
+        # get list of ports after bootloader toggle performed
+        reset_ports = list_ports(args.verbose)
+        # if a port drops, set initial ports to reset ports so that
+        # next attached device will be new port
+        if (len(reset_ports) < len(initial_ports)):
+            initial_ports = reset_ports
+        # check if a new port has attached and return the index if it has
+        port_index = new_port(initial_ports, reset_ports)
+    # return the new port if detected, otherwise return passed port
+    if port_index is -1:
+        bootloader_port = args.port[0]
+    else:
+        bootloader_port = reset_ports[port_index]
+
+    # print so that `tail -1` can be piped for bootloader port
+    print(bootloader_port)
+elif args.caterina:
     if args.verbose: print('Forcing reset using 1200bps open/close on port %s' % args.port[0])
     ser = serial.Serial(args.port[0], 57600)
     ser.close()
