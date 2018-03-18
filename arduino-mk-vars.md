@@ -1047,7 +1047,7 @@ CXXFLAGS_STD = -std=gnu++98
 Flags passed to compiler for files compiled as C. Add more flags to this
 variable using `+=`.
 
-Defaults to `undefined` on 1.0 or `-flto -fno-fat-lto-objects -fdiagnostics-color` on AVR toolchain > 4.9.0 (e.g. IDE 1.6.10+)
+Defaults to `undefined` on 1.0 or `-flto -fno-fat-lto-objects -fdiagnostics-color=$(DIAGNOSTICS_COLOR_WHEN)` on AVR toolchain > 4.9.0 (e.g. IDE 1.6.10+)
 
 **Example:**
 
@@ -1074,6 +1074,30 @@ on AVR toolchain > 4.9.0 (e.g. IDE 1.6.10+)
 
 ```Makefile
 CXXFLAGS += -my-c++-onlyflag
+```
+
+**Requirement:** *Optional*
+
+----
+
+### DIAGNOSTICS_COLOR_WHEN
+
+**Description:**
+
+This variable controls the compiler's diagnostics-color setting, as defined
+in CFLAGS or CXXFLAGS, on AVR toolchain > 4.9.0.
+Supported values are: `always`, `never` and `auto`.
+For more details, see: [Options to Control Diagnostic Messages Formatting]
+(https://gcc.gnu.org/onlinedocs/gcc-4.9.2/gcc/Language-Independent-Options.html#Language-Independent-Options)
+
+Defaults to `always`.
+
+**Example:**
+
+```Makefile
+DIAGNOSTICS_COLOR_WHEN = never
+# or
+DIAGNOSTICS_COLOR_WHEN = auto
 ```
 
 **Requirement:** *Optional*
