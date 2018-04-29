@@ -844,7 +844,7 @@ ifeq ($(strip $(NO_CORE)),)
         # Put alt core variant file for M0 devices in OTHER_OJBS
         ifdef ALT_CORE_CPP_SRCS
             ALT_CORE_OBJ_FILES  = $(ALT_CORE_C_SRCS:.c=.c.o) $(ALT_CORE_CPP_SRCS:.cpp=.cpp.o) $(ALT_CORE_AS_SRCS:.S=.S.o)
-            OTHER_OBJS   := $(patsubst $(ALTERNATE_CORE_PATH)/variants/$(VARIANT)/%,  \
+            OTHER_OBJS  += $(patsubst $(ALTERNATE_CORE_PATH)/variants/$(VARIANT)/%,  \
                 $(OBJDIR)/core/%,$(ALT_CORE_OBJ_FILES))
         endif
 
