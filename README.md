@@ -8,7 +8,7 @@ This is a very simple Makefile which knows how to build Arduino sketches. It def
 - Highly customizable
 - Supports all official AVR-based Arduino boards
 - Supports official ARM-based Arduino boards using Atmel SAM chip family
-  (Cortex M0) and includes on-device debugging targets.
+and includes on-device debugging targets.
 - Supports chipKIT
 - Supports Teensy 3.x (via Teensyduino)
 - Works on all three major OS (Mac, Linux, Windows)
@@ -318,14 +318,14 @@ For large Robotis projects, [libmaple](https://github.com/Rhoban/Maple) may be m
 ## Arduino ARM Boards
 
 For Arduino boards using ARM architechure, specifically the Atmel SAM series
-(Arduino M0 [Pro], Zero, MKR1000, Feather M0, etc.), first
+((SAM3X8E) Due; (SAMD21) Arduino M0 [Pro], Zero, MKR1000, Feather M0, etc.), first
 install the board support package from the IDE or other distribution channels.
 
 Define`ARDUINO_PACKAGE_DIR` as the root path containing the ARM support
 package (the manufacturer folder) and the `BOARD_TAG` (see `make show_boards`
 for help) within your project Makefile. Include 'Sam.mk' rather than
-  'Arduino.mk' at the end of your file - see examples/ZeroBlink and
-  examples/MZeroBlink for example usage.
+  'Arduino.mk' at the end of your file - see examples/ZeroBlink,
+  examples/MZeroBlink and examples/DueBlink for example usage.
 
 **Note**: The Arduino IDE does not install board support packages to
 the base Arduino installation directory (the directory that will work with AVR
@@ -351,7 +351,7 @@ bootloaders. External CMSIS tools such as Atmel Ice will also work with this
 method. Black Magic Probe (BMP) support is also included using GDB for both
 uploading and debugging.
 
-Native USB programing using Bossa (Zero, MKR1000, Feather style bootloaders)
+Native USB programing using Bossa (Due, Zero, MKR1000, Feather style bootloaders)
 and avrdude (M0 bootloaders) is supported. The bootloaders on these devices
 requires a double press of the reset button or open/closing the serial port at
 1200 BAUD. The automatic entry of the bootloader is attempted using

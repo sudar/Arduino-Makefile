@@ -832,6 +832,7 @@ ifeq ($(strip $(NO_CORE)),)
 
         # USB Core if samd or sam
         ifeq ($(findstring sam, $(strip $(ARCHITECTURE))), sam)
+            CORE_C_SRCS    += $(wildcard $(ARDUINO_CORE_PATH)/avr/*.c) # avr core emulation files
             CORE_C_SRCS    += $(wildcard $(ARDUINO_CORE_PATH)/USB/*.c)
             CORE_CPP_SRCS  += $(wildcard $(ARDUINO_CORE_PATH)/USB/*.cpp)
         endif
@@ -841,11 +842,22 @@ ifeq ($(strip $(NO_CORE)),)
             $(call show_config_info,NO_CORE_MAIN_CPP set so core library will not include main.cpp,[MANUAL])
         endif
 
-        # Put alt core variant file for M0 devices in OTHER_OJBS
-        ifdef ALT_CORE_CPP_SRCS
-            ALT_CORE_OBJ_FILES  = $(ALT_CORE_C_SRCS:.c=.c.o) $(ALT_CORE_CPP_SRCS:.cpp=.cpp.o) $(ALT_CORE_AS_SRCS:.S=.S.o)
-            OTHER_OBJS   := $(patsubst $(ALTERNATE_CORE_PATH)/variants/$(VARIANT)/%,  \
-                $(OBJDIR)/core/%,$(ALT_CORE_OBJ_FILES))
+        # Add core files for sam devices in CORE_OJBS filtering specific paths
+        ifdef SAM_CORE_PATH
+            SAM_CORE_OBJ_FILES  = $(SAM_CORE_C_SRCS:.c=.c.o) $(SAM_CORE_CPP_SRCS:.cpp=.cpp.o) $(SAM_CORE_AS_SRCS:.S=.S.o)
+            # variant core files
+            CORE_OBJS   += $(patsubst $(SAM_CORE_PATH)/%,  \
+                $(OBJDIR)/core/%, $(filter $(SAM_CORE_PATH)/%, $(SAM_CORE_OBJ_FILES)))
+            # libsam on Due
+            ifdef SAM_LIBSAM_PATH
+            CORE_OBJS   += $(patsubst $(SAM_LIBSAM_PATH)/source/%,  \
+                $(OBJDIR)/core/%, $(filter $(SAM_LIBSAM_PATH)/source/%, $(SAM_CORE_OBJ_FILES)))
+            endif
+            # chip sources on Due
+            ifdef SAM_SYSTEM_PATH
+            CORE_OBJS   += $(patsubst $(SAM_SYSTEM_PATH)/source/%, \
+                $(OBJDIR)/core/%, $(filter $(SAM_SYSTEM_PATH)/source/%, $(SAM_CORE_OBJ_FILES)))
+            endif
         endif
 
         CORE_OBJ_FILES  = $(CORE_C_SRCS:.c=.c.o) $(CORE_CPP_SRCS:.cpp=.cpp.o) $(CORE_AS_SRCS:.S=.S.o)
@@ -1324,18 +1336,27 @@ $(OBJDIR)/core/%.S.o: $(ARDUINO_CORE_PATH)/%.S $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
-# alt core files
-$(OBJDIR)/core/%.c.o: $(ALTERNATE_CORE_PATH)/variants/$(VARIANT)/%.c $(COMMON_DEPS) | $(OBJDIR)
+# sam core files
+$(OBJDIR)/core/%.c.o: $(SAM_CORE_PATH)/%.c $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
-$(OBJDIR)/core/%.cpp.o: $(ALTERNATE_CORE_PATH)/variants/$(VARIANT)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
+$(OBJDIR)/core/%.cpp.o: $(SAM_CORE_PATH)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
-$(OBJDIR)/core/%.S.o: $(ALTERNATE_CORE_PATH)/variants/$(VARIANT)/%.S $(COMMON_DEPS) | $(OBJDIR)
+$(OBJDIR)/core/%.S.o: $(SAM_CORE_PATH)/%.S $(COMMON_DEPS) | $(OBJDIR)
 	@$(MKDIR) $(dir $@)
 	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+
+# due specific sources from sam core as doesn't core doesn't have SystemInit startup file
+$(OBJDIR)/core/%.c.o: $(SAM_LIBSAM_PATH)/source/%.c $(COMMON_DEPS) | $(OBJDIR)
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+
+$(OBJDIR)/core/%.c.o: $(SAM_SYSTEM_PATH)/source/%.c $(COMMON_DEPS) | $(OBJDIR)
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 # various object conversions
 $(OBJDIR)/%.bin: $(OBJDIR)/%.elf $(COMMON_DEPS)
