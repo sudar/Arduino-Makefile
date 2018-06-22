@@ -53,7 +53,7 @@ endif
 
 ifndef CORE_VER
     CORE_VER := $(wildcard $(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/hardware/$(ARCHITECTURE)/1.*)
-    ifdef CORE_VER
+    ifneq ($(CORE_VER),)
         CORE_VER := $(shell basename $(CORE_VER))
         $(call show_config_variable,CORE_VER,[AUTODETECTED],(from ARDUINO_PACKAGE_DIR))
     endif
@@ -62,28 +62,42 @@ else
 endif
 
 ifndef CMSIS_VER
-    CMSIS_VER := $(shell basename $(wildcard $(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/CMSIS/4.*))
-    $(call show_config_variable,CMSIS_VER,[AUTODETECTED],(from ARDUINO_PACKAGE_DIR))
+    CMSIS_VER := $(wildcard $(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/CMSIS/4.*)
+    ifneq ($(CMSIS_VER),)
+        CMSIS_VER := $(shell basename $(CMSIS_VER))
+        $(call show_config_variable,CMSIS_VER,[AUTODETECTED],(from ARDUINO_PACKAGE_DIR))
+    endif
 else
     $(call show_config_variable,CMSIS_VER,[USER])
 endif
 
 ifndef CMSIS_ATMEL_VER
-    CMSIS_ATMEL_VER := $(shell basename $(wildcard $(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/CMSIS-Atmel/1.*))
-    $(call show_config_variable,CMSIS_ATMEL_VER,[AUTODETECTED],(from ARDUINO_PACKAGE_DIR))
+    CMSIS_ATMEL_VER := $(wildcard $(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/CMSIS-Atmel/1.*)
+    ifneq ($(CMSIS_ATMEL_VER),)
+        CMSIS_ATMEL_VER := $(shell basename $(CMSIS_ATMEL_VER))
+        $(call show_config_variable,CMSIS_ATMEL_VER,[AUTODETECTED],(from ARDUINO_PACKAGE_DIR))
+    endif
 else
     $(call show_config_variable,CMSIS_ATMEL_VER,[USER])
 endif
 
 ifndef CMSIS_DIR
-    CMSIS_DIR := $(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/CMSIS/$(CMSIS_VER)/CMSIS
+    ifeq ($(findstring samd, $(strip $(ARCHITECTURE))), samd)
+        CMSIS_DIR := $(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/CMSIS/$(CMSIS_VER)/CMSIS
+    else
+        CMSIS_DIR = $(ALTERNATE_CORE_PATH)/system/CMSIS/CMSIS
+    endif
     $(call show_config_variable,CMSIS_DIR,[AUTODETECTED],(from ARDUINO_PACKAGE_DIR))
 else
     $(call show_config_variable,CMSIS_DIR,[USER])
 endif
 
 ifndef CMSIS_ATMEL_DIR
-    CMSIS_ATMEL_DIR := $(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/CMSIS-Atmel/$(CMSIS_ATMEL_VER)/CMSIS
+    ifeq ($(findstring samd, $(strip $(ARCHITECTURE))), samd)
+        CMSIS_ATMEL_DIR := $(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/CMSIS-Atmel/$(CMSIS_ATMEL_VER)/CMSIS
+    else
+        CMSIS_ATMEL_DIR = $(ALTERNATE_CORE_PATH)/system/CMSIS
+    endif
     $(call show_config_variable,CMSIS_ATMEL_DIR,[AUTODETECTED],(from ARDUINO_PACKAGE_DIR))
 else
     $(call show_config_variable,CMSIS_ATMEL_DIR,[USER])
@@ -129,9 +143,27 @@ ifndef VARIANT
 endif
 
 # grab any sources in the variant core path (variant.cpp defines pin/port mapping on SAM devices)
-ALT_CORE_C_SRCS := $(wildcard $(ALTERNATE_CORE_PATH)/variants/$(VARIANT)/*.c)
-ALT_CORE_CPP_SRCS := $(wildcard $(ALTERNATE_CORE_PATH)/variants/$(VARIANT)/*.cpp)
-ALT_CORE_S_SRCS := $(wildcard $(ALTERNATE_CORE_PATH)/variants/$(VARIANT)/*.S)
+ifndef SAM_CORE_PATH
+    SAM_CORE_PATH := $(ALTERNATE_CORE_PATH)/variants/$(VARIANT)
+endif
+SAM_CORE_C_SRCS := $(wildcard $(SAM_CORE_PATH)/*.c)
+SAM_CORE_CPP_SRCS := $(wildcard $(SAM_CORE_PATH)/*.cpp)
+SAM_CORE_S_SRCS := $(wildcard $(SAM_CORE_PATH)/*.S)
+
+# due/sam specific paths hard define chip type for SystemInit function in system_CHIP.c as not included in core like samd
+ifeq ($(findstring arduino_due, $(strip $(VARIANT))), arduino_due)
+    ifndef SAM_SYSTEM_PATH
+        SAM_SYSTEM_PATH := $(CMSIS_ATMEL_DIR)/Device/ATMEL/sam3xa
+    endif
+    ifndef SAM_LIBSAM_PATH
+        SAM_LIBSAM_PATH := $(ALTERNATE_CORE_PATH)/system/libsam
+    endif
+    CPPFLAGS += -I$(SAM_SYSTEM_PATH)/include
+    CPPFLAGS += -I$(SAM_LIBSAM_PATH)
+    CPPFLAGS += -I$(SAM_LIBSAM_PATH)/include
+    SAM_CORE_C_SRCS += $(wildcard $(SAM_LIBSAM_PATH)/source/*.c)
+    SAM_CORE_C_SRCS += $(wildcard $(SAM_SYSTEM_PATH)/source/*.c)
+endif
 
 # Use arm-toolchain from Arduino install if exists and user has not defined global version
 ifndef ARM_TOOLS_DIR
@@ -160,7 +192,7 @@ ifndef CC_NAME
 endif
 
 ifndef CXX_NAME
-    CXX_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.g++)
+    CXX_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.g\+\+)
     ifndef CXX_NAME
         CXX_NAME := arm-none-eabi-g++
     else
@@ -330,6 +362,10 @@ endif
 
 ifndef BOSSA_OPTS
     BOSSA_OPTS += -d --info --erase --write --verify --reset
+    # Arduino Due forces RS-232 mode and boots from flash
+    ifeq ($(findstring arduino_due, $(strip $(VARIANT))), arduino_due)
+        BOSSA_OPTS += -U false -b
+    endif
 endif
 
 get_bootloader = $(shell $(RESET_CMD) | tail -1)
@@ -340,7 +376,7 @@ ifndef ISP_PORT
     ifeq ($(CURRENT_OS), WINDOWS)
         BOSSA_OPTS += --port=$(COM_STYLE_MONITOR_PORT)
     else
-        BOSSA_OPTS += --port=$(call get_monitor_port)
+        BOSSA_OPTS += --port=$(notdir $(call get_monitor_port))
     endif
 else
     BOSSA_OPTS += --port=$(ISP_PORT)
@@ -460,10 +496,19 @@ CXXFLAGS += -fno-rtti -fno-threadsafe-statics -std=gnu++11
 AMCU := $(call PARSE_BOARD,$(BOARD_TAG),build.mcu)
 BOARD_LINKER_SCRIPT := $(call PARSE_BOARD,$(BOARD_TAG),build.ldscript)
 OPENOCD_SCRIPT := $(call PARSE_BOARD,$(BOARD_TAG),build.openocdscript)
-# TODO Hard defines Cortex M0 math lib - should be dynamic
-LDFLAGS += --specs=nano.specs --specs=nosys.specs -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--start-group -L$(LIB_PATH) -larm_cortexM0l_math -lm
 LINKER_SCRIPTS := -T$(ALTERNATE_CORE_PATH)/variants/$(VARIANT)/$(BOARD_LINKER_SCRIPT)
 OTHER_LIBS := $(call PARSE_BOARD,$(BOARD_TAG),build.flags.libs)
+
+# Due and SAMD boards have different flags/chip specific libs
+ifeq ($(findstring arduino_due, $(strip $(VARIANT))), arduino_due)
+    CPPFLAGS += -Dprintf=iprintf -DARDUINO_SAM_DUE
+    LDFLAGS += -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--start-group -u _sbrk -u link -u _close -u _fstat -u _isatty -u _lseek -u _read -u _write -u _exit -u kill -u _getpid
+    LDFLAGS += -L$(LIB_PATH) -lm # -larm_cortexM3l_math # IDE doesn't include Cortex-M3 math lib on Due for some reason
+    OTHER_LIBS += $(ALTERNATE_CORE_PATH)/variants/$(VARIANT)/libsam_sam3x8e_gcc_rel.a
+else
+    LDFLAGS += --specs=nano.specs --specs=nosys.specs -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--start-group
+    LDFLAGS += -larm_cortexM0l_math -L$(LIB_PATH) -lm
+endif
 
 # OpenOCD reset command only for now
 ifeq ($(strip $(UPLOAD_TOOL)), openocd)
@@ -479,3 +524,5 @@ endif
 $(call show_separator)
 $(call arduino_output,Arduino.mk Configuration:)
 include $(ARDMK_DIR)/Arduino.mk
+
+print-%  : ; @echo $* = $($*)

@@ -20,7 +20,8 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Add template Makefile and project boilerplate initialise script, `ardmk-init`. (https://github.com/tuna-f1sh)
 - New: Support atmelice_isp JTAG tool as ISP programmer. (https://github.com/tuna-f1sh)
 - New: Compatibility with deprecated pgmspace.h API can now be disabled since it sometimes causes bogus compiler warnings (issue #546)
-- New: Support Arduino ARM-based (SAM/SAMD) devices. (https://github.com/tuna-f1sh)
+- New: Support Arduino ARM SAMD devices (Zero, M0 Pro, Feather M0). (https://github.com/tuna-f1sh)
+- New: Support Arduino ARM SAM devices (Due). (https://github.com/tuna-f1sh)
 
 ### 1.6.0 (2017-07-11)
 - Fix: Allowed for SparkFun's weird usb pid/vid submenu shenanigans (issue #499). (https://github.com/sej7278)
