@@ -1513,7 +1513,7 @@ ifndef ISP_PORT
     endif
 else
     ifeq ($(CURRENT_OS), WINDOWS)
-        AVRDUDE_ISP_OPT += -P ISP_PORT
+        AVRDUDE_ISP_OPTS += -P $(ISP_PORT)
     else
         AVRDUDE_ISP_OPTS += -P $(call get_isp_port)
     endif
