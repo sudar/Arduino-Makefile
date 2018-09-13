@@ -38,25 +38,19 @@ ARDUINO_CORE_PATH   = $(ARDUINO_DIR)/hardware/teensy/avr/cores/teensy3
 BOARDS_TXT          = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/avr/boards.txt
 
 
-ifndef PARSE_TEENSY
-    # result = $(call READ_BOARD_TXT, 'boardname', 'parameter')
-    PARSE_TEENSY = $(shell grep -v "^\#" "$(BOARDS_TXT)" | grep $(1).$(2) | cut -d = -f 2- )
-endif
-
-
 ifndef F_CPU
   ifndef BOARD_SUB
-    SPEEDS := $(call PARSE_TEENSY,"$(BOARD_TAG),menu.speed.*.build.fcpu") # Obtain sequence of supported frequencies.
+    SPEEDS := $(call PARSE_BOARD,"$(BOARD_TAG),menu.speed.*.build.fcpu") # Obtain sequence of supported frequencies.
     SPEEDS := $(shell printf "%d\n" $(SPEEDS) | sort -g) # Sort it, just in case. Printf to re-append newlines so that sort works.
     F_CPU := $(lastword $(SPEEDS)) # List is sorted in ascending order. Take the fastest speed.
     #$(info "speeds is " $(SPEEDS))  # Good for debugging
   else
-    F_CPU := $(call PARSE_TEENSY,$(BOARD_TAG),menu.speed.$(BOARD_SUB).build.fcpu)
+    F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),menu.speed.$(BOARD_SUB).build.fcpu)
   endif
 endif
 
 # if boards.txt gets modified, look there, else hard code it
-ARCHITECTURE  = $(call PARSE_TEENSY,$(BOARD_TAG),build.architecture)
+ARCHITECTURE  = $(call PARSE_BOARD,$(BOARD_TAG),build.architecture)
 ifeq ($(strip $(ARCHITECTURE)),)
 	ARCHITECTURE = arm
 endif
@@ -73,7 +67,7 @@ endif
 # command names
 
 ifndef CC_NAME
-    CC_NAME := $(call PARSE_TEENSY,$(BOARD_TAG),build.command.gcc)
+    CC_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.gcc)
     ifndef CC_NAME
         CC_NAME := arm-none-eabi-gcc
     else
@@ -82,7 +76,7 @@ ifndef CC_NAME
 endif
 
 ifndef CXX_NAME
-    CXX_NAME := $(call PARSE_TEENSY,$(BOARD_TAG),build.command.g++)
+    CXX_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.g++)
     ifndef CXX_NAME
         CXX_NAME := arm-none-eabi-g++
     else
@@ -91,7 +85,7 @@ ifndef CXX_NAME
 endif
 
 ifndef AS_NAME
-    AS_NAME := $(call PARSE_TEENSY,$(BOARD_TAG),build.command.as)
+    AS_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.as)
     ifndef AS_NAME
         AS_NAME := arm-none-eabi-gcc-as
     else
@@ -100,7 +94,7 @@ ifndef AS_NAME
 endif
 
 ifndef OBJCOPY_NAME
-    OBJCOPY_NAME := $(call PARSE_TEENSY,$(BOARD_TAG),build.command.objcopy)
+    OBJCOPY_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.objcopy)
     ifndef OBJCOPY_NAME
         OBJCOPY_NAME := arm-none-eabi-objcopy
     else
@@ -109,7 +103,7 @@ ifndef OBJCOPY_NAME
 endif
 
 ifndef OBJDUMP_NAME
-    OBJDUMP_NAME := $(call PARSE_TEENSY,$(BOARD_TAG),build.command.objdump)
+    OBJDUMP_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.objdump)
     ifndef OBJDUMP_NAME
         OBJDUMP_NAME := arm-none-eabi-objdump
     else
@@ -118,7 +112,7 @@ ifndef OBJDUMP_NAME
 endif
 
 ifndef AR_NAME
-    AR_NAME := $(call PARSE_TEENSY,$(BOARD_TAG),build.command.ar)
+    AR_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.ar)
     ifndef AR_NAME
         AR_NAME := arm-none-eabi-ar
     else
@@ -127,7 +121,7 @@ ifndef AR_NAME
 endif
 
 ifndef SIZE_NAME
-    SIZE_NAME := $(call PARSE_TEENSY,$(BOARD_TAG),build.command.size)
+    SIZE_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.size)
     ifndef SIZE_NAME
         SIZE_NAME := arm-none-eabi-size
     else
@@ -136,7 +130,7 @@ ifndef SIZE_NAME
 endif
 
 ifndef NM_NAME
-    NM_NAME := $(call PARSE_TEENSY,$(BOARD_TAG),build.command.nm)
+    NM_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.nm)
     ifndef NM_NAME
         NM_NAME := arm-none-eabi-gcc-nm
     else
@@ -146,7 +140,7 @@ endif
 
 # processor stuff
 ifndef MCU
-    MCU := $(call PARSE_TEENSY,$(BOARD_TAG),build.mcu)
+    MCU := $(call PARSE_BOARD,$(BOARD_TAG),build.mcu)
 endif
 
 ifndef MCU_FLAG_NAME
@@ -161,39 +155,39 @@ endif
 
 CPPFLAGS += -DLAYOUT_US_ENGLISH -D$(USB_TYPE)
 
-CPPFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.option)
+CPPFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.option)
 
-CXXFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.cppoption)
-ifeq ("$(call PARSE_TEENSY,$(BOARD_TAG),build.gnu0x)","true")
+CXXFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.cppoption)
+ifeq ("$(call PARSE_BOARD,$(BOARD_TAG),build.gnu0x)","true")
     CXXFLAGS_STD      += -std=gnu++0x
 endif
 
-ifeq ("$(call PARSE_TEENSY,$(BOARD_TAG),build.elide_constructors)", "true")
+ifeq ("$(call PARSE_BOARD,$(BOARD_TAG),build.elide_constructors)", "true")
     CXXFLAGS      += -felide-constructors
 endif
 
-CXXFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.common)
-CXXFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.cpu)
-CXXFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.defs)
-CXXFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.cpp)
+CXXFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.flags.common)
+CXXFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.flags.cpu)
+CXXFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.flags.defs)
+CXXFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.flags.cpp)
 
-CFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.common)
-CFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.cpu)
-CFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.defs)
+CFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.flags.common)
+CFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.flags.cpu)
+CFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.flags.defs)
 
-ASFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.common)
-ASFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.cpu)
-ASFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.defs)
-ASFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.S)
+ASFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.flags.common)
+ASFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.flags.cpu)
+ASFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.flags.defs)
+ASFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.flags.S)
 
-LDFLAGS += $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.cpu)
+LDFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.flags.cpu)
 
-AMCU := $(call PARSE_TEENSY,$(BOARD_TAG),build.mcu)
+AMCU := $(call PARSE_BOARD,$(BOARD_TAG),build.mcu)
 LDFLAGS += -Wl,--gc-sections,--relax
 LINKER_SCRIPTS = -T${ARDUINO_CORE_PATH}/${AMCU}.ld
-OTHER_LIBS = $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.libs)
+OTHER_LIBS = $(call PARSE_BOARD,$(BOARD_TAG),build.flags.libs)
 
-CPUFLAGS = $(call PARSE_TEENSY,$(BOARD_TAG),build.flags.cpu)
+CPUFLAGS = $(call PARSE_BOARD,$(BOARD_TAG),build.flags.cpu)
 # usually defined as per teensy31.build.mcu=mk20dx256 but that isn't valid switch
 MCU := $(shell echo ${CPUFLAGS} | sed -n -e 's/.*-mcpu=\([a-zA-Z0-9_-]*\).*/\1/p')
 

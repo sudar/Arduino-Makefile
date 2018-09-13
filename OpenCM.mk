@@ -44,17 +44,12 @@ ifndef BOARDS_TXT
     BOARDS_TXT           = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/boards.txt
 endif
 
-ifndef PARSE_OPENCM
-    # result = $(call READ_BOARD_TXT, 'boardname', 'parameter')
-    PARSE_OPENCM = $(shell grep -v "^\#" "$(BOARDS_TXT)" | grep $(1).$(2) | cut -d = -f 2- )
-endif
-
 ifndef F_CPU
-    F_CPU := $(call PARSE_OPENCM,$(BOARD_TAG),build.f_cpu)
+    F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),build.f_cpu)
 endif
 
 # if boards.txt gets modified, look there, else hard code it
-ARCHITECTURE = $(call PARSE_OPENCM,$(BOARD_TAG),build.architecture)
+ARCHITECTURE = $(call PARSE_BOARD,$(BOARD_TAG),build.architecture)
 ifeq ($(strip $(ARCHITECTURE)),)
     ARCHITECTURE = arm
 endif
@@ -75,7 +70,7 @@ endif
 # command names
 
 ifndef CC_NAME
-    CC_NAME := $(call PARSE_OPENCM,$(BOARD_TAG),build.command.gcc)
+    CC_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.gcc)
     ifndef CC_NAME
         CC_NAME := arm-none-eabi-gcc
     else
@@ -84,7 +79,7 @@ ifndef CC_NAME
 endif
 
 ifndef CXX_NAME
-    CXX_NAME := $(call PARSE_OPENCM,$(BOARD_TAG),build.command.g++)
+    CXX_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.g++)
     ifndef CXX_NAME
         CXX_NAME := arm-none-eabi-g++
     else
@@ -93,7 +88,7 @@ ifndef CXX_NAME
 endif
 
 ifndef AS_NAME
-    AS_NAME := $(call PARSE_OPENCM,$(BOARD_TAG),build.command.as)
+    AS_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.as)
     ifndef AS_NAME
         AS_NAME := arm-none-eabi-as
     else
@@ -102,7 +97,7 @@ ifndef AS_NAME
 endif
 
 ifndef OBJDUMP_NAME
-    OBJDUMP_NAME := $(call PARSE_OPENCM,$(BOARD_TAG),build.command.objdump)
+    OBJDUMP_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.objdump)
     ifndef OBJDUMP_NAME
         OBJDUMP_NAME := arm-none-eabi-objdump
     else
@@ -111,7 +106,7 @@ ifndef OBJDUMP_NAME
 endif
 
 ifndef AR_NAME
-    AR_NAME := $(call PARSE_OPENCM,$(BOARD_TAG),build.command.ar)
+    AR_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.ar)
     ifndef AR_NAME
         AR_NAME := arm-none-eabi-ar
     else
@@ -120,7 +115,7 @@ ifndef AR_NAME
 endif
 
 ifndef SIZE_NAME
-    SIZE_NAME := $(call PARSE_OPENCM,$(BOARD_TAG),build.command.size)
+    SIZE_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.size)
     ifndef SIZE_NAME
         SIZE_NAME := arm-none-eabi-size
     else
@@ -129,7 +124,7 @@ ifndef SIZE_NAME
 endif
 
 ifndef NM_NAME
-    NM_NAME := $(call PARSE_OPENCM,$(BOARD_TAG),build.command.nm)
+    NM_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.nm)
     ifndef NM_NAME
         NM_NAME := arm-none-eabi-nm
     else
@@ -138,7 +133,7 @@ ifndef NM_NAME
 endif
 
 ifndef OBJCOPY_NAME
-    OBJCOPY_NAME := $(call PARSE_OPENCM,$(BOARD_TAG),build.command.objcopy)
+    OBJCOPY_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.objcopy)
     ifndef OBJCOPY_NAME
         OBJCOPY_NAME := arm-none-eabi-objcopy
     else
@@ -148,7 +143,7 @@ endif
 
 # processor stuff
 ifndef MCU
-    MCU := $(call PARSE_OPENCM,$(BOARD_TAG),build.family)
+    MCU := $(call PARSE_BOARD,$(BOARD_TAG),build.family)
 endif
 
 ifndef MCU_FLAG_NAME
@@ -161,20 +156,20 @@ ifndef USB_TYPE
     USB_TYPE = USB_SERIAL
 endif
 
-CPPFLAGS += -DBOARD_$(call PARSE_OPENCM,$(BOARD_TAG),build.board)
-CPPFLAGS += -DMCU_$(call PARSE_OPENCM,$(BOARD_TAG),build.mcu)
+CPPFLAGS += -DBOARD_$(call PARSE_BOARD,$(BOARD_TAG),build.board)
+CPPFLAGS += -DMCU_$(call PARSE_BOARD,$(BOARD_TAG),build.mcu)
 CPPFLAGS += -DSTM32_MEDIUM_DENSITY -DVECT_TAB_FLASH
 
-CPPFLAGS += $(call PARSE_OPENCM,$(BOARD_TAG),build.option)
+CPPFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.option)
 
 CXXFLAGS += -fno-rtti
 
-CXXFLAGS += $(call PARSE_OPENCM,$(BOARD_TAG),build.cppoption)
-ifeq ("$(call PARSE_OPENCM,$(BOARD_TAG),build.gnu0x)","true")
+CXXFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.cppoption)
+ifeq ("$(call PARSE_BOARD,$(BOARD_TAG),build.gnu0x)","true")
     CXXFLAGS_STD += -std=gnu++0x
 endif
 
-ifeq ("$(call PARSE_OPENCM,$(BOARD_TAG),build.elide_constructors)", "true")
+ifeq ("$(call PARSE_BOARD,$(BOARD_TAG),build.elide_constructors)", "true")
     CXXFLAGS += -felide-constructors
 endif
 
@@ -209,7 +204,7 @@ ifeq ($(CURRENT_OS), WINDOWS)
 else
     override AVRDUDE_ARD_OPTS = $(call get_monitor_port)
 endif
-	
+
 override AVRDUDE_UPLOAD_HEX = $(TARGET_HEX)
 
 ########################################################################

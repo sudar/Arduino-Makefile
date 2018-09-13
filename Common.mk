@@ -5,6 +5,11 @@ COMMON_INCLUDED = TRUE
 # (directory and optional filename) exists
 dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
 
+ifndef PARSE_BOARD
+# result = $(call READ_BOARD_TXT, 'boardname', 'parameter')
+PARSE_BOARD = $(shell grep -Ev '^\#' $(BOARDS_TXT) | grep -E "^[ \t]*$(1).$(2)=" | cut -d = -f 2 | cut -d : -f 2)
+endif
+
 # Run a shell script if it exists. Stops make on error.
 runscript_if_exists =                                                          \
     $(if $(wildcard $(1)),                                                     \

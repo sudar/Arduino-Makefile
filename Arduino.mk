@@ -585,11 +585,6 @@ else
     $(call show_config_variable,BOARD_TAG,[USER])
 endif
 
-ifndef PARSE_BOARD
-    # result = $(call READ_BOARD_TXT, 'boardname', 'parameter')
-    PARSE_BOARD = $(shell grep -Ev '^\#' $(BOARDS_TXT) | grep -E "^[ \t]*$(1).$(2)=" | cut -d = -f 2 | cut -d : -f 2)
-endif
-
 # If NO_CORE is set, then we don't have to parse boards.txt file
 # But the user might have to define MCU, F_CPU etc
 ifeq ($(strip $(NO_CORE)),)
