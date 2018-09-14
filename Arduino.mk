@@ -388,28 +388,80 @@ endif
 ########################################################################
 # Arduino and system paths
 
+ifndef TOOL_PREFIX
+    TOOL_PREFIX = avr
+endif
+
 ifndef CC_NAME
-CC_NAME      = avr-gcc
+    CC_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.gcc)
+    ifndef CC_NAME
+        CC_NAME := $(TOOL_PREFIX)-gcc
+    else
+        $(call show_config_variable,CC_NAME,[COMPUTED])
+    endif
 endif
 
 ifndef CXX_NAME
-CXX_NAME     = avr-g++
+    CXX_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.g++)
+    ifndef CXX_NAME
+        CXX_NAME := $(TOOL_PREFIX)-g++
+    else
+        $(call show_config_variable,CXX_NAME,[COMPUTED])
+    endif
+endif
+
+ifndef AS_NAME
+    AS_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.as)
+    ifndef AS_NAME
+        AS_NAME := $(TOOL_PREFIX)-as
+    else
+        $(call show_config_variable,AS_NAME,[COMPUTED])
+    endif
 endif
 
 ifndef OBJCOPY_NAME
-OBJCOPY_NAME = avr-objcopy
+    OBJCOPY_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.objcopy)
+    ifndef OBJCOPY_NAME
+        OBJCOPY_NAME := $(TOOL_PREFIX)-objcopy
+    else
+        $(call show_config_variable,OBJCOPY_NAME,[COMPUTED])
+    endif
 endif
 
 ifndef OBJDUMP_NAME
-OBJDUMP_NAME = avr-objdump
+    OBJDUMP_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.objdump)
+    ifndef OBJDUMP_NAME
+        OBJDUMP_NAME := $(TOOL_PREFIX)-objdump
+    else
+        $(call show_config_variable,OBJDUMP_NAME,[COMPUTED])
+    endif
+endif
+
+ifndef AR_NAME
+    AR_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.ar)
+    ifndef AR_NAME
+        AR_NAME := $(TOOL_PREFIX)-ar
+    else
+        $(call show_config_variable,AR_NAME,[COMPUTED])
+    endif
 endif
 
 ifndef SIZE_NAME
-SIZE_NAME    = avr-size
+    SIZE_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.size)
+    ifndef SIZE_NAME
+        SIZE_NAME := $(TOOL_PREFIX)-size
+    else
+        $(call show_config_variable,SIZE_NAME,[COMPUTED])
+    endif
 endif
 
 ifndef NM_NAME
-NM_NAME      = avr-nm
+    NM_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.nm)
+    ifndef NM_NAME
+        NM_NAME := $(TOOL_PREFIX)-nm
+    else
+        $(call show_config_variable,NM_NAME,[COMPUTED])
+    endif
 endif
 
 ifndef AVR_TOOLS_DIR
@@ -457,8 +509,8 @@ ifndef AVR_TOOLS_DIR
             AVR_TOOLS_DIR = $(SYSTEMPATH_AVR_TOOLS_DIR)
             $(call show_config_variable,AVR_TOOLS_DIR,[AUTODETECTED],(found in $$PATH))
         else
-            # One last attempt using avr-gcc in case using arm
-            SYSTEMPATH_AVR_TOOLS_DIR := $(call dir_if_exists,$(abspath $(dir $(shell which $(avr-gcc)))/..))
+            # One last attempt using $(TOOL_PREFIX)-gcc in case using arm
+            SYSTEMPATH_AVR_TOOLS_DIR := $(call dir_if_exists,$(abspath $(dir $(shell which $($(TOOL_PREFIX)-gcc)))/..))
             ifdef SYSTEMPATH_AVR_TOOLS_DIR
                 AVR_TOOLS_DIR = $(SYSTEMPATH_AVR_TOOLS_DIR)
                 $(call show_config_variable,AVR_TOOLS_DIR,[AUTODETECTED],(found in $$PATH))
@@ -483,8 +535,8 @@ else
 
 endif #ndef AVR_TOOLS_DIR
 
-ifndef AVR_TOOLS_PATH
-    AVR_TOOLS_PATH    = $(AVR_TOOLS_DIR)/bin
+ifndef TOOLS_PATH
+    TOOLS_PATH    = $(AVR_TOOLS_DIR)/bin
 endif
 
 ifndef ARDUINO_LIB_PATH
@@ -821,7 +873,7 @@ endif
 ifeq ($(strip $(NO_CORE)),)
     ifdef ARDUINO_CORE_PATH
         CORE_C_SRCS     = $(wildcard $(ARDUINO_CORE_PATH)/*.c)
-        CORE_C_SRCS    += $(wildcard $(ARDUINO_CORE_PATH)/avr-libc/*.c)
+        CORE_C_SRCS    += $(wildcard $(ARDUINO_CORE_PATH)/$(TOOL_PREFIX)-libc/*.c)
         CORE_CPP_SRCS   = $(wildcard $(ARDUINO_CORE_PATH)/*.cpp)
         CORE_AS_SRCS    = $(wildcard $(ARDUINO_CORE_PATH)/*.S)
 
@@ -931,18 +983,22 @@ TARGET_EEP = $(OBJDIR)/$(TARGET).eep
 TARGET_BIN = $(OBJDIR)/$(TARGET).bin
 CORE_LIB   = $(OBJDIR)/libcore.a
 
-# Names of executables - chipKIT needs to override all to set paths to PIC32
-# tools, and we can't use "?=" assignment because these are already implicitly
+# Names of executables
+# In the rare case of wanting to override a path and/or excecutable
+# name, the OVERRIDE_EXECUTABLES variable must be defned and _all_
+# the excecutables (CC, CXX, AS, OBJCOPY, OBJDUMP AR, SIZE and NM)
+# _must_ be defined in the calling makefile.
+# We can't use "?=" assignment because these are already implicitly
 # defined by Make (e.g. $(CC) == cc).
 ifndef OVERRIDE_EXECUTABLES
-    CC      = $(AVR_TOOLS_PATH)/$(CC_NAME)
-    CXX     = $(AVR_TOOLS_PATH)/$(CXX_NAME)
-    AS      = $(AVR_TOOLS_PATH)/$(AS_NAME)
-    OBJCOPY = $(AVR_TOOLS_PATH)/$(OBJCOPY_NAME)
-    OBJDUMP = $(AVR_TOOLS_PATH)/$(OBJDUMP_NAME)
-    AR      = $(AVR_TOOLS_PATH)/$(AR_NAME)
-    SIZE    = $(AVR_TOOLS_PATH)/$(SIZE_NAME)
-    NM      = $(AVR_TOOLS_PATH)/$(NM_NAME)
+    CC      = $(TOOLS_PATH)/$(CC_NAME)
+    CXX     = $(TOOLS_PATH)/$(CXX_NAME)
+    AS      = $(TOOLS_PATH)/$(AS_NAME)
+    OBJCOPY = $(TOOLS_PATH)/$(OBJCOPY_NAME)
+    OBJDUMP = $(TOOLS_PATH)/$(OBJDUMP_NAME)
+    AR      = $(TOOLS_PATH)/$(AR_NAME)
+    SIZE    = $(TOOLS_PATH)/$(SIZE_NAME)
+    NM      = $(TOOLS_PATH)/$(NM_NAME)
 endif
 
 REMOVE  = rm -rf
@@ -1078,15 +1134,15 @@ ifneq ($(CATERINA),)
     CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
 endif
 
-# avr-gcc version that we can do maths on
+# $(TOOL_PREFIX)-gcc version that we can do maths on
 CC_VERNUM = $(shell $(CC) -dumpversion | sed 's/\.//g')
 
 # moved from above so we can find version-dependant ar
-ifndef AR_NAME
+ifeq ($(TOOL_PREFIX), avr)
     ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
-        AR_NAME      = avr-gcc-ar
+        AR_NAME      := $(TOOL_PREFIX)-gcc-ar
     else
-        AR_NAME      = avr-ar
+        AR_NAME      := $(TOOL_PREFIX)-ar
     endif
 endif
 
@@ -1404,7 +1460,7 @@ CTAGS_CMD = $(CTAGS_EXEC) $(CTAGS_OPTS) -auf
 
 # If avrdude is installed separately, it can find its own config file
 ifndef AVRDUDE
-    AVRDUDE          = $(AVR_TOOLS_PATH)/avrdude
+    AVRDUDE          = $(TOOLS_PATH)/avrdude
 endif
 
 # Default avrdude options
@@ -1747,7 +1803,7 @@ help:
   make debug_init        - start openocd gdb server\n\
   make debug             - connect to gdb target and begin debugging\n\
   make size              - show the size of the compiled output (relative to\n\
-                           resources, if you have a patched avr-size).\n\
+                           resources, if you have a patched $(TOOL_PREFIX)-size).\n\
   make verify_size       - verify that the size of the final file is less than\n\
                            the capacity of the micro controller.\n\
   make symbol_sizes      - generate a .sym file containing symbols and their\n\

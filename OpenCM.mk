@@ -69,77 +69,7 @@ endif
 ########################################################################
 # command names
 
-ifndef CC_NAME
-    CC_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.gcc)
-    ifndef CC_NAME
-        CC_NAME := arm-none-eabi-gcc
-    else
-        $(call show_config_variable,CC_NAME,[COMPUTED])
-    endif
-endif
-
-ifndef CXX_NAME
-    CXX_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.g++)
-    ifndef CXX_NAME
-        CXX_NAME := arm-none-eabi-g++
-    else
-        $(call show_config_variable,CXX_NAME,[COMPUTED])
-    endif
-endif
-
-ifndef AS_NAME
-    AS_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.as)
-    ifndef AS_NAME
-        AS_NAME := arm-none-eabi-as
-    else
-        $(call show_config_variable,AS_NAME,[COMPUTED])
-    endif
-endif
-
-ifndef OBJDUMP_NAME
-    OBJDUMP_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.objdump)
-    ifndef OBJDUMP_NAME
-        OBJDUMP_NAME := arm-none-eabi-objdump
-    else
-        $(call show_config_variable,OBJDUMP_NAME,[COMPUTED])
-    endif
-endif
-
-ifndef AR_NAME
-    AR_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.ar)
-    ifndef AR_NAME
-        AR_NAME := arm-none-eabi-ar
-    else
-        $(call show_config_variable,AR_NAME,[COMPUTED])
-    endif
-endif
-
-ifndef SIZE_NAME
-    SIZE_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.size)
-    ifndef SIZE_NAME
-        SIZE_NAME := arm-none-eabi-size
-    else
-        $(call show_config_variable,SIZE_NAME,[COMPUTED])
-    endif
-endif
-
-ifndef NM_NAME
-    NM_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.nm)
-    ifndef NM_NAME
-        NM_NAME := arm-none-eabi-nm
-    else
-        $(call show_config_variable,NM_NAME,[COMPUTED])
-    endif
-endif
-
-ifndef OBJCOPY_NAME
-    OBJCOPY_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.objcopy)
-    ifndef OBJCOPY_NAME
-        OBJCOPY_NAME := arm-none-eabi-objcopy
-    else
-        $(call show_config_variable,OBJCOPY_NAME,[COMPUTED])
-    endif
-endif
+TOOL_PREFIX = arm-none-eabi
 
 # processor stuff
 ifndef MCU
