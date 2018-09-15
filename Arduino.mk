@@ -388,6 +388,55 @@ endif
 ########################################################################
 # Arduino and system paths
 
+# Third party hardware and core like ATtiny or ATmega 16
+ifdef ALTERNATE_CORE
+    $(call show_config_variable,ALTERNATE_CORE,[USER])
+
+    ifndef ALTERNATE_CORE_PATH
+        ALTERNATE_CORE_PATH = $(ARDUINO_SKETCHBOOK)/hardware/$(ALTERNATE_CORE)/$(ARCHITECTURE)
+    endif
+endif
+
+ifdef ALTERNATE_CORE_PATH
+
+    ifdef ALTERNATE_CORE
+        $(call show_config_variable,ALTERNATE_CORE_PATH,[COMPUTED], (from ARDUINO_SKETCHBOOK and ALTERNATE_CORE))
+    else
+        $(call show_config_variable,ALTERNATE_CORE_PATH,[USER])
+    endif
+
+    ifndef ARDUINO_VAR_PATH
+        ARDUINO_VAR_PATH  = $(ALTERNATE_CORE_PATH)/variants
+        $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ALTERNATE_CORE_PATH))
+    endif
+
+    ifndef BOARDS_TXT
+        BOARDS_TXT  = $(ALTERNATE_CORE_PATH)/boards.txt
+        $(call show_config_variable,BOARDS_TXT,[COMPUTED],(from ALTERNATE_CORE_PATH))
+    endif
+
+else
+
+    ifndef ARDUINO_VAR_PATH
+        ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/variants
+        $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ARDUINO_DIR))
+    else
+        $(call show_config_variable,ARDUINO_VAR_PATH,[USER])
+    endif
+
+    ifndef BOARDS_TXT
+        BOARDS_TXT  = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/boards.txt
+        $(call show_config_variable,BOARDS_TXT,[COMPUTED],(from ARDUINO_DIR))
+    else
+        $(call show_config_variable,BOARDS_TXT,[USER])
+    endif
+
+endif
+
+ifeq (,$(wildcard $(BOARDS_TXT)))
+    $(error Currently BOARDS_TXT='$(BOARDS_TXT)', which is not an existing file or an invalid filename.)
+endif
+
 ifndef TOOL_PREFIX
     TOOL_PREFIX = avr
 endif
@@ -555,51 +604,6 @@ ifndef ARDUINO_PLATFORM_LIB_PATH
     endif
 else
     $(call show_config_variable,ARDUINO_PLATFORM_LIB_PATH,[USER])
-endif
-
-# Third party hardware and core like ATtiny or ATmega 16
-ifdef ALTERNATE_CORE
-    $(call show_config_variable,ALTERNATE_CORE,[USER])
-
-    ifndef ALTERNATE_CORE_PATH
-        ALTERNATE_CORE_PATH = $(ARDUINO_SKETCHBOOK)/hardware/$(ALTERNATE_CORE)/$(ARCHITECTURE)
-    endif
-endif
-
-ifdef ALTERNATE_CORE_PATH
-
-    ifdef ALTERNATE_CORE
-        $(call show_config_variable,ALTERNATE_CORE_PATH,[COMPUTED], (from ARDUINO_SKETCHBOOK and ALTERNATE_CORE))
-    else
-        $(call show_config_variable,ALTERNATE_CORE_PATH,[USER])
-    endif
-
-    ifndef ARDUINO_VAR_PATH
-        ARDUINO_VAR_PATH  = $(ALTERNATE_CORE_PATH)/variants
-        $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ALTERNATE_CORE_PATH))
-    endif
-
-    ifndef BOARDS_TXT
-        BOARDS_TXT  = $(ALTERNATE_CORE_PATH)/boards.txt
-        $(call show_config_variable,BOARDS_TXT,[COMPUTED],(from ALTERNATE_CORE_PATH))
-    endif
-
-else
-
-    ifndef ARDUINO_VAR_PATH
-        ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/variants
-        $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ARDUINO_DIR))
-    else
-        $(call show_config_variable,ARDUINO_VAR_PATH,[USER])
-    endif
-
-    ifndef BOARDS_TXT
-        BOARDS_TXT  = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/boards.txt
-        $(call show_config_variable,BOARDS_TXT,[COMPUTED],(from ARDUINO_DIR))
-    else
-        $(call show_config_variable,BOARDS_TXT,[USER])
-    endif
-
 endif
 
 ########################################################################
