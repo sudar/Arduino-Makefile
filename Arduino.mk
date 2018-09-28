@@ -1691,7 +1691,7 @@ else
 endif
 
 debug_init:
-	$(OPENOCD)
+	$(OPENOCD) $(OPENOCD_OPTS)
 
 debug:
 	$(GDB) $(GDB_OPTS)
