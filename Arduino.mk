@@ -1718,7 +1718,7 @@ ifneq ($(strip $(AVRDUDE_ISP_FUSES_POST)),)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) $(AVRDUDE_ISP_FUSES_POST)
 endif
 
-clean::
+clean:
 		$(REMOVE) $(OBJDIR)
 
 size:	$(TARGET_HEX)
