@@ -1232,8 +1232,13 @@ else
     endif
 endif
 
-# Returns the ISP port (first wildcard expansion) if it exists, otherwise it errors.
-get_isp_port = $(if $(wildcard $(ISP_PORT)),$(firstword $(wildcard $(ISP_PORT))),$(if $(findstring Xusb,X$(ISP_PORT)),$(ISP_PORT),$(error ISP port $(ISP_PORT) not found!)))
+ifdef FORCE_ISP_PORT
+    # Skips the ISP_PORT existance check.
+    get_isp_port = $(ISP_PORT)
+else
+    # Returns the ISP port (first wildcard expansion) if it exists, otherwise it errors.
+    get_isp_port = $(if $(wildcard $(ISP_PORT)),$(firstword $(wildcard $(ISP_PORT))),$(if $(findstring Xusb,X$(ISP_PORT)),$(ISP_PORT),$(error ISP port $(ISP_PORT) not found!)))
+endif
 
 # Command for avr_size: do $(call avr_size,elffile,hexfile)
 ifneq (,$(findstring AVR,$(shell $(SIZE) --help)))
