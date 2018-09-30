@@ -774,6 +774,13 @@ ifeq ($(strip $(NO_CORE)),)
     endif
 
 endif
+ 
+ifndef HEX_MAXIMUM_SIZE
+        HEX_MAXIMUM_SIZE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).upload.maximum_size)
+        ifndef HEX_MAXIMUM_SIZE
+            HEX_MAXIMUM_SIZE := $(call PARSE_BOARD,$(BOARD_TAG),upload.maximum_size)
+        endif
+endif
 
 # Everything gets built in here (include BOARD_TAG now)
 ifndef OBJDIR
@@ -1426,7 +1433,7 @@ $(OBJDIR)/%.hex: $(OBJDIR)/%.elf $(COMMON_DEPS)
 ifneq ($(strip $(HEX_MAXIMUM_SIZE)),)
 	@if [ `$(SIZE) $@ | awk 'FNR == 2 {print $$2}'` -le $(HEX_MAXIMUM_SIZE) ]; then touch $@.sizeok; fi
 else
-	@$(ECHO) "Maximum flash memory of $(BOARD_TAG) is not specified. Make sure the size of $@ is less than $(BOARD_TAG)\'s flash memory"
+	@$(ECHO) "Maximum flash memory of $(BOARD_TAG) is not specified. Make sure the size of $@ is less than $(BOARD_TAG)\'s flash memory\n\n"
 	@touch $@.sizeok
 endif
 
