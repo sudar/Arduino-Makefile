@@ -5,6 +5,7 @@ The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### In Development
+- Fix: Moved CORE_LIB to the last position of the defined linked objects. (https://github.com/wingunder)
 - Fix: Moved ATtiny examples to ATtinyBlink, updated alternate core instructions (issue #537) (https://github.com/sej7278)
 - Fix: Add -fno-devirtualize flag to workaround g++ segfault bug (issue #486). (https://github.com/sej7278)
 - Fix: Quote the prefix tag in the space_pad_to function
