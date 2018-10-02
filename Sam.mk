@@ -167,7 +167,7 @@ endif
 
 # Use arm-toolchain from Arduino install if exists and user has not defined global version
 ifndef ARM_TOOLS_DIR
-    ARM_TOOLS_DIR = $(call dir_if_exists,$(wildcard $(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/arm-none-eabi-gcc/*))
+    ARM_TOOLS_DIR = $(call dir_if_exists,$(wildcard $(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/$(TOOL_PREFIX)-gcc/*))
     $(call show_config_variable,ARM_TOOLS_DIR,[COMPUTED],(from ARDUINO_PACKAGE_DIR))
 else
     $(call show_config_variable,ARM_TOOLS_DIR,[USER])
@@ -182,82 +182,12 @@ endif
 ########################################################################
 # command names
 
-ifndef CC_NAME
-    CC_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.gcc)
-    ifndef CC_NAME
-        CC_NAME := arm-none-eabi-gcc
-    else
-        $(call show_config_variable,CC_NAME,[COMPUTED])
-    endif
-endif
-
-ifndef CXX_NAME
-    CXX_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.g\+\+)
-    ifndef CXX_NAME
-        CXX_NAME := arm-none-eabi-g++
-    else
-        $(call show_config_variable,CXX_NAME,[COMPUTED])
-    endif
-endif
-
-ifndef AS_NAME
-    AS_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.as)
-    ifndef AS_NAME
-        AS_NAME := arm-none-eabi-gcc-as
-    else
-        $(call show_config_variable,AS_NAME,[COMPUTED])
-    endif
-endif
-
-ifndef OBJCOPY_NAME
-    OBJCOPY_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.objcopy)
-    ifndef OBJCOPY_NAME
-        OBJCOPY_NAME := arm-none-eabi-objcopy
-    else
-        $(call show_config_variable,OBJCOPY_NAME,[COMPUTED])
-    endif
-endif
-
-ifndef OBJDUMP_NAME
-    OBJDUMP_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.objdump)
-    ifndef OBJDUMP_NAME
-        OBJDUMP_NAME := arm-none-eabi-objdump
-    else
-        $(call show_config_variable,OBJDUMP_NAME,[COMPUTED])
-    endif
-endif
-
-ifndef AR_NAME
-    AR_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.ar)
-    ifndef AR_NAME
-        AR_NAME := arm-none-eabi-ar
-    else
-        $(call show_config_variable,AR_NAME,[COMPUTED])
-    endif
-endif
-
-ifndef SIZE_NAME
-    SIZE_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.size)
-    ifndef SIZE_NAME
-        SIZE_NAME := arm-none-eabi-size
-    else
-        $(call show_config_variable,SIZE_NAME,[COMPUTED])
-    endif
-endif
-
-ifndef NM_NAME
-    NM_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.nm)
-    ifndef NM_NAME
-        NM_NAME := arm-none-eabi-gcc-nm
-    else
-        $(call show_config_variable,NM_NAME,[COMPUTED])
-    endif
-endif
+TOOL_PREFIX = arm-none-eabi
 
 ifndef GDB_NAME
     GDB_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.gdb)
     ifndef GDB_NAME
-        GDB_NAME := arm-none-eabi-gdb
+        GDB_NAME := $(TOOL_PREFIX)-gdb
     else
         $(call show_config_variable,GDB_NAME,[COMPUTED])
     endif
@@ -385,17 +315,8 @@ endif
 ########################################################################
 # EXECUTABLES
 # Define them here to use ARM_TOOLS_PATH and allow auto finding of AVR_TOOLS_PATH
-OVERRIDE_EXECUTABLES = 1
 
-ARM_TOOLS_PATH := $(ARM_TOOLS_DIR)/bin
-CC      = $(ARM_TOOLS_PATH)/$(CC_NAME)
-CXX     = $(ARM_TOOLS_PATH)/$(CXX_NAME)
-AS      = $(ARM_TOOLS_PATH)/$(AS_NAME)
-OBJCOPY = $(ARM_TOOLS_PATH)/$(OBJCOPY_NAME)
-OBJDUMP = $(ARM_TOOLS_PATH)/$(OBJDUMP_NAME)
-AR      = $(ARM_TOOLS_PATH)/$(AR_NAME)
-SIZE    = $(ARM_TOOLS_PATH)/$(SIZE_NAME)
-NM      = $(ARM_TOOLS_PATH)/$(NM_NAME)
+AVR_TOOLS_DIR := $(ARM_TOOLS_DIR)
 #GDB     = $(ARM_TOOLS_PATH)/$(GDB_NAME)
 # Use system gdb for now as Arduino supplied has lib error?
 GDB     = $(GDB_NAME)

@@ -810,6 +810,37 @@ CC_NAME = pic32-gcc
 
 ----
 
+## Compiler/Executable variables
+
+### TOOL_PREFIX
+
+**Description:**
+
+The tool prefix, which gets prepended to the tools like $(TOOL_PREFIX)-gcc, $(TOOL_PREFIX)-g++, etc.
+The following tools will be prefixed with '$(TOOL_PREFIX)-':
+
+   * gcc
+   * g++
+   * as
+   * objcopy
+   * objdump
+   * ar
+   * size
+   * nm
+
+Defaults to `avr`
+
+**Example:**
+
+```Makefile
+TOOL_PREFIX = arm-none-eabi
+TOOL_PREFIX = pic32
+```
+
+**Requirement:** *Optional*
+
+----
+
 ### CXX_NAME
 
 **Description:**
@@ -1146,14 +1177,27 @@ CPPFLAGS += -DMY_DEFINE_FOR_ALL_SOURCE_TYPES
 
 **Description:**
 
-Override the default build tools.
+Override the default build tool paths and names.
 
-If set to `1`, each tool (`CC`, `CXX`, `AS`, `OBJCOPY`, `OBJDUMP`, `AR`, `SIZE`, `NM`) must have its path explicitly defined. See `chipKIT.mk`.
+If OVERRIDE_EXECUTABLES is defined, all tools (`CC`, `CXX`, `AS`,
+`OBJCOPY`, `OBJDUMP`, `AR`, `SIZE`, `NM`) must have their paths
+explicitly defined. This may be used in the rare case where
+overriding a path and/or executable name is required.
+The "?=" assignment cannot be used because the executable tags
+are already implicitly defined by Make (e.g. $(CC) == cc).
 
 **Example:**
 
 ```Makefile
 OVERRIDE_EXECUTABLES = 1
+CC      = /usr/bin/avr-gcc
+CXX     = /usr/bin/avr-g++
+AS      = /usr/bin/avr-as
+OBJCOPY = /usr/bin/avr-objcopy
+OBJDUMP = /usr/bin/avr-objdump
+AR      = /usr/bin/avr-ar
+SIZE    = /some_path/alternative_avr-size
+NM      = /some_path/alternative_avr-nm
 ```
 
 **Requirement:** *Optional*
