@@ -959,7 +959,7 @@ ifeq ($(strip $(NO_CORE)),)
         $(call show_config_variable,MONITOR_BAUDRATE, [USER])
     endif
     ifndef MONITOR_CMD
-        MONITOR_CMD = less
+        MONITOR_CMD = "less +F"
     endif
 endif
 
