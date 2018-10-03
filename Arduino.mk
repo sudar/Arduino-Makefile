@@ -1828,6 +1828,7 @@ help:
                            rate on the serial port.\n\
   make show_boards       - list all the boards defined in boards.txt\n\
   make show_submenu      - list all board submenus defined in boards.txt\n\
+  make stty_params       - set proper tty paramerters for the monitor port\n\
   make monitor           - connect to the Arduino's serial port\n\
   make debug_init        - start openocd gdb server\n\
   make debug             - connect to gdb target and begin debugging\n\
