@@ -959,7 +959,7 @@ ifeq ($(strip $(NO_CORE)),)
         $(call show_config_variable,MONITOR_BAUDRATE, [USER])
     endif
     ifndef MONITOR_CMD
-        MONITOR_CMD = "less +F"
+        MONITOR_CMD = "screen"
     endif
 endif
 
@@ -1763,6 +1763,8 @@ else ifeq ($(notdir $(MONITOR_CMD)), picocom)
 else ifeq ($(notdir $(MONITOR_CMD)), cu)
 		$(MONITOR_CMD) -l $(call get_monitor_port) -s $(MONITOR_BAUDRATE)
 else ifeq ($(MONITOR_CMD), less)
+		$(MONITOR_CMD) +F $(call get_monitor_port)
+else ifeq ($(MONITOR_CMD), tail)
 		$(MONITOR_CMD) -f $(call get_monitor_port)
 else ifeq ($(MONITOR_CMD), cat)
 		$(MONITOR_CMD) $(call get_monitor_port)
