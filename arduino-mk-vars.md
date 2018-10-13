@@ -1281,6 +1281,24 @@ AVRDUDE_CONF = /usr/share/arduino/hardware/tools/avrdude.conf
 
 ----
 
+### AVRDUDE_AUTOERASE_FLASH
+
+**Description:**
+
+Enable autoerase flash.
+
+By default disabled.
+
+**Example:**
+
+```Makefile
+AVRDUDE_AUTOERASE_FLASH = yes
+```
+
+**Requirement:** *Optional*
+
+----
+
 ### AVR_TOOLS_PATH
 
 **Description:**
