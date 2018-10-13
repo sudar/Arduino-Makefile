@@ -1490,7 +1490,11 @@ endif
 # -D - Disable auto erase for flash memory
 # Note: -D is needed for Mega boards.
 #       (See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
-AVRDUDE_ARD_OPTS = -D -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P
+ifeq ($(AVRDUDE_AUTOERASE_FLASH), yes)
+else
+    AVRDUDE_ARD_OPTS = -D
+endif
+AVRDUDE_ARD_OPTS += -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P
 ifeq ($(CURRENT_OS), WINDOWS)
     # get_monitor_port checks to see if the monitor port exists, assuming it is
     # a file. In Windows, avrdude needs the port in the format 'com1' which is
