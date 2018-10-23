@@ -61,6 +61,11 @@
 #   ARDMK_DIR     = /usr/share/arduino
 #   AVR_TOOLS_DIR = /usr
 #
+# Some distributions (e.g. Arch Linux) place avrdude's configuration file in
+# /etc instead of the AVR_TOOLS_DIR directory. In such a case, you may want to
+# give the location of avrdude.conf directly:
+#   AVRDUDE_CONF = /etc/avrdude.conf
+#
 # On Windows declare this environmental variables using the windows
 # configuration options or Cygwin .bashrc. Control Panel > System > Advanced system settings
 # The paths must use Unix style forward slash and not have any spaces 
