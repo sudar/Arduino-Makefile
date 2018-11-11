@@ -641,6 +641,11 @@ else
     $(call show_config_variable,BOARD_TAG,[USER])
 endif
 
+ifdef BOARD_SPEED
+    BOARD_SPEED := $(strip $(BOARD_SPEED))
+    $(call show_config_variable,BOARD_SPEED,[USER])
+endif
+
 # If NO_CORE is set, then we don't have to parse boards.txt file
 # But the user might have to define MCU, F_CPU etc
 ifeq ($(strip $(NO_CORE)),)
@@ -686,7 +691,12 @@ ifeq ($(strip $(NO_CORE)),)
     endif
 
     ifndef F_CPU
-        F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),menu.(chip|cpu).$(BOARD_SUB).build.f_cpu)
+        ifdef BOARD_SPEED
+            F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),menu.speed.$(BOARD_SPEED).build.f_cpu)
+        endif
+        ifndef F_CPU
+            F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),menu.(chip|cpu).$(BOARD_SUB).build.f_cpu)
+        endif
         ifndef F_CPU
             F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),build.f_cpu)
         endif
