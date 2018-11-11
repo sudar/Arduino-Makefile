@@ -641,9 +641,9 @@ else
     $(call show_config_variable,BOARD_TAG,[USER])
 endif
 
-ifdef BOARD_SPEED
-    BOARD_SPEED := $(strip $(BOARD_SPEED))
-    $(call show_config_variable,BOARD_SPEED,[USER])
+ifdef BOARD_CLOCK
+    BOARD_CLOCK := $(strip $(BOARD_CLOCK))
+    $(call show_config_variable,BOARD_CLOCK,[USER])
 endif
 
 # If NO_CORE is set, then we don't have to parse boards.txt file
@@ -691,8 +691,8 @@ ifeq ($(strip $(NO_CORE)),)
     endif
 
     ifndef F_CPU
-        ifdef BOARD_SPEED
-            F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),menu.speed.$(BOARD_SPEED).build.f_cpu)
+        ifdef BOARD_CLOCK
+            F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),menu.(speed|clock).$(BOARD_CLOCK).build.f_cpu)
         endif
         ifndef F_CPU
             F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),menu.(chip|cpu).$(BOARD_SUB).build.f_cpu)
@@ -741,21 +741,36 @@ ifeq ($(strip $(NO_CORE)),)
     endif
 
     ifndef ISP_HIGH_FUSE
-        ISP_HIGH_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.(chip|cpu).$(BOARD_SUB).bootloader.high_fuses)
+        ifdef BOARD_CLOCK
+            ISP_HIGH_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.(speed|clock).$(BOARD_CLOCK).bootloader.high_fuses)
+        endif
+        ifndef ISP_HIGH_FUSE
+            ISP_HIGH_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.(chip|cpu).$(BOARD_SUB).bootloader.high_fuses)
+        endif
         ifndef ISP_HIGH_FUSE
             ISP_HIGH_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.high_fuses)
         endif
     endif
 
     ifndef ISP_LOW_FUSE
-        ISP_LOW_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.(chip|cpu).$(BOARD_SUB).bootloader.low_fuses)
+        ifdef BOARD_CLOCK
+            ISP_LOW_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.(speed|clock).$(BOARD_CLOCK).bootloader.low_fuses)
+        endif
+        ifndef ISP_LOW_FUSE
+            ISP_LOW_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.(chip|cpu).$(BOARD_SUB).bootloader.low_fuses)
+        endif
         ifndef ISP_LOW_FUSE
             ISP_LOW_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.low_fuses)
         endif
     endif
 
     ifndef ISP_EXT_FUSE
-        ISP_EXT_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.(chip|cpu).$(BOARD_SUB).bootloader.extended_fuses)
+        ifdef BOARD_CLOCK
+            ISP_EXT_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.(speed|clock).$(BOARD_CLOCK).bootloader.extended_fuses)
+        endif
+        ifndef ISP_EXT_FUSE
+            ISP_EXT_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.(chip|cpu).$(BOARD_SUB).bootloader.extended_fuses)
+        endif
         ifndef ISP_EXT_FUSE
             ISP_EXT_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.extended_fuses)
         endif
