@@ -344,6 +344,24 @@ BOARD_SUB=atmega168
 
 ----
 
+### BOARD_SPEED
+
+**Description:**
+
+Allow selection of f_cpu value specified in `boards.txt` as `board_tag.menu.speed.board_speed`.
+For example, the Watterott ATmega328PB library [https://github.com/watterott/ATmega328PB-Testing](https://github.com/watterott/ATmega328PB-Testing).
+
+**Example:**
+
+```Makefile
+# Select 20MHz clock
+BOARD_SPEED=20mhz
+```
+
+**Requirement:** *Optional to override main board f_cpu setting*
+
+----
+
 ### MONITOR_PORT
 
 **Description:**
