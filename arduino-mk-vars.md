@@ -344,6 +344,33 @@ BOARD_SUB=atmega168
 
 ----
 
+### BOARD_CLOCK
+
+**Description:**
+
+Allow selection of f_cpu and fuses specified in `boards.txt` as `{BOARD_TAG}.menu.clock.{BOARD_CLOCK}`.
+This works for microprocessor board definitions like ATtiny that specify not only the clock speed but fuse settings as clock overrides.
+
+It also works for f_cpu values specified in `boards.txt` as `{BOARD_TAG}.menu.speed.{BOARD_CLOCK}`.
+For example, the Watterott ATmega328PB library [https://github.com/watterott/ATmega328PB-Testing](https://github.com/watterott/ATmega328PB-Testing).
+
+**Example:**
+
+```Makefile
+# Select external 16 MHz clock
+BOARD_CLOCK=external16
+```
+
+**Example:**
+```Makefile
+# Select 20MHz speed
+BOARD_CLOCK=20mhz
+```
+
+**Requirement:** *Optional to override main board f_cpu and/or fuse settings.*
+
+----
+
 ### MONITOR_PORT
 
 **Description:**
