@@ -5,7 +5,6 @@ The following is the rough list of changes that went into different versions.
 I tried to give credit whenever possible. If I have missed anyone, kindly add it to the list.
 
 ### In Development
-- New: Add support for BOARD_CLOCK for board.menu.speed and board.menu.clock entries in boards.txt files. (https://github.com/dewhisna)
 - Fix: Moved CORE_LIB to the last position of the defined linked objects. (https://github.com/wingunder)
 - Fix: Moved ATtiny examples to ATtinyBlink, updated alternate core instructions (issue #537) (https://github.com/sej7278)
 - Fix: Add -fno-devirtualize flag to workaround g++ segfault bug (issue #486). (https://github.com/sej7278)
@@ -26,6 +25,8 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Support Arduino ARM SAM devices (Due). (https://github.com/tuna-f1sh)
 - New: Moved the PARSE_BOARD macro to Common.mk and use only this to parse the boards.txt file. (https://github.com/wingunder)
 - New: Added the TOOL_PREFIX variable for setting up the executable tools centrally and generically. (https://github.com/wingunder)
+- New: Add support for BOARD_CLOCK for board.menu.speed and board.menu.clock entries in boards.txt files. (https://github.com/dewhisna)
+- New: Updated Arch instructions. (https://github.com/Akram-Chehaima)
 
 ### 1.6.0 (2017-07-11)
 - Fix: Allowed for SparkFun's weird usb pid/vid submenu shenanigans (issue #499). (https://github.com/sej7278)
