@@ -53,10 +53,10 @@ $ brew install --HEAD arduino-mk
 #### Arch Linux
 
 Arch Linux users can use the unofficial AUR package [arduino-mk](https://aur.archlinux.org/packages/arduino-mk/).
-It can be installed using the following command.
+It can be installed with [AUR] helper using the following command.
 
 ```sh
-yaourt -S arduino-mk
+yay -S arduino-mk
 ```
 
 #### Fedora
@@ -114,6 +114,12 @@ On openSUSE:
 
 ```sh
 zypper install python-serial
+```
+
+On Arch:
+
+```sh
+sudo pacman -S python-pyserial
 ```
 
 On Mac using MacPorts:
