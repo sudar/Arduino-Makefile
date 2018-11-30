@@ -1139,7 +1139,7 @@ else
 endif
 
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
-CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) $(ARDUINO_ARCH_FLAG) \
+override CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) $(ARDUINO_ARCH_FLAG) \
         -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
         $(SYS_INCLUDES) $(PLATFORM_INCLUDES) $(USER_INCLUDES) -Wall -ffunction-sections \
         -fdata-sections
@@ -1148,7 +1148,7 @@ CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_V
 # By placing it before the user-provided CPPFLAGS rather than after, we allow the
 # the user to disable it if they like, by adding the negation of the flag
 # (-U__PROG_TYPES_COMPAT__) to the user-provided CPPFLAGS.
-CPPFLAGS := -D__PROG_TYPES_COMPAT__ $(CPPFLAGS)
+override CPPFLAGS := -D__PROG_TYPES_COMPAT__ $(CPPFLAGS)
 
 ifdef DEBUG
 OPTIMIZATION_FLAGS= $(DEBUG_FLAGS)
@@ -1156,11 +1156,15 @@ else
 OPTIMIZATION_FLAGS = -O$(OPTIMIZATION_LEVEL)
 endif
 
-CPPFLAGS += $(OPTIMIZATION_FLAGS)
+override CPPFLAGS += $(OPTIMIZATION_FLAGS)
 
 # USB IDs for the Caterina devices like leonardo or micro
 ifneq ($(CATERINA),)
-    CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
+    override CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
+endif
+
+ifdef CUSTOM_DEFINES
+    override CPPFLAGS += $(CUSTOM_DEFINES)
 endif
 
 # $(TOOL_PREFIX)-gcc version that we can do maths on
