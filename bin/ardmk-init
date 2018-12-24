@@ -22,7 +22,7 @@ import os
 import argparse
 
 ## Global Vars
-VERSION = "1.1"
+VERSION = "1.2"
 ARD_TEMPLATE = "\n\
 #include <Arduino.h>\n\
 #include <Wire.h>\n\
@@ -49,6 +49,7 @@ PARSER.add_argument('-u', '--micro', default='AUTO', help='microcontroller on bo
 PARSER.add_argument('-f', '--freq', default='AUTO', help='clock frequency')
 PARSER.add_argument('-p', '--port', default='AUTO', help='monitor port')
 PARSER.add_argument('-n', '--name', default=os.path.basename(os.getcwd()), help='project name')
+PARSER.add_argument('-s', '--sam', action='store_true', help='sam device, will include Sam.mk rather than Arduino.mk')
 PARSER.add_argument('--cli', action='store_true', help='run with user prompts (requires "Clint" module), rather than args')
 PARSER.add_argument('-P', '--project', action='store_true',
                     help='create boilerplate project with src, lib and bin folder structure')
@@ -182,7 +183,10 @@ def generate_makefile():
                                  validators=[validators.PathValidator()])
             ardmk = "ARDMK_DIR := " + ardmk + "\n"
 
-    file_content += "\ninclude $(ARDMK_DIR)/Arduino.mk"
+    if ARGS.sam:
+        file_content += "\ninclude $(ARDMK_DIR)/Sam.mk"
+    else:
+        file_content += "\ninclude $(ARDMK_DIR)/Arduino.mk"
 
     # Add forward slash if source directory exists
     if src_dir:
