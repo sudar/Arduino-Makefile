@@ -716,6 +716,22 @@ ifeq ($(strip $(NO_CORE)),)
             endif
         endif
 
+        ifndef USB_PRODUCT
+            USB_PRODUCT := $(call PARSE_BOARD,$(BOARD_TAG),build.usb_product)
+            ifdef USB_PRODUCT
+                $(call show_config_variable,USB_PRODUCT,[COMPUTED])
+            endif
+        endif
+
+        ifndef USB_MANUFACTURER
+            USB_MANUFACTURER := $(call PARSE_BOARD,$(BOARD_TAG),build.usb_manufacturer)
+            ifndef USB_MANUFACTURER
+                USB_MANUFACTURER = "Unknown"
+            else
+                $(call show_config_variable,USB_MANUFACTURER,[COMPUTED])
+            endif
+        endif
+
         # add caterina flag to ARD_RESET_OPTS
         ARD_RESET_OPTS += --caterina
     endif
@@ -1161,6 +1177,9 @@ CPPFLAGS += $(OPTIMIZATION_FLAGS)
 # USB IDs for the Caterina devices like leonardo or micro
 ifneq ($(CATERINA),)
     CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
+    ifdef USB_PRODUCT
+        CPPFLAGS += -DUSB_PRODUCT='$(USB_PRODUCT)' -DUSB_MANUFACTURER='$(USB_MANUFACTURER)'
+    endif
 endif
 
 # $(TOOL_PREFIX)-gcc version that we can do maths on
