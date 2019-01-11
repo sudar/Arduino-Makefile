@@ -1176,7 +1176,10 @@ CPPFLAGS += $(OPTIMIZATION_FLAGS)
 
 # USB IDs for the Caterina devices like leonardo or micro
 ifneq ($(CATERINA),)
-    CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID) '-DUSB_PRODUCT=$(USB_PRODUCT)' '-DUSB_MANUFACTURER=$(USB_MANUFACTURER)'
+    CPPFLAGS += -DUSB_VID=$(USB_VID) -DUSB_PID=$(USB_PID)
+    ifdef USB_PRODUCT
+        CPPFLAGS += -DUSB_PRODUCT='$(USB_PRODUCT)' -DUSB_MANUFACTURER='$(USB_MANUFACTURER)'
+    endif
 endif
 
 # $(TOOL_PREFIX)-gcc version that we can do maths on
