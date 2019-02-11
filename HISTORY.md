@@ -28,6 +28,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Added the TOOL_PREFIX variable for setting up the executable tools centrally and generically. (https://github.com/wingunder)
 - New: Add support for BOARD_CLOCK for board.menu.speed and board.menu.clock entries in boards.txt files. (https://github.com/dewhisna)
 - New: Updated Arch instructions. (https://github.com/Akram-Chehaima)
+- New: Add support for Robotis OpenCR 1.0 boards.
 
 ### 1.6.0 (2017-07-11)
 - Fix: Allowed for SparkFun's weird usb pid/vid submenu shenanigans (issue #499). (https://github.com/sej7278)
