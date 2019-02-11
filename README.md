@@ -11,6 +11,7 @@ This is a very simple Makefile which knows how to build Arduino sketches. It def
 and includes on-device debugging targets.
 - Supports chipKIT
 - Supports Teensy 3.x (via Teensyduino)
+- Supports Robotis OpenCR 1.0
 - Works on all three major OS (Mac, Linux, Windows)
 - Auto detects serial baud rate and libraries used
 - Support for `*.ino` and `*.pde` sketches as well as raw `*.c` and `*.cpp`
