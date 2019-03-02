@@ -114,7 +114,7 @@ endif
 ifndef ARDUINO_CORE_PATH
     ARDUINO_CORE_PATH   = $(ALTERNATE_CORE_PATH)/cores/arduino
 endif
-ifndef BOARD_TXT
+ifndef BOARDS_TXT
     BOARDS_TXT          = $(ALTERNATE_CORE_PATH)/boards.txt
 endif
 
