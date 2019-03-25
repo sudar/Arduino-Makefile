@@ -1286,9 +1286,14 @@ ifneq (,$(findstring AVR,$(shell $(SIZE) --help)))
     avr_size = $(SIZE) $(SIZEFLAGS) --format=avr $(1)
     $(call show_config_info,Size utility: AVR-aware for enhanced output,[AUTODETECTED])
 else
-    # We have a plain-old binutils version - just give it the hex.
-    avr_size = $(SIZE) $(2)
-    $(call show_config_info,Size utility: Basic (not AVR-aware),[AUTODETECTED])
+    ifeq ($(findstring sam, $(strip $(ARCHITECTURE))), sam)
+       avr_size = $(SIZE) $(SIZEFLAGS) $(1)
+       $(call show_config_info,Size utility: ARM,[AUTODETECTED])
+    else
+       # We have a plain-old binutils version - just give it the hex.
+       avr_size = $(SIZE) $(2)
+       $(call show_config_info,Size utility: Basic (not AVR-aware),[AUTODETECTED])
+    endif
 endif
 
 ifneq (,$(strip $(ARDUINO_LIBS)))
