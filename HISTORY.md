@@ -16,6 +16,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Tweak: Move non-standard-related items from CxxFLAGS_STD to CxxFLAGS (issue #523) (https://github.com/sej7278)
 - Tweak: Update Windows usage documentation and allow non-relative paths (issue #519) (https://github.com/tuna-f1sh)
 - Tweak: Support Cygwin Unix Python and Windows installation on Windows to pass correct port binding. (https://github.com/tuna-f1sh)
+- Tweak: Update how avr-size is called on Sam, also moved to gnu11 std (issue #602) (https://github.com/tuna-f1sh)
 - New: Added -fdiagnostics-color to \*STD flags (https://github.com/sej7278)
 - New: Made -fdiagnostics-color take a variiable DIAGNOSTICS_COLOR_WHEN: never, always, auto. (https://github.com/wingunder)
 - New: Add generation of tags file using ctags, which automatically includes project libs and Arduino core. (https://github.com/tuna-f1sh)
