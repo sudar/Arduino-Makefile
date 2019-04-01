@@ -395,12 +395,7 @@ ifndef BOOTLOADER_PROTECT_VERIFY
     endif
 endif
 
-# C99 with GNU extensions required for C sources using old compiler
-CC_VERNUM = $(shell $(CC) -dumpversion | sed 's/\.//g')
-ifneq ($(shell expr $(CC_VERNUM) '>' 490), 1)
-    CFLAGS_STD        = -std=gnu99
-endif
-
+CFLAGS_STD += -std=gnu11
 CPPFLAGS += -DMD -D$(USB_TYPE) '-DUSB_PRODUCT=$(USB_PRODUCT)' '-DUSB_MANUFACTURER=$(USB_MANUFACTURER)'
 
 # Get extra define flags from boards.txt
@@ -413,6 +408,10 @@ CPPFLAGS += -DUSB_PID=$(USB_PID)
 # Cortex compiler flags
 CPPFLAGS += -mthumb -nostdlib --param max-inline-insns-single=500 -fno-exceptions -Wl,-Map=$(OBJDIR)/$(TARGET).map
 CXXFLAGS += -fno-rtti -fno-threadsafe-statics -std=gnu++11
+
+ifndef SIZEFLAGS
+    SIZEFLAGS += -B
+endif
 
 AMCU := $(call PARSE_BOARD,$(BOARD_TAG),build.mcu)
 BOARD_LINKER_SCRIPT := $(call PARSE_BOARD,$(BOARD_TAG),build.ldscript)
