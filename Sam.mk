@@ -130,11 +130,6 @@ CPPFLAGS += -I$(CMSIS_ATMEL_DIR)/Device/ATMEL
 LIB_PATH  =  $(CMSIS_DIR)/Lib/GCC
 BOOTLOADER_PARENT = $(ALTERNATE_CORE_PATH)/bootloaders
 
-# Utility from ard-mk to parse boards.txt for flags
-ifndef PARSE_BOARD
-    PARSE_BOARD = $(shell grep -Ev '^\#' $(BOARDS_TXT) | grep -E '^[ \t]*$(1).$(2)=' | cut -d = -f 2 | cut -d : -f 2)
-endif
-
 ifndef VARIANT
     VARIANT := $(call PARSE_BOARD,$(BOARD_TAG),menu.(chip|cpu).$(BOARD_SUB).build.variant)
     ifndef VARIANT
