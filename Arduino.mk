@@ -241,6 +241,9 @@ arduino_output =
 # running for the first time (i.e., not after a restart after
 # regenerating the dependency file), then output the configuration.
 ifndef ARDUINO_QUIET
+    ARDUINO_QUIET = 0
+endif
+ifeq ($(ARDUINO_QUIET),0)
     ifeq ($(MAKE_RESTARTS),)
         ifeq ($(MAKELEVEL),0)
             arduino_output = $(info $(1))
