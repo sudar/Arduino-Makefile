@@ -114,7 +114,7 @@ LDFLAGS += $(call PARSE_BOARD,$(BOARD_TAG),build.flags.cpu)
 
 AMCU := $(call PARSE_BOARD,$(BOARD_TAG),build.mcu)
 LDFLAGS += -Wl,--gc-sections,--relax
-LINKER_SCRIPTS = -T${ARDUINO_CORE_PATH}/${AMCU}.ld
+LINKER_SCRIPTS ?= -T${ARDUINO_CORE_PATH}/${AMCU}.ld
 OTHER_LIBS = $(call PARSE_BOARD,$(BOARD_TAG),build.flags.libs)
 
 CPUFLAGS = $(call PARSE_BOARD,$(BOARD_TAG),build.flags.cpu)
