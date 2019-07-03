@@ -925,6 +925,10 @@ ifeq ($(strip $(NO_CORE)),)
         CORE_CPP_SRCS   = $(wildcard $(ARDUINO_CORE_PATH)/*.cpp)
         CORE_AS_SRCS    = $(wildcard $(ARDUINO_CORE_PATH)/*.S)
 
+        # ArduinoCore-API
+        CORE_C_SRCS    += $(wildcard $(ARDUINO_CORE_PATH)/api/*.c)
+        CORE_CPP_SRCS  += $(wildcard $(ARDUINO_CORE_PATH)/api/*.cpp)
+
         # USB Core if samd or sam
         ifeq ($(findstring sam, $(strip $(ARCHITECTURE))), sam)
             CORE_C_SRCS    += $(wildcard $(ARDUINO_CORE_PATH)/avr/*.c) # avr core emulation files
