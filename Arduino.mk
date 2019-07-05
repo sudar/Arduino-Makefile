@@ -925,6 +925,10 @@ ifeq ($(strip $(NO_CORE)),)
         CORE_CPP_SRCS   = $(wildcard $(ARDUINO_CORE_PATH)/*.cpp)
         CORE_AS_SRCS    = $(wildcard $(ARDUINO_CORE_PATH)/*.S)
 
+        # ArduinoCore-API
+        CORE_C_SRCS    += $(wildcard $(ARDUINO_CORE_PATH)/api/*.c)
+        CORE_CPP_SRCS  += $(wildcard $(ARDUINO_CORE_PATH)/api/*.cpp)
+
         # USB Core if samd or sam
         ifeq ($(findstring sam, $(strip $(ARCHITECTURE))), sam)
             CORE_C_SRCS    += $(wildcard $(ARDUINO_CORE_PATH)/avr/*.c) # avr core emulation files
@@ -1159,7 +1163,7 @@ endif
 
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
 CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) $(ARDUINO_ARCH_FLAG) \
-        -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
+        -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_CORE_PATH)/api -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
         $(SYS_INCLUDES) $(PLATFORM_INCLUDES) $(USER_INCLUDES) -Wall -ffunction-sections \
         -fdata-sections
 
