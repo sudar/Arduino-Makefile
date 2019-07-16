@@ -984,11 +984,11 @@ ifndef ARDUINO_LIBS
 endif
 
 ########################################################################
-# Serial monitor (just a screen wrapper)
+# Serial monitor
 
-# Quite how to construct the monitor command seems intimately tied
-# to the command we're using (here screen). So, read the screen docs
-# for more information (search for 'character special device').
+# In order to construct a monitor command, we need to use either `less`,
+# `screen` or `cat`. With `less`, as the default fallback, we will use
+# `-f` flag. Read it's man page to get a better understanding.
 
 ifeq ($(strip $(NO_CORE)),)
     ifndef MONITOR_BAUDRATE
@@ -1006,9 +1006,8 @@ ifeq ($(strip $(NO_CORE)),)
     else
         $(call show_config_variable,MONITOR_BAUDRATE, [USER])
     endif
-
     ifndef MONITOR_CMD
-        MONITOR_CMD = screen
+        MONITOR_CMD = "screen"
     endif
 endif
 
@@ -1747,6 +1746,28 @@ reset_stty:
 		(sleep 0.1 2>/dev/null || sleep 1) ; \
 		$$STTYF $(call get_monitor_port) -hupcl
 
+stty_params:
+	stty -F $(call get_monitor_port) \
+		cs8 \
+		$(MONITOR_BAUDRATE) \
+		ignbrk \
+		-brkint \
+		-icrnl \
+		-imaxbel \
+		-opost \
+		-onlcr \
+		-isig \
+		-icanon \
+		-iexten \
+		-echo \
+		-echoe \
+		-echok \
+		-echoctl \
+		-echoke \
+		noflsh \
+		-ixon \
+		-crtscts
+
 ispload:	$(TARGET_EEP) $(TARGET_HEX) verify_size
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e \
 			$(AVRDUDE_ISPLOAD_OPTS)
@@ -1790,8 +1811,8 @@ show_boards:
 show_submenu:
 	@$(CAT) $(BOARDS_TXT) | grep -E '[a-zA-Z0-9_\-]+.menu.(cpu|chip).[a-zA-Z0-9_\-]+=' | sort -uf | sed 's/.menu.\(cpu\|chip\)./:/' | sed 's/=/:/' | column -s: -t
 
-monitor:
-ifeq ($(notdir $(MONITOR_CMD)), putty)
+monitor: stty_params
+ifeq ($(MONITOR_CMD), 'putty')
 	ifneq ($(strip $(MONITOR_PARAMS)),)
 	$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE),$(MONITOR_PARAMS) $(call get_monitor_port)
 	else
@@ -1801,6 +1822,12 @@ else ifeq ($(notdir $(MONITOR_CMD)), picocom)
 		$(MONITOR_CMD) -b $(MONITOR_BAUDRATE) $(MONITOR_PARAMS) $(call get_monitor_port)
 else ifeq ($(notdir $(MONITOR_CMD)), cu)
 		$(MONITOR_CMD) -l $(call get_monitor_port) -s $(MONITOR_BAUDRATE)
+else ifeq ($(MONITOR_CMD), less)
+		$(MONITOR_CMD) +F -f $(call get_monitor_port)
+else ifeq ($(MONITOR_CMD), tail)
+		$(MONITOR_CMD) -f $(call get_monitor_port)
+else ifeq ($(MONITOR_CMD), cat)
+		$(MONITOR_CMD) $(call get_monitor_port)
 else
 		$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
 endif
@@ -1863,6 +1890,7 @@ help:
                            rate on the serial port.\n\
   make show_boards       - list all the boards defined in boards.txt\n\
   make show_submenu      - list all board submenus defined in boards.txt\n\
+  make stty_params       - set proper tty paramerters for the monitor port\n\
   make monitor           - connect to the Arduino's serial port\n\
   make debug_init        - start openocd gdb server\n\
   make debug             - connect to gdb target and begin debugging\n\
