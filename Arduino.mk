@@ -241,6 +241,9 @@ arduino_output =
 # running for the first time (i.e., not after a restart after
 # regenerating the dependency file), then output the configuration.
 ifndef ARDUINO_QUIET
+    ARDUINO_QUIET = 0
+endif
+ifeq ($(ARDUINO_QUIET),0)
     ifeq ($(MAKE_RESTARTS),)
         ifeq ($(MAKELEVEL),0)
             arduino_output = $(info $(1))
@@ -922,6 +925,10 @@ ifeq ($(strip $(NO_CORE)),)
         CORE_CPP_SRCS   = $(wildcard $(ARDUINO_CORE_PATH)/*.cpp)
         CORE_AS_SRCS    = $(wildcard $(ARDUINO_CORE_PATH)/*.S)
 
+        # ArduinoCore-API
+        CORE_C_SRCS    += $(wildcard $(ARDUINO_CORE_PATH)/api/*.c)
+        CORE_CPP_SRCS  += $(wildcard $(ARDUINO_CORE_PATH)/api/*.cpp)
+
         # USB Core if samd or sam
         ifeq ($(findstring sam, $(strip $(ARCHITECTURE))), sam)
             CORE_C_SRCS    += $(wildcard $(ARDUINO_CORE_PATH)/avr/*.c) # avr core emulation files
@@ -1156,7 +1163,7 @@ endif
 
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
 CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) $(ARDUINO_ARCH_FLAG) \
-        -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
+        -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_CORE_PATH)/api -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
         $(SYS_INCLUDES) $(PLATFORM_INCLUDES) $(USER_INCLUDES) -Wall -ffunction-sections \
         -fdata-sections
 
@@ -1539,7 +1546,11 @@ endif
 # -D - Disable auto erase for flash memory
 # Note: -D is needed for Mega boards.
 #       (See https://github.com/sudar/Arduino-Makefile/issues/114#issuecomment-25011005)
-AVRDUDE_ARD_OPTS = -D -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P
+ifeq ($(AVRDUDE_AUTOERASE_FLASH), yes)
+else
+    AVRDUDE_ARD_OPTS = -D
+endif
+AVRDUDE_ARD_OPTS += -c $(AVRDUDE_ARD_PROGRAMMER) -b $(AVRDUDE_ARD_BAUDRATE) -P
 ifeq ($(CURRENT_OS), WINDOWS)
     # get_monitor_port checks to see if the monitor port exists, assuming it is
     # a file. In Windows, avrdude needs the port in the format 'com1' which is
