@@ -160,14 +160,6 @@ ifeq ($(findstring arduino_due, $(strip $(VARIANT))), arduino_due)
     SAM_CORE_C_SRCS += $(wildcard $(SAM_SYSTEM_PATH)/source/*.c)
 endif
 
-# Use arm-toolchain from Arduino install if exists and user has not defined global version
-ifndef ARM_TOOLS_DIR
-    ARM_TOOLS_DIR = $(call dir_if_exists,$(wildcard $(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/$(TOOL_PREFIX)-gcc/*))
-    $(call show_config_variable,ARM_TOOLS_DIR,[COMPUTED],(from ARDUINO_PACKAGE_DIR))
-else
-    $(call show_config_variable,ARM_TOOLS_DIR,[USER])
-endif
-
 # define plaform lib dir from Arduino ARM support
 ifndef ARDUINO_PLATFORM_LIB_PATH
     ARDUINO_PLATFORM_LIB_PATH := $(ALTERNATE_CORE_PATH)/libraries
@@ -178,6 +170,20 @@ endif
 # command names
 
 TOOL_PREFIX = arm-none-eabi
+
+# Use arm-toolchain from Arduino package install if exists and user has not defined global version
+# if undefined, AVR_TOOLS_DIR will resolve in Arduino.mk as a last resort as Arduino now installs with arm-gcc
+ifndef ARM_TOOLS_DIR
+    ifndef ARM_TOOLS_VER
+        ARM_TOOLS_VER := $(shell basename $(lastword $(wildcard $(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/$(TOOL_PREFIX)-gcc/*)))
+    endif
+    ARM_TOOLS_DIR = $(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/$(TOOL_PREFIX)-gcc/$(ARM_TOOLS_VER)
+    ifdef ARM_TOOLS_DIR
+        $(call show_config_variable,ARM_TOOLS_DIR,[COMPUTED],(from ARDUINO_PACKAGE_DIR))
+    endif
+else
+    $(call show_config_variable,ARM_TOOLS_DIR,[USER])
+endif
 
 ifndef GDB_NAME
     GDB_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.gdb)
@@ -246,7 +252,9 @@ ifndef OPENOCD
     BUNDLED_OPENOCD_DIR := $(call dir_if_exists,$(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/openocd)
     # Try Arduino support package first
     ifdef BUNDLED_OPENOCD_DIR
-        OPENOCD_VER := $(shell basename $(wildcard $(BUNDLED_OPENOCD_DIR)/*))
+        ifndef OPENOCD_VER
+            OPENOCD_VER := $(shell basename $(lastword $(wildcard $(BUNDLED_OPENOCD_DIR)/*)))
+        endif
         OPENOCD = $(BUNDLED_OPENOCD_DIR)/$(OPENOCD_VER)/bin/openocd -s $(BUNDLED_OPENOCD_DIR)/$(OPENOCD_VER)/share/openocd/scripts/
         $(call show_config_variable,OPENOCD,[AUTODETECTED],(from ARDUINO_PACKAGE_DIR))
     else
@@ -271,7 +279,9 @@ ifndef BOSSA
     BUNDLED_BOSSA_DIR := $(call dir_if_exists,$(ARDUINO_PACKAGE_DIR)/$(ARDMK_VENDOR)/tools/bossac)
     # Try Arduino support package first
     ifdef BUNDLED_BOSSA_DIR
-        BOSSA_VER := $(shell basename $(wildcard $(BUNDLED_BOSSA_DIR)/*))
+        ifndef BOSSA_VER
+            BOSSA_VER := $(shell basename $(lastword $(wildcard $(BUNDLED_BOSSA_DIR)/*)))
+        endif
         BOSSA = $(BUNDLED_BOSSA_DIR)/$(BOSSA_VER)/bossac
         $(call show_config_variable,BOSSA,[AUTODETECTED],(from ARDUINO_PACKAGE_DIR))
     else
