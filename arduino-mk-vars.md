@@ -97,6 +97,25 @@ ARM_TOOLS_DIR =
 
 ----
 
+### ARM_TOOLS_VER
+
+**Description:**
+
+Sub-directory where the arm toolchain is installed - usually the tool version.
+
+Can usually be detected from `$ARDUINO_PACKAGE_DIR` /tools subdirectory when ARM
+device support is installed. Will resolve latest version if multiple found.
+
+**Example:**
+
+```Makefile
+ARM_TOOLS_VER = 7-2017q4
+```
+
+**Requirement:** *Optional*
+
+----
+
 ### RESET_CMD
 
 **Description:**
@@ -1798,6 +1817,16 @@ device support is installed.
 
 ----
 
+### BOSSA_VER
+
+**Description:**
+
+`bossa` sub-directory - usually the tool version. Will auto-detect to highest version found.
+
+**Requirement:** *Optional*
+
+----
+
 ### BOSSA_OPTS
 
 **Description:**
@@ -1818,6 +1847,16 @@ Path to openocd binary.
 
 Can usually be detected from `$ARDUINO_PACKAGE_DIR` /tools subdirectory when ARM
 device support is installed.
+
+**Requirement:** *Optional*
+
+----
+
+### OPENOCD_VER
+
+**Description:**
+
+`openocd` sub-directory - usually the tool version. Will auto-detect to highest version found.
 
 **Requirement:** *Optional*
 
