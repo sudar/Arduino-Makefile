@@ -131,7 +131,7 @@ sudo port install py27-serial
 
 On Windows:
 
-You need to install Cygwin and its packages for Make, Perl and the following Serial library.
+You need to install Cygwin and its packages for Make, Perl, Python2 and the following Serial library.
 
 Assuming you included Python in your Cygwin installation:
 
@@ -226,7 +226,7 @@ On Windows (using MSYS and PuTTY), you might want to set the following extra par
 
 ```make
     MONITOR_CMD   = putty
-    MONITOR_PARMS = 8,1,n,N
+    MONITOR_PARAMS = 8,1,n,N
 ```
 
 On Arduino 1.5+ installs, you should set the architecture to either `avr` or `sam` and if using a submenu CPU type, then also set that:
