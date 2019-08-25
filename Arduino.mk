@@ -1792,11 +1792,11 @@ show_submenu:
 
 monitor:
 ifeq ($(notdir $(MONITOR_CMD)), putty)
-	ifneq ($(strip $(MONITOR_PARAMS)),)
+ifneq ($(strip $(MONITOR_PARAMS)),)
 	$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE),$(MONITOR_PARAMS) $(call get_monitor_port)
-	else
+else
 	$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE) $(call get_monitor_port)
-	endif
+endif
 else ifeq ($(notdir $(MONITOR_CMD)), picocom)
 		$(MONITOR_CMD) -b $(MONITOR_BAUDRATE) $(MONITOR_PARAMS) $(call get_monitor_port)
 else ifeq ($(notdir $(MONITOR_CMD)), cu)

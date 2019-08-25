@@ -43,6 +43,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Add support for good old cu as monitor command (issue #492) (https://github.com/mwm)
 - New: Add a documentation how to setup Makefile for 3rd party boards (issue #499). (https://github.com/MilanV)
 - New: Add support for Robotis OpenCM boards
+- Fix: Syntax of inner conditional statements of monitor command evaluated when MONITOR_CMD = putty
 
 ### 1.5.2 (2017-01-11)
 

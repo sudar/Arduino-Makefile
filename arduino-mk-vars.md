@@ -1249,6 +1249,24 @@ MONITOR_CMD = minicom
 
 ----
 
+### MONITOR_PARAMS
+
+**Description:**
+
+Additional parameters for the putty -sercfg command line argument.
+
+Interpreted as a comma-separated list of configuration options.
+
+**Example:**
+
+```Makefile
+MONITOR_PARAMS = 8,1,n,N
+```
+
+**Requirement:** *Optional*
+
+----
+
 ### PRE_BUILD_HOOK
 
 **Description:**
