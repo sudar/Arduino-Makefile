@@ -9,7 +9,7 @@ Group:			Development/Tools
 License:		LGPLv2+
 BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:		noarch
-Requires:		arduino-core pyserial
+Requires:		arduino-core python3-pyserial
 BuildRequires:	arduino-core
 
 %description

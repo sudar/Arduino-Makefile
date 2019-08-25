@@ -160,22 +160,22 @@ if [ -z $COMMON_SOURCED ]; then
         fi
     fi
 
-    if ! command -v python >/dev/null 2>&1; then
+    if ! command -v python3 >/dev/null 2>&1; then
         echo "Installing Python..."
-        _install "python"
+        _install "python3"
     fi
 
-    if ! command -v pip >/dev/null 2>&1; then
+    if ! command -v pip3 >/dev/null 2>&1; then
         echo "Installing Pip..."
-        if ! command -v easy_install >/dev/null 2>&1; then
-            _install "python-setuptools"
+        if ! command -v easy_install3 >/dev/null 2>&1; then
+            _install "python3-setuptools"
         fi
 
-        if ! command -v easy_install >/dev/null 2>&1; then
-            die "easy_install not available, can't install pip"
+        if ! command -v easy_install3 >/dev/null 2>&1; then
+            die "easy_install3 not available, can't install pip3"
         fi
 
-        $SUDO_CMD easy_install pip
+        $SUDO_CMD easy_install3 pip3
     fi
 
     PIP_SUDO_CMD=
@@ -184,7 +184,7 @@ if [ -z $COMMON_SOURCED ]; then
         PIP_SUDO_CMD=$SUDO_CMD
     fi
 
-    $PIP_SUDO_CMD pip install --src dependencies --pre -Ur $BOOTSTRAP_DIR/pip-requirements.txt
+    $PIP_SUDO_CMD pip3 install --src dependencies --pre -Ur $BOOTSTRAP_DIR/pip-requirements.txt
 
     COMMON_SOURCED=1
 fi

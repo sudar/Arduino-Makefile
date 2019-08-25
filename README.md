@@ -83,14 +83,14 @@ installer or download the distribution zip file and extract it.
 The Makefile also delegates resetting the board to a short Python program.
 You'll need to install [`pySerial`](https://pypi.python.org/pypi/pyserial) to use it though.
 
-On most systems you should be able to install it using either `pip` or `easy_install`.
+On most systems you should be able to install it using either `pip3` or `easy_install3`.
 
 ```sh
-pip install pyserial
+pip3 install pyserial
 
 # or if you prefer easy_install
 
-easy_install -U pyserial
+easy_install3 -U pyserial
 ```
 
 If you prefer to install it as a package, then you can do that as well.
@@ -98,23 +98,19 @@ If you prefer to install it as a package, then you can do that as well.
 On Debian or Ubuntu:
 
 ```sh
-apt-get install python-serial
+apt-get install python3-serial
 ```
 
 On Fedora:
 
 ```sh
-yum install pyserial
-
-# or on Fedora 22+
-
-dnf install pyserial
+dnf install python3-pyserial
 ```
 
 On openSUSE:
 
 ```sh
-zypper install python-serial
+zypper install python3-serial
 ```
 
 On Arch:
@@ -126,12 +122,12 @@ sudo pacman -S python-pyserial
 On Mac using MacPorts:
 
 ```sh
-sudo port install py27-serial
+sudo port install py35-serial
 ```
 
 On Windows:
 
-You need to install Cygwin and its packages for Make, Perl, Python2 and the following Serial library.
+You need to install Cygwin and its packages for Make, Perl, Python3 and the following Serial library.
 
 Assuming you included Python in your Cygwin installation:
 
@@ -141,15 +137,15 @@ Assuming you included Python in your Cygwin installation:
 4. build and install Python module: 
  
 ```
-python setup.py build
-python setup.py install
+python3 setup.py build
+python3 setup.py install
 ```
 
 Alternatively, if you have setup Cygwin to use a Windows Python installation,
 simply install using pip:
 
 ```
-pip install pyserial
+pip3 install pyserial
 ```
 
 Arduino-Makefile should automatically detect the Python installation type and
