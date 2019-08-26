@@ -123,6 +123,11 @@ On Mac using MacPorts:
 
 ```sh
 sudo port install py35-serial
+
+# or if you prefer homebrew
+
+brew install python3
+pip3 install pyserial
 ```
 
 On Windows:
