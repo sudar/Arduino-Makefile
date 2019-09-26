@@ -1,6 +1,6 @@
 Name:			arduino-mk
 Version:		1.6.0
-Release:		1%{dist}
+Release:		2%{dist}
 Summary:		Program your Arduino from the command line
 Packager:		Simon John <git@the-jedi.co.uk>
 URL:            https://github.com/sudar/Arduino-Makefile
