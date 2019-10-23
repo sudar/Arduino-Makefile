@@ -10,7 +10,6 @@ License:		LGPLv2+
 BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:		noarch
 Requires:		arduino-core python3-pyserial
-BuildRequires:	arduino-core
 
 %description
 Arduino is an open-source electronics prototyping platform based on 
@@ -60,6 +59,8 @@ rm -rf %{buildroot}
 %{_docdir}/%{name}/examples
 
 %changelog
+* Thu Oct 24 2019 Simon John <git@the-jedi.co.uk>
+- Removed BuildRequires
 * Thu Oct 05 2017 Simon John <git@the-jedi.co.uk>
 - Added ardmk-init binary and manpage
 * Tue Jul 11 2017 Karl Semich <fuzzyTew@gmail.com>
