@@ -63,7 +63,7 @@
 #
 # On Windows declare this environmental variables using the windows
 # configuration options or Cygwin .bashrc. Control Panel > System > Advanced system settings
-# The paths must use Unix style forward slash and not have any spaces 
+# The paths must use Unix style forward slash and not have any spaces
 # or escape charactors. One must use a symbolic link if the path does
 # contain spaces.
 #
@@ -1076,12 +1076,20 @@ get_library_includes = $(if $(and $(wildcard $(1)/src), $(wildcard $(1)/library.
                            -I$(1)/src, \
                            $(addprefix -I,$(1) $(wildcard $(1)/utility)))
 
+get_user_library_includes = $(if $(wildcard $(1)/src), \
+               				-I$(1)/src, \
+           					$(addprefix -I,$(1) $(wildcard $(1)/utility)))
+
 # Gets all sources with given extension (param2) for library (path = param1)
 # for old (1.0.x) layout looks in . and "utility" directories
 # for new (1.5.x) layout looks in src and recursively its subdirectories
 get_library_files  = $(if $(and $(wildcard $(1)/src), $(wildcard $(1)/library.properties)), \
                         $(call rwildcard,$(1)/src/,*.$(2)), \
                         $(wildcard $(1)/*.$(2) $(1)/utility/*.$(2)))
+
+get_user_library_files = $(if $(wildcard $(1)/src), \
+        					$(call rwildcard,$(1)/src/,*.$(2)), \
+							$(wildcard $(1)/*.$(2) $(1)/utility/*.$(2)))
 
 # General arguments
 USER_LIBS      := $(sort $(wildcard $(patsubst %,$(USER_LIB_PATH)/%,$(ARDUINO_LIBS))))
@@ -1108,13 +1116,13 @@ ifneq (,$(strip $(LIBS_NOT_FOUND)))
 endif
 
 SYS_INCLUDES        := $(foreach lib, $(SYS_LIBS),  $(call get_library_includes,$(lib)))
-USER_INCLUDES       := $(foreach lib, $(USER_LIBS), $(call get_library_includes,$(lib)))
+USER_INCLUDES       := $(foreach lib, $(USER_LIBS), $(call get_user_library_includes,$(lib)))
 LIB_C_SRCS          := $(foreach lib, $(SYS_LIBS),  $(call get_library_files,$(lib),c))
 LIB_CPP_SRCS        := $(foreach lib, $(SYS_LIBS),  $(call get_library_files,$(lib),cpp))
 LIB_AS_SRCS         := $(foreach lib, $(SYS_LIBS),  $(call get_library_files,$(lib),S))
-USER_LIB_CPP_SRCS   := $(foreach lib, $(USER_LIBS), $(call get_library_files,$(lib),cpp))
-USER_LIB_C_SRCS     := $(foreach lib, $(USER_LIBS), $(call get_library_files,$(lib),c))
-USER_LIB_AS_SRCS    := $(foreach lib, $(USER_LIBS), $(call get_library_files,$(lib),S))
+USER_LIB_CPP_SRCS   := $(foreach lib, $(USER_LIBS), $(call get_user_library_files,$(lib),cpp))
+USER_LIB_C_SRCS     := $(foreach lib, $(USER_LIBS), $(call get_user_library_files,$(lib),c))
+USER_LIB_AS_SRCS    := $(foreach lib, $(USER_LIBS), $(call get_user_library_files,$(lib),S))
 LIB_OBJS            = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.c.o,$(LIB_C_SRCS)) \
                       $(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.cpp.o,$(LIB_CPP_SRCS)) \
                       $(patsubst $(ARDUINO_LIB_PATH)/%.S,$(OBJDIR)/libs/%.S.o,$(LIB_AS_SRCS))
