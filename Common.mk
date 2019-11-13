@@ -69,7 +69,13 @@ ifneq ($(TEST),)
               MPIDE_DIR = $(DEPENDENCIES_MPIDE_DIR)
        endif
 
-       DEPENDENCIES_ARDUINO_DIR = $(DEPENDENCIES_DIR)/arduino-1.0.6
+       ifeq ($(CURRENT_OS),MAC)
+             IDE_DIRNAME=Arduino.app/Contents/Resources/Java
+       else
+             IDE_DIRNAME=arduino-1.0.6
+       endif
+
+       DEPENDENCIES_ARDUINO_DIR = $(DEPENDENCIES_DIR)/$(IDE_DIRNAME)
        ifeq ($(ARDUINO_DIR),)
               ARDUINO_DIR = $(DEPENDENCIES_ARDUINO_DIR)
        endif
