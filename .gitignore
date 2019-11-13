@@ -2,3 +2,4 @@
 build-cli
 /.project
 build-*
+.tags
