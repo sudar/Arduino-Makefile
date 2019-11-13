@@ -9,6 +9,7 @@ if [ -z "$ARDUINO_DIR" ] || ! test -e $ARDUINO_DIR || [ $OS == "cygwin" ]; then
     echo "Installing Arduino..."
 
     ARDUINO_BASENAME="arduino-1.0.6"
+
     if [ $OS == "cygwin" ]; then
         ARDUINO_FILE="$ARDUINO_BASENAME-windows".zip
         EXTRACT_COMMAND="unzip -q"
@@ -20,13 +21,25 @@ if [ -z "$ARDUINO_DIR" ] || ! test -e $ARDUINO_DIR || [ $OS == "cygwin" ]; then
         EXTRACT_COMMAND="tar -xzf"
     fi
 
-    ARDUINO_URL=http://arduino.cc/download.php?f=/$ARDUINO_FILE
+    ARDUINO_URL=https://downloads.arduino.cc/$ARDUINO_FILE
 
     _pushd $DEPENDENCIES_FOLDER
     if ! test -e $ARDUINO_FILE
     then
         echo "Downloading Arduino IDE..."
         download $ARDUINO_URL $ARDUINO_FILE
+
+        if [[ ! "$(file --mime-type $ARDUINO_FILE)" =~ application\/zip ]]; then
+          mv $ARDUINO_FILE "bad-$ARDUINO_FILE"
+
+          echo
+          echo "[ERROR] Unable to download valid IDE for testing"
+          echo "  Download the IDE manually then try again."
+          echo
+          echo "  Download from: https://www.arduino.cc/en/Main/Software"
+          echo "  Save to      :  $DEPENDENCIES_FOLDER"
+          exit 1
+        fi
     fi
 
     if ! test -d $ARDUINO_BASENAME
