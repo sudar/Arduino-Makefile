@@ -29,13 +29,15 @@ if [ -z "$ARDUINO_DIR" ] || ! test -e $ARDUINO_DIR || [ $OS == "cygwin" ]; then
         echo "Downloading Arduino IDE..."
         download $ARDUINO_URL $ARDUINO_FILE
 
-        if [[ ! "$(file --mime-type $ARDUINO_FILE)" =~ application\/zip ]]; then
+        download_type="$(file --mime-type $DEPENDENCIES_FOLDER/$ARDUINO_FILE)"
+        if [[ ! "$download_type" =~ application\/zip ]]; then
           mv $ARDUINO_FILE "bad-$ARDUINO_FILE"
 
           echo
           echo "[ERROR] Unable to download valid IDE for testing"
-          echo "  Download the IDE manually then try again."
+          echo "        Downloaded file should be a zip but is: ${download_type##* }."
           echo
+          echo "  Download the IDE manually then try again."
           echo "  Download from: https://www.arduino.cc/en/Main/Software"
           echo "  Save to      :  $DEPENDENCIES_FOLDER"
           exit 1
