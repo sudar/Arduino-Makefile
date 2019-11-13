@@ -30,7 +30,7 @@ if [ -z "$ARDUINO_DIR" ] || ! test -e $ARDUINO_DIR || [ $OS == "cygwin" ]; then
         download $ARDUINO_URL $ARDUINO_FILE
 
         download_type="$(file --mime-type $DEPENDENCIES_FOLDER/$ARDUINO_FILE)"
-        if [[ ! "$download_type" =~ application\/zip ]]; then
+        if [[ ! "$download_type" =~ zip ]]; then
           mv $ARDUINO_FILE "bad-$ARDUINO_FILE"
 
           echo
