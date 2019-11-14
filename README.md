@@ -119,15 +119,10 @@ On Arch:
 sudo pacman -S python-pyserial
 ```
 
-On Mac using MacPorts:
+On macOS 10.15+:
 
 ```sh
-sudo port install py35-serial
-
-# or if you prefer homebrew
-
-brew install python3
-pip3 install pyserial
+sudo /usr/bin/python3 -m pip pyserial
 ```
 
 On Windows:
