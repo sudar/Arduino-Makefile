@@ -288,6 +288,25 @@ ARDUINO_CORE_PATH = /usr/share/arduino/hardware/arduino/cores/arduino
 
 ----
 
+### PLATFORM_PATH
+
+**Description:**
+
+Root directory of your ARCHITECTURE that contains configuration and build files for its hardware. (Hint: It will contain a platform.txt file at the first level.) Changing this will change the parent dir of ARDUINO_VAR_PATH, BOARDS_TXT, ARDUINO_PLATFORM_LIB_PATH, ARDUINO_CORE_PATH and BOOTLOADER_PARENT.
+
+Note: not used when setting ALTERNATE_CORE or ALTERNATE_CORE_PATH.
+
+Defaults to: ARDUINO_DIR/hardware/ARDMK_VENDOR/ARCHITECTURE
+
+**Example:**
+
+```Makefile
+PLATFORM_PATH = $(HOME)/sketchbook/hardware/arduino-tiny
+```
+
+**Requirement:** *Optional*
+----
+
 ## Sketch related variables
 
 ### ARDUINO_LIBS

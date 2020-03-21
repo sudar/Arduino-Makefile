@@ -63,7 +63,7 @@
 #
 # On Windows declare this environmental variables using the windows
 # configuration options or Cygwin .bashrc. Control Panel > System > Advanced system settings
-# The paths must use Unix style forward slash and not have any spaces 
+# The paths must use Unix style forward slash and not have any spaces
 # or escape charactors. One must use a symbolic link if the path does
 # contain spaces.
 #
@@ -420,15 +420,20 @@ ifdef ALTERNATE_CORE_PATH
 
 else
 
+    ifndef PLATFORM_PATH
+        PLATFORM_PATH  = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)
+        $(call show_config_variable,PLATFORM_PATH,[COMPUTED],(from ARDUINO_DIR))
+    endif
+
     ifndef ARDUINO_VAR_PATH
-        ARDUINO_VAR_PATH  = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/variants
+        ARDUINO_VAR_PATH  = $(PLATFORM_PATH)/variants
         $(call show_config_variable,ARDUINO_VAR_PATH,[COMPUTED],(from ARDUINO_DIR))
     else
         $(call show_config_variable,ARDUINO_VAR_PATH,[USER])
     endif
 
     ifndef BOARDS_TXT
-        BOARDS_TXT  = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/boards.txt
+        BOARDS_TXT  = $(PLATFORM_PATH)/boards.txt
         $(call show_config_variable,BOARDS_TXT,[COMPUTED],(from ARDUINO_DIR))
     else
         $(call show_config_variable,BOARDS_TXT,[USER])
@@ -602,7 +607,7 @@ endif
 ifndef ARDUINO_PLATFORM_LIB_PATH
     ifeq ($(shell expr $(ARDUINO_VERSION) '>' 150), 1)
         # only for 1.5
-        ARDUINO_PLATFORM_LIB_PATH = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/libraries
+        ARDUINO_PLATFORM_LIB_PATH = $(PLATFORM_PATH)/libraries
         $(call show_config_variable,ARDUINO_PLATFORM_LIB_PATH,[COMPUTED],(from ARDUINO_DIR))
     endif
 else
@@ -834,12 +839,12 @@ endif
 # we can set ARDUINO_CORE_PATH.
 ifndef ARDUINO_CORE_PATH
     ifeq ($(strip $(CORE)),)
-        ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/cores/arduino
+        ARDUINO_CORE_PATH = $(PLATFORM_PATH)/cores/arduino
         $(call show_config_variable,ARDUINO_CORE_PATH,[DEFAULT])
     else
         ARDUINO_CORE_PATH = $(ALTERNATE_CORE_PATH)/cores/$(CORE)
         ifeq ($(wildcard $(ARDUINO_CORE_PATH)),)
-            ARDUINO_CORE_PATH = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/cores/$(CORE)
+            ARDUINO_CORE_PATH = $(PLATFORM_PATH)/cores/$(CORE)
             $(call show_config_variable,ARDUINO_CORE_PATH,[COMPUTED],(from ARDUINO_DIR, BOARD_TAG and boards.txt))
         else
             $(call show_config_variable,ARDUINO_CORE_PATH,[COMPUTED],(from ALTERNATE_CORE_PATH, BOARD_TAG and boards.txt))
@@ -1322,7 +1327,7 @@ endif
 
 # either calculate parent dir from arduino dir, or user-defined path
 ifndef BOOTLOADER_PARENT
-    BOOTLOADER_PARENT = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/$(ARCHITECTURE)/bootloaders
+    BOOTLOADER_PARENT = $(PLATFORM_PATH)/bootloaders
     $(call show_config_variable,BOOTLOADER_PARENT,[COMPUTED],(from ARDUINO_DIR))
 else
     $(call show_config_variable,BOOTLOADER_PARENT,[USER])
