@@ -64,12 +64,18 @@ $(call show_config_variable,CURRENT_OS,[AUTODETECTED])
 ifneq ($(TEST),)
        DEPENDENCIES_DIR = /var/tmp/Arduino-Makefile-testing-dependencies
 
-       DEPENDENCIES_MPIDE_DIR = $(DEPENDENCIES_DIR)/mpide-0023-linux64-20130817-test
+       DEPENDENCIES_MPIDE_DIR = $(shell find $(DEPENDENCIES_DIR) -name 'mpide-0023-*' -type d -exec ls -dt {} + | head -n 1)
        ifeq ($(MPIDE_DIR),)
               MPIDE_DIR = $(DEPENDENCIES_MPIDE_DIR)
        endif
 
-       DEPENDENCIES_ARDUINO_DIR = $(DEPENDENCIES_DIR)/arduino-1.0.6
+       ifeq ($(CURRENT_OS),MAC)
+             IDE_DIRNAME=Arduino.app/Contents/Resources/Java
+       else
+             IDE_DIRNAME=arduino-1.0.6
+       endif
+
+       DEPENDENCIES_ARDUINO_DIR = $(DEPENDENCIES_DIR)/$(IDE_DIRNAME)
        ifeq ($(ARDUINO_DIR),)
               ARDUINO_DIR = $(DEPENDENCIES_ARDUINO_DIR)
        endif
