@@ -8,7 +8,7 @@
 # and archived into the build-$(BOARD_TAG)/libtoggle.a target.
 
 include ../board.mk
-include ../../../Arduino.mk
+include $(ARDMK_DIR)/Arduino.mk
 
 build-$(BOARD_TAG)/libtoggle.a: $(LOCAL_OBJS)
 	$(AR) rcs $@ $(LOCAL_OBJS)

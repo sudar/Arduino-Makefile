@@ -15,7 +15,7 @@ TOGGLE_ARCHIVE = build-$(BOARD_TAG)/libtoggle.a
 CXXFLAGS += -IToggle
 OTHER_OBJS = Toggle/$(TOGGLE_ARCHIVE)
 
-include ../../Arduino.mk
+include $(ARDMK_DIR)/Arduino.mk
 
 Toggle/$(TOGGLE_ARCHIVE):
 	$(MAKE) -C Toggle $(TOGGLE_ARCHIVE)

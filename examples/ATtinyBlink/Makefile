@@ -54,6 +54,6 @@ BOARD_TAG = attiny85
 # ------------------------------------------------------------------ #
 
 # Path to the Arduino Makefile
-include /usr/share/arduino/Arduino.mk
+include $(ARDMK_DIR)/Arduino.mk
 
 # !!! Important. You have to use 'make ispload' when using an ISP.
