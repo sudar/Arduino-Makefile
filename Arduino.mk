@@ -1004,7 +1004,7 @@ ifeq ($(strip $(NO_CORE)),)
             $(call show_config_variable,MONITOR_BAUDRATE,[DETECTED], (in sketch))
         endif
     else
-        $(call show_config_variable,MONITOR_BAUDRATE, [USER])
+        $(call show_config_variable,MONITOR_BAUDRATE,[USER])
     endif
 
     ifndef MONITOR_CMD
