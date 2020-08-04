@@ -8,8 +8,8 @@ dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
 # result = $(call READ_BOARD_TXT, 'boardname', 'parameter')
 PARSE_BOARD = $(shell if [ -f $(BOARDS_TXT) ]; \
 then \
-  grep -Ev '^\#' $(BOARDS_TXT) | \
-  grep -E "^[ \t]*$(1).$(2)=" | \
+  $(GREP) -Ev '^\#' $(BOARDS_TXT) | \
+  $(GREP) -E "^[ \t]*$(1).$(2)=" | \
   cut -d = -f 2- | \
   cut -d : -f 2; \
 fi)
@@ -45,15 +45,24 @@ $(call arduino_output,$(call ardmk_include) Configuration:)
 ########################################################################
 #
 # Detect OS
+
 ifeq ($(OS),Windows_NT)
     CURRENT_OS = WINDOWS
+    GREP := grep
 else
     UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
         CURRENT_OS = LINUX
+        GREP := grep
     endif
     ifeq ($(UNAME_S),Darwin)
         CURRENT_OS = MAC
+        ifeq (, $(shell which ggrep))
+            echo $(info Using macOS BSD grep, please install GNU grep to avoid warnings)
+            GREP := grep
+        else
+            GREP := ggrep
+        endif
     endif
 endif
 $(call show_config_variable,CURRENT_OS,[AUTODETECTED])
