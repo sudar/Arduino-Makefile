@@ -28,7 +28,6 @@ mkdir -p %{buildroot}/%{_datadir}/arduino
 mkdir -p %{buildroot}/%{_bindir}
 mkdir -p %{buildroot}/%{_mandir}/man1
 mkdir -p %{buildroot}/%{_docdir}/%{name}/examples
-sed -i 's/^#!\/usr\/bin\/env python/#!\/usr\/bin\/python3/' bin/*
 install -m 755 -d %{buildroot}/%{_docdir}/%{name}
 install -m 755 -d %{buildroot}/%{_docdir}/%{name}/examples
 for dir in `find examples -type d` ; do install -m 755 -d %{buildroot}/%{_docdir}/%{name}/$dir ; done
@@ -60,8 +59,6 @@ rm -rf %{buildroot}
 %{_docdir}/%{name}/examples
 
 %changelog
-* Wed Jan 22 2020 Simon John <git@the-jedi.co.uk>
-- Added sed for shebang
 * Thu Oct 24 2019 Simon John <git@the-jedi.co.uk>
 - Removed BuildRequires
 * Thu Oct 05 2017 Simon John <git@the-jedi.co.uk>
