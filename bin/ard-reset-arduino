@@ -89,7 +89,7 @@ if args.zero:
         # check if a new port has attached and return the index if it has
         port_index = new_port(initial_ports, reset_ports)
     # return the new port if detected, otherwise return passed port
-    if port_index is -1:
+    if port_index == -1:
         bootloader_port = args.port[0]
     else:
         bootloader_port = reset_ports[port_index]
