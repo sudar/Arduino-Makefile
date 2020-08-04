@@ -115,6 +115,22 @@ RESET_CMD = $(HOME)/gertduino/reset
 
 ----
 
+### PYTHON_CMD
+
+**Description:**
+
+Path to Python binary. Requires pyserial module installed. Makefile will error if unable to auto-find as utility scripts will not work. To override this, give it an empty define.
+
+**Example:**
+
+```Makefile
+PYTHON_CMD = /usr/bin/python3
+```
+
+**Requirement:** *Optional*
+
+----
+
 ## Arduino IDE variables
 
 ### ARDUINO_DIR

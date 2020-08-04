@@ -98,3 +98,24 @@ ifeq ($(CURRENT_OS),WINDOWS)
         echo $(error On Windows, ARDUINO_DIR and other defines must use forward slash and not contain spaces, special characters or be cygdrive relative)
     endif
 endif
+
+########################################################################
+# System Python
+
+ifndef PYTHON_CMD
+    # try for Python 3 first
+    PYTHON_CMD := $(shell which python3 2> /dev/null)
+    ifdef PYTHON_CMD
+        $(call show_config_variable,PYTHON_CMD,[AUTODETECTED])
+    else
+        # fall-back to any Python
+        PYTHON_CMD := $(shell which python 2> /dev/null)
+        ifdef PYTHON_CMD
+            $(call show_config_variable,PYTHON_CMD,[AUTODETECTED])
+        else
+            echo $(error "Unable to find system Python! Utility scipts won't work. Override this error by defining PYTHON_CMD")
+        endif
+    endif
+else
+    $(call show_config_variable,PYTHON_CMD,[USER])
+endif
