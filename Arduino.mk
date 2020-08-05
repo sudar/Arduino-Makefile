@@ -853,15 +853,15 @@ endif
 # Reset
 
 ifndef RESET_CMD
-  ARD_RESET_ARDUINO := $(shell which ard-reset-arduino 2> /dev/null)
+  ARD_RESET_ARDUINO := $(PYTHON_CMD) $(shell which ard-reset-arduino 2> /dev/null)
   ifndef ARD_RESET_ARDUINO
     # same level as *.mk in bin directory when checked out from git
     # or in $PATH when packaged
-    ARD_RESET_ARDUINO = $(ARDMK_DIR)/bin/ard-reset-arduino
+    ARD_RESET_ARDUINO = $(PYTHON_CMD) $(ARDMK_DIR)/bin/ard-reset-arduino
   endif
   ifneq (,$(findstring CYGWIN,$(shell uname -s)))
       # confirm user is using default cygwin unix Python (which uses ttySx) and not Windows Python (which uses COMx)
-      ifeq ($(shell which python),/usr/bin/python)
+      ifeq ($(PYTHON_CMD),/usr/bin/python)
         RESET_CMD = $(ARD_RESET_ARDUINO) $(ARD_RESET_OPTS) $(DEVICE_PATH)
       else
         RESET_CMD = $(ARD_RESET_ARDUINO) $(ARD_RESET_OPTS) $(call get_monitor_port)

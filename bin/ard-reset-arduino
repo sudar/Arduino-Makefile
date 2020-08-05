@@ -1,17 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
-from __future__ import print_function
 import serial
 import serial.tools.list_ports
 import os.path
 import argparse
 from time import sleep
-
-pyserial_version = None
-try:
-  pyserial_version = int(serial.VERSION[0])
-except:
-  pyserial_version = 2  # less than 2.3
 
 parser = argparse.ArgumentParser(description='Reset an Arduino')
 parser.add_argument('--zero', action='store_true', help='Reset Arduino Zero or similar Native USB to enter bootloader')
@@ -65,11 +58,7 @@ if args.zero:
 
     ser = serial.Serial(args.port[0], 57600)
     ser.close()
-
-    if pyserial_version < 3:
-        ser.setBaudrate(1200)
-    else:
-        ser.baudrate = 1200
+    ser.baudrate = 1200
 
     # do the open/close at 1200 BAUD
     ser.open()
@@ -100,7 +89,7 @@ if args.zero:
         # check if a new port has attached and return the index if it has
         port_index = new_port(initial_ports, reset_ports)
     # return the new port if detected, otherwise return passed port
-    if port_index is -1:
+    if port_index == -1:
         bootloader_port = args.port[0]
     else:
         bootloader_port = reset_ports[port_index]
