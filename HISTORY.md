@@ -12,6 +12,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - Fix: recognize serial monitors with full path in MONITOR_CMD
 - Fix: Grab USB_PRODUCT and USB_MANUFACTURER from boards.txt for 32u4 boards (issue #594).
 - Fix: Show the configuration when ARDUINO_QUIET=0
+- Fix: Travis build and bring Arduino IDE upto date
 - Tweak: Move chip erase flag from set_fuses to ispload to prevent sketch being nuked when setting fuses
 - Tweak: Set ARDMK_VERSION to 1.6 (https://github.com/sej7278)
 - Tweak: Move non-standard-related items from CxxFLAGS_STD to CxxFLAGS (issue #523) (https://github.com/sej7278)

@@ -78,7 +78,11 @@ ifneq ($(TEST),)
               MPIDE_DIR = $(DEPENDENCIES_MPIDE_DIR)
        endif
 
-       DEPENDENCIES_ARDUINO_DIR = $(DEPENDENCIES_DIR)/arduino-1.0.6
+       ifndef ARDUINO_IDE_DIR
+              ARDUINO_IDE_DIR := $(shell basename $(basename $(basename $(lastword $(wildcard $(DEPENDENCIES_DIR)/arduino*)))))
+              # ARDUINO_IDE_DIR := arduino
+       endif
+       DEPENDENCIES_ARDUINO_DIR = $(DEPENDENCIES_DIR)/$(ARDUINO_IDE_DIR)
        ifeq ($(ARDUINO_DIR),)
               ARDUINO_DIR = $(DEPENDENCIES_ARDUINO_DIR)
        endif

@@ -31,6 +31,16 @@ ifndef COMMON_INCLUDED
     include $(ARDMK_DIR)/Common.mk
 endif
 
+ifneq ($(TEST),)
+    CORE_VER = 1.8.6
+    CMSIS_VER = 4.5.0
+    CMSIS_ATMEL_VER = 1.2.0
+    ALTERNATE_CORE_PATH = $(DEPENDENCIES_DIR)/samd
+    CMSIS_DIR = $(DEPENDENCIES_DIR)/CMSIS/CMSIS
+    CMSIS_ATMEL_DIR = $(DEPENDENCIES_DIR)/CMSIS-Atmel/CMSIS
+    ARM_TOOLS_DIR = $(basename $(basename $(firstword $(wildcard $(DEPENDENCIES_DIR)/gcc-arm-none-eabi*))))
+endif
+
 ifndef ARDUINO_PACKAGE_DIR
     # attempt to find based on Linux, macOS and Windows default
     ARDUINO_PACKAGE_DIR := $(firstword \
