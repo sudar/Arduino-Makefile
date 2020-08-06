@@ -150,6 +150,22 @@ PYTHON_CMD = /usr/bin/python3
 
 ----
 
+### GREP_CMD
+
+**Description:**
+
+Path to GNU grep binary. Only added for macOS, which has BSD grep by default but results in some parsing warnings. macOS users should install GNU grep using Homebrew.
+
+**Example:**
+
+```Makefile
+GREP_CMD = /bin/grep
+```
+
+**Requirement:** *Optional*
+
+----
+
 ## Arduino IDE variables
 
 ### ARDUINO_DIR
