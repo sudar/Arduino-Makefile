@@ -168,8 +168,6 @@ if [ -z $COMMON_SOURCED ]; then
     if ! command -v pip3 >/dev/null 2>&1; then
         echo "Installing Pip..."
         _install "python3-pip"
-
-        $SUDO_CMD easy_install3 pip3
     fi
 
     PIP_SUDO_CMD=

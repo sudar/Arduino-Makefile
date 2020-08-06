@@ -5,4 +5,4 @@ ARDUINO_LIBS =
 
 #MONITOR_PORT = /dev/ttyACM0
 
-include ../../OpenCR.mk
+include $(ARDMK_DIR)/OpenCR.mk

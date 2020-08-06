@@ -3,4 +3,4 @@
 BOARD_TAG    = uno
 ARDUINO_LIBS = Ethernet SPI
 
-include ../../Arduino.mk
+include $(ARDMK_DIR)/Arduino.mk

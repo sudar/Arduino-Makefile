@@ -27,4 +27,4 @@ BOARD_TAG = arduino_zero_native
 # Windows
 #ARDUINO_PACKAGE_DIR := "C:/Users/$(USER)/AppData/Local/Arduino15/packages"
 
-include ../../Sam.mk
+include $(ARDMK_DIR)/Sam.mk

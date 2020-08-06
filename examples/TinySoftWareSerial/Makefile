@@ -17,4 +17,4 @@ F_CPU        = 16000000L
 
 ARDUINO_LIBS = SoftwareSerial
 
-include /usr/share/arduino/Arduino.mk
+include $(ARDMK_DIR)/Arduino.mk

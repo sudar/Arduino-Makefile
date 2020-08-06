@@ -48,20 +48,20 @@ $(call arduino_output,$(call ardmk_include) Configuration:)
 
 ifeq ($(OS),Windows_NT)
     CURRENT_OS = WINDOWS
-    GREP_CMD := grep
+    GREP_CMD = grep
 else
     UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
         CURRENT_OS = LINUX
-        GREP_CMD := grep
+        GREP_CMD = grep
     endif
     ifeq ($(UNAME_S),Darwin)
         CURRENT_OS = MAC
         ifeq (, $(shell which ggrep))
             echo $(info Using macOS BSD grep, please install GNU grep to avoid warnings)
-            GREP_CMD := grep
+            GREP_CMD = grep
         else
-            GREP_CMD := ggrep
+            GREP_CMD = ggrep
         endif
     endif
 endif
@@ -73,14 +73,18 @@ $(call show_config_variable,CURRENT_OS,[AUTODETECTED])
 ifneq ($(TEST),)
        DEPENDENCIES_DIR = /var/tmp/Arduino-Makefile-testing-dependencies
 
-       DEPENDENCIES_MPIDE_DIR = $(DEPENDENCIES_DIR)/mpide-0023-linux64-20130817-test
+       DEPENDENCIES_MPIDE_DIR := $(shell find $(DEPENDENCIES_DIR) -name 'mpide-0023-*' -type d -exec ls -dt {} + | head -n 1)
+
        ifeq ($(MPIDE_DIR),)
               MPIDE_DIR = $(DEPENDENCIES_MPIDE_DIR)
        endif
 
        ifndef ARDUINO_IDE_DIR
-              ARDUINO_IDE_DIR := $(shell basename $(basename $(basename $(lastword $(wildcard $(DEPENDENCIES_DIR)/arduino*)))))
-              # ARDUINO_IDE_DIR := arduino
+              ifeq ($(CURRENT_OS),MAC)
+                  ARDUINO_IDE_DIR = Arduino.app/Contents/Resources/Java
+              else
+                  ARDUINO_IDE_DIR := $(shell basename $(basename $(basename $(lastword $(wildcard $(DEPENDENCIES_DIR)/arduino*)))))
+              endif
        endif
        DEPENDENCIES_ARDUINO_DIR = $(DEPENDENCIES_DIR)/$(ARDUINO_IDE_DIR)
        ifeq ($(ARDUINO_DIR),)

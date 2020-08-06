@@ -1,4 +1,5 @@
-sudo: required
+os: linux
+dist: xenial
 language: c
 compiler:
   - gcc
@@ -9,3 +10,6 @@ addons:
     packages:
       - "python3"
       - "python3-pip"
+env:
+  global:
+    - ARDMK_DIR=$TRAVIS_BUILD_DIR
