@@ -21,4 +21,4 @@ BOARD_TAG = mzero_pro_bl_dbg
 # Windows
 # ARDUINO_PACKAGE_DIR := "C:/Users/$(USER)/AppData/Local/Arduino15/packages"
 
-include $(ARDMK_DIR)/Sam.mk
+include ../../Sam.mk

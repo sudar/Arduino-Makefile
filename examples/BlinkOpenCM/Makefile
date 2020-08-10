@@ -4,4 +4,4 @@ ARDUINO_LIBS =
 #MONITOR_PORT = /dev/ttyACM0
 #OPENCMIDE_DIR = /where/you/installed/robotis_opencm
 
-include $(ARDMK_DIR)/OpenCM.mk
+include ../../OpenCM.mk
