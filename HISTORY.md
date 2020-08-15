@@ -32,6 +32,7 @@ I tried to give credit whenever possible. If I have missed anyone, kindly add it
 - New: Updated Arch instructions. (https://github.com/Akram-Chehaima)
 - New: Add support for Robotis OpenCR 1.0 boards.
 - New: Build the ArduinoCore API
+- New: Parse build.board from boards.txt and add to CPPFLAGS (https://github.com/sej7278)
 
 ### 1.6.0 (2017-07-11)
 - Fix: Allowed for SparkFun's weird usb pid/vid submenu shenanigans (issue #499). (https://github.com/sej7278)

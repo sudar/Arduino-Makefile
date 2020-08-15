@@ -817,6 +817,11 @@ ifeq ($(strip $(NO_CORE)),)
         endif
     endif
 
+    # some cores have a build.board
+    ifndef BUILD_BOARD
+        BUILD_BOARD = $(call PARSE_BOARD,$(BOARD_TAG),build.board)
+    endif
+
 endif
 
 # Everything gets built in here (include BOARD_TAG now)
@@ -1187,6 +1192,10 @@ ifneq ($(CATERINA),)
     ifdef USB_PRODUCT
         CPPFLAGS += -DUSB_PRODUCT='$(USB_PRODUCT)' -DUSB_MANUFACTURER='$(USB_MANUFACTURER)'
     endif
+endif
+
+ifneq ($(BUILD_BOARD),)
+    CPPFLAGS += -DARDUINO_$(BUILD_BOARD) "-DARDUINO_BOARD=\"$(BUILD_BOARD)\""
 endif
 
 # $(TOOL_PREFIX)-gcc version that we can do maths on
