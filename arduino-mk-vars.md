@@ -1967,16 +1967,16 @@ CTAGS_OPTS = -V
 
 ----
 
-### CTAGS_CMD
+### CTAGS_EXEC
 
 **Description:**
 
-Location of `ctags` binary. Defaults to user path.
+Path to the `ctags` binary. Defaults to user path.
 
 **Example:**
 
 ```Makefile
-CTAGS_CMD = /usr/local/bin/
+CTAGS_EXEC = /usr/local/bin/ctags
 ```
 
 **Requirement:** *Optional*
