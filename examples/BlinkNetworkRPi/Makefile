@@ -16,7 +16,7 @@ AVRDUDE_CONF=/usr/local/etc/avrdude.conf
 FORCE_MONITOR_PORT=true
 MONITOR_PORT=/dev/spidev0.0
 
-include ../../Arduino.mk
+include $(ARDMK_DIR)/Arduino.mk
 
 
 # Additional rules to use a remote Raspberry Pi programmer

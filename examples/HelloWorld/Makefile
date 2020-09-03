@@ -1,4 +1,4 @@
 BOARD_TAG    = uno
 ARDUINO_LIBS = LiquidCrystal
 
-include ../../Arduino.mk
+include $(ARDMK_DIR)/Arduino.mk

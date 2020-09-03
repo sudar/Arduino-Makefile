@@ -2,4 +2,4 @@
 
 BOARD_TAG    = uno
 
-include ../../Arduino.mk
+include $(ARDMK_DIR)/Arduino.mk

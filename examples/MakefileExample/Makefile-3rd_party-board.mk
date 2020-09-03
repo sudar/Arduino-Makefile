@@ -52,5 +52,5 @@ ARDUINO_SKETCHBOOK  = $(HOME)/sketchbook
 ALTERNATE_CORE      = sparkfun
 BOARD_TAG           = promicro
 BOARD_SUB	    = 8MHzatmega32U4
-include /usr/share/arduino/Arduino.mk
+include $(ARDMK_DIR)/Arduino.mk
 

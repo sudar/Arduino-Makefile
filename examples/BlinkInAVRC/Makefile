@@ -11,6 +11,6 @@ F_CPU = 8000000L
 ISP_PROG   = stk500v1
 AVRDUDE_ISP_BAUDRATE = 19200
 
-include ../../Arduino.mk
+include $(ARDMK_DIR)/Arduino.mk
 
 # !!! Important. You have to use make ispload to upload when using ISP programmer
