@@ -1,6 +1,15 @@
-sudo: required
+os: linux
+dist: xenial
 language: c
 compiler:
   - gcc
 script: tests/script/runtests.sh
 before_install: tests/script/bootstrap.sh
+addons:
+  apt:
+    packages:
+      - "python3"
+      - "python3-pip"
+env:
+  global:
+    - ARDMK_DIR=$TRAVIS_BUILD_DIR

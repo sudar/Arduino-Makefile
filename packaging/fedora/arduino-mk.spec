@@ -1,6 +1,6 @@
 Name:			arduino-mk
 Version:		1.6.0
-Release:		1%{dist}
+Release:		2%{dist}
 Summary:		Program your Arduino from the command line
 Packager:		Simon John <git@the-jedi.co.uk>
 URL:            https://github.com/sudar/Arduino-Makefile
@@ -9,8 +9,7 @@ Group:			Development/Tools
 License:		LGPLv2+
 BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:		noarch
-Requires:		arduino-core pyserial
-BuildRequires:	arduino-core
+Requires:		arduino-core python3-pyserial
 
 %description
 Arduino is an open-source electronics prototyping platform based on 
@@ -60,6 +59,8 @@ rm -rf %{buildroot}
 %{_docdir}/%{name}/examples
 
 %changelog
+* Thu Oct 24 2019 Simon John <git@the-jedi.co.uk>
+- Removed BuildRequires
 * Thu Oct 05 2017 Simon John <git@the-jedi.co.uk>
 - Added ardmk-init binary and manpage
 * Tue Jul 11 2017 Karl Semich <fuzzyTew@gmail.com>

@@ -853,15 +853,15 @@ endif
 # Reset
 
 ifndef RESET_CMD
-  ARD_RESET_ARDUINO := $(shell which ard-reset-arduino 2> /dev/null)
+  ARD_RESET_ARDUINO := $(PYTHON_CMD) $(shell which ard-reset-arduino 2> /dev/null)
   ifndef ARD_RESET_ARDUINO
     # same level as *.mk in bin directory when checked out from git
     # or in $PATH when packaged
-    ARD_RESET_ARDUINO = $(ARDMK_DIR)/bin/ard-reset-arduino
+    ARD_RESET_ARDUINO = $(PYTHON_CMD) $(ARDMK_DIR)/bin/ard-reset-arduino
   endif
   ifneq (,$(findstring CYGWIN,$(shell uname -s)))
       # confirm user is using default cygwin unix Python (which uses ttySx) and not Windows Python (which uses COMx)
-      ifeq ($(shell which python),/usr/bin/python)
+      ifeq ($(PYTHON_CMD),/usr/bin/python)
         RESET_CMD = $(ARD_RESET_ARDUINO) $(ARD_RESET_OPTS) $(DEVICE_PATH)
       else
         RESET_CMD = $(ARD_RESET_ARDUINO) $(ARD_RESET_OPTS) $(call get_monitor_port)
@@ -1227,15 +1227,24 @@ CFLAGS        += $(CFLAGS_STD)
 CXXFLAGS      += -fpermissive -fno-exceptions $(CXXFLAGS_STD)
 ASFLAGS       += -x assembler-with-cpp
 DIAGNOSTICS_COLOR_WHEN ?= always
-ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
-    ASFLAGS  += -flto
-    CXXFLAGS += -fno-threadsafe-statics -flto -fno-devirtualize -fdiagnostics-color=$(DIAGNOSTICS_COLOR_WHEN)
-    CFLAGS   += -flto -fno-fat-lto-objects -fdiagnostics-color=$(DIAGNOSTICS_COLOR_WHEN)
+
+# Flags for AVR
+ifeq ($(findstring avr, $(strip $(CC_NAME))), avr)
+    ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
+        ASFLAGS  += -flto
+        CXXFLAGS += -fno-threadsafe-statics -flto -fno-devirtualize -fdiagnostics-color=$(DIAGNOSTICS_COLOR_WHEN)
+        CFLAGS   += -flto -fno-fat-lto-objects -fdiagnostics-color=$(DIAGNOSTICS_COLOR_WHEN)
+        LDFLAGS += -flto -fuse-linker-plugin
+    endif
+# Flags for ARM (most set in Sam.mk)
+else
+    ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
+        CXXFLAGS += -fdiagnostics-color=$(DIAGNOSTICS_COLOR_WHEN)
+        CFLAGS   += -fdiagnostics-color=$(DIAGNOSTICS_COLOR_WHEN)
+    endif
 endif
+
 LDFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL)
-ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
-		LDFLAGS += -flto -fuse-linker-plugin
-endif
 SIZEFLAGS     ?= --mcu=$(MCU) -C
 
 # for backwards compatibility, grab ARDUINO_PORT if the user has it set

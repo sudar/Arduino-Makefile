@@ -1,13 +1,45 @@
 #!/usr/bin/env bash
 
+SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 TESTS_DIR=examples
+export ARDMK_DIR="${ARDMK_DIR:-$SCRIPTS_DIR/../..}"
 
 failures=()
+
+if [[ "$1" == "-q" ]]; then
+  QUIET=1
+fi
+
+runtest() {
+  if [[ $QUIET ]]; then
+    make $* TEST=1 > /dev/null 2>&1
+  else
+    output=`make $* TEST=1`
+  fi
+}
+
+run() {
+  if [[ $QUIET ]]; then
+    "$@" > /dev/null 2>&1
+  else
+    "$@"
+  fi
+}
+
+info() {
+  if [[ $QUIET ]]; then
+    return
+  fi
+
+  echo "$@"
+}
+
+run pushd $SCRIPTS_DIR/../..
 
 # These examples cannot be tested easily at the moment as they require
 # alternate cores. The MakefileExample doesn't actually contain any source code
 # to compile.
-NON_TESTABLE_EXAMPLES=(ATtinyBlink MakefileExample TinySoftWareSerial BlinkOpenCM BlinkOpenCR BlinkTeensy BlinkNetworkRPi BlinkInAVRC MZeroBlink ZeroBlink DueBlink)
+NON_TESTABLE_EXAMPLES=(ATtinyBlink MakefileExample TinySoftWareSerial BlinkOpenCM BlinkOpenCR BlinkTeensy BlinkNetworkRPi BlinkInAVRC DueBlink)
 
 for dir in $TESTS_DIR/*/
 do
@@ -22,46 +54,47 @@ do
     done
 
     if ! $example_is_testable; then
-        echo "Skipping non-testable example $example..."
+        info "Skipping non-testable example $example..."
         continue
     fi
 
-    pushd $dir
-    echo "Compiling $example..."
-    make_output=`make clean TEST=1`
-    make_output=`make TEST=1`
+    run pushd $dir
+    info "Compiling $example..."
+    runtest clean
+    runtest
+
     if [[ $? -ne 0 ]]; then
         failures+=("$example")
-        echo "Example $example failed"
+        info "Example $example failed"
     fi
 
-    make_output=`make disasm TEST=1`
+    runtest disasm
     if [[ $? -ne 0 ]]; then
         failures+=("$example disasm")
-        echo "Example $example disasm failed"
+        info "Example $example disasm failed"
     fi
 
-    make_output=`make generate_assembly TEST=1`
+    runtest generate_assembly
     if [[ $? -ne 0 ]]; then
         failures+=("$example generate_assembly")
-        echo "Example $example generate_assembly failed"
+        info "Example $example generate_assembly failed"
     fi
 
-    make_output=`make symbol_sizes TEST=1`
+    runtest symbol_sizes
     if [[ $? -ne 0 ]]; then
         failures+=("$example symbol_sizes")
-        echo "Example $example symbol_sizes failed"
+        info "Example $example symbol_sizes failed"
     fi
 
-    popd
-done
-
-for failure in "${failures[@]}"; do
-    echo "Example $failure failed"
+    run popd
 done
 
 if [[ ${#failures[@]} -eq 0 ]]; then
     echo "All tests passed."
 else
-    exit 1
+  for failure in "${failures[@]}"; do
+      echo "Example $failure failed"
+  done
+
+  exit 1
 fi

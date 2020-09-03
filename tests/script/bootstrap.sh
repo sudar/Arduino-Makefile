@@ -7,3 +7,4 @@ pushd $SCRIPTS_DIR/..
 
 source $SCRIPTS_DIR/bootstrap/chipkit.sh
 source $SCRIPTS_DIR/bootstrap/arduino.sh
+source $SCRIPTS_DIR/bootstrap/samd.sh

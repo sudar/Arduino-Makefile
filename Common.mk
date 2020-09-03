@@ -8,8 +8,8 @@ dir_if_exists = $(if $(wildcard $(1)$(2)),$(1))
 # result = $(call READ_BOARD_TXT, 'boardname', 'parameter')
 PARSE_BOARD = $(shell if [ -f $(BOARDS_TXT) ]; \
 then \
-  grep -Ev '^\#' $(BOARDS_TXT) | \
-  grep -E "^[ \t]*$(1).$(2)=" | \
+  $(GREP_CMD) -Ev '^\#' $(BOARDS_TXT) | \
+  $(GREP_CMD) -E "^[ \t]*$(1).$(2)=" | \
   cut -d = -f 2- | \
   cut -d : -f 2; \
 fi)
@@ -45,15 +45,24 @@ $(call arduino_output,$(call ardmk_include) Configuration:)
 ########################################################################
 #
 # Detect OS
+
 ifeq ($(OS),Windows_NT)
     CURRENT_OS = WINDOWS
+    GREP_CMD = grep
 else
     UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
         CURRENT_OS = LINUX
+        GREP_CMD = grep
     endif
     ifeq ($(UNAME_S),Darwin)
         CURRENT_OS = MAC
+        ifeq (, $(shell which ggrep))
+            echo $(info Using macOS BSD grep, please install GNU grep to avoid warnings)
+            GREP_CMD = grep
+        else
+            GREP_CMD = ggrep
+        endif
     endif
 endif
 $(call show_config_variable,CURRENT_OS,[AUTODETECTED])
@@ -64,12 +73,20 @@ $(call show_config_variable,CURRENT_OS,[AUTODETECTED])
 ifneq ($(TEST),)
        DEPENDENCIES_DIR = /var/tmp/Arduino-Makefile-testing-dependencies
 
-       DEPENDENCIES_MPIDE_DIR = $(DEPENDENCIES_DIR)/mpide-0023-linux64-20130817-test
+       DEPENDENCIES_MPIDE_DIR := $(shell find $(DEPENDENCIES_DIR) -name 'mpide-0023-*' -type d -exec ls -dt {} + | head -n 1)
+
        ifeq ($(MPIDE_DIR),)
               MPIDE_DIR = $(DEPENDENCIES_MPIDE_DIR)
        endif
 
-       DEPENDENCIES_ARDUINO_DIR = $(DEPENDENCIES_DIR)/arduino-1.0.6
+       ifndef ARDUINO_IDE_DIR
+              ifeq ($(CURRENT_OS),MAC)
+                  ARDUINO_IDE_DIR = Arduino.app/Contents/Resources/Java
+              else
+                  ARDUINO_IDE_DIR := $(shell basename $(basename $(basename $(lastword $(wildcard $(DEPENDENCIES_DIR)/arduino*)))))
+              endif
+       endif
+       DEPENDENCIES_ARDUINO_DIR = $(DEPENDENCIES_DIR)/$(ARDUINO_IDE_DIR)
        ifeq ($(ARDUINO_DIR),)
               ARDUINO_DIR = $(DEPENDENCIES_ARDUINO_DIR)
        endif
@@ -97,4 +114,25 @@ ifeq ($(CURRENT_OS),WINDOWS)
 		ifneq ($(shell echo $(ARDUINO_DIR) | egrep '\\|[[:space:]]|cygdrive'),)
         echo $(error On Windows, ARDUINO_DIR and other defines must use forward slash and not contain spaces, special characters or be cygdrive relative)
     endif
+endif
+
+########################################################################
+# System Python
+
+ifndef PYTHON_CMD
+    # try for Python 3 first
+    PYTHON_CMD := $(shell which python3 2> /dev/null)
+    ifdef PYTHON_CMD
+        $(call show_config_variable,PYTHON_CMD,[AUTODETECTED])
+    else
+        # fall-back to any Python
+        PYTHON_CMD := $(shell which python 2> /dev/null)
+        ifdef PYTHON_CMD
+            $(call show_config_variable,PYTHON_CMD,[AUTODETECTED])
+        else
+            echo $(error "Unable to find system Python! Utility scipts won't work. Override this error by defining PYTHON_CMD")
+        endif
+    endif
+else
+    $(call show_config_variable,PYTHON_CMD,[USER])
 endif
