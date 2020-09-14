@@ -583,6 +583,26 @@ CORE = tiny
 
 ----
 
+### BOARD
+
+**Description:**
+
+Board identifier that passes to a compile option as -DARDUINO_$(BOARD).
+
+Usually can be auto-detected as `build.board` from `boards.txt`.
+
+If not found build.board entry, use upper-case converted "$(ARCHITECTURE)_$(BOARD_TAG)".
+
+**Example:**
+
+```Makefile
+BOARD = AVR_LEONARD
+```
+
+**Requirement:** *Optional*
+
+----
+
 ### VARIANT
 
 **Description:**
