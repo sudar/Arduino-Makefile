@@ -1685,9 +1685,9 @@ pre-build:
 
 # copied from arduino with start-group, end-group
 $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
-# sam devices need start and end group
+# sam devices need start and end group, and must be linked using C++ compiler
 ifeq ($(findstring sam, $(strip $(ARCHITECTURE))), sam)
-		$(CC) $(LINKER_SCRIPTS) -Wl,-Map=$(OBJDIR)/$(TARGET).map -o $@ $(LOCAL_OBJS) $(OTHER_OBJS) $(OTHER_LIBS) $(LDFLAGS) $(CORE_LIB) -Wl,--end-group
+		$(CXX) $(LINKER_SCRIPTS) -Wl,-Map=$(OBJDIR)/$(TARGET).map -o $@ $(LOCAL_OBJS) $(OTHER_OBJS) $(OTHER_LIBS) $(LDFLAGS) $(CORE_LIB) -Wl,--end-group
 # otherwise traditional
 else
 		$(CC) $(LDFLAGS) -o $@ $(LOCAL_OBJS) $(OTHER_OBJS) $(OTHER_LIBS) $(CORE_LIB) -lc -lm $(LINKER_SCRIPTS)
