@@ -674,6 +674,16 @@ ifeq ($(strip $(NO_CORE)),)
         $(call show_config_variable,VARIANT,[USER])
     endif
 
+    ifndef BOARD
+	BOARD := $(call PARSE_BOARD,$(BOARD_TAG),build.board)
+        ifndef BOARD
+            BOARD := $(shell echo $(ARCHITECTURE)_$(BOARD_TAG) | tr '[:lower:]' '[:upper:]')
+        endif
+        $(call show_config_variable,BOARD,[COMPUTED],(from build.board))
+    else
+        $(call show_config_variable,BOARD,[USER])
+    endif
+
     # see if we are a caterina device like leonardo or micro
     CATERINA := $(findstring caterina,$(call PARSE_BOARD,$(BOARD_TAG),menu.(chip|cpu).$(BOARD_SUB).bootloader.file))
     ifndef CATERINA
@@ -1162,7 +1172,8 @@ else
 endif
 
 # Using += instead of =, so that CPPFLAGS can be set per sketch level
-CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) $(ARDUINO_ARCH_FLAG) \
+CPPFLAGS      += -$(MCU_FLAG_NAME)=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) -DARDUINO_$(BOARD) $(ARDUINO_ARCH_FLAG) \
+         "-DARDUINO_BOARD=\"$(BOARD)\"" "-DARDUINO_VARIANT=\"$(VARIANT)\"" \
         -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_CORE_PATH)/api -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
         $(SYS_INCLUDES) $(PLATFORM_INCLUDES) $(USER_INCLUDES) -Wall -ffunction-sections \
         -fdata-sections
