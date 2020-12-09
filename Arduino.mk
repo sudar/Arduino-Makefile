@@ -626,6 +626,13 @@ else
     $(call show_config_variable,PRE_BUILD_HOOK,[USER])
 endif
 
+ifndef PRE_UPLOAD_HOOK
+    PRE_UPLOAD_HOOK = pre-upload-hook.sh
+    $(call show_config_variable,PRE_UPLOAD_HOOK,[DEFAULT])
+else
+    $(call show_config_variable,PRE_UPLOAD_HOOK,[USER])
+endif
+
 ########################################################################
 # boards.txt parsing
 
@@ -1521,7 +1528,7 @@ $(OBJDIR)/%.lss: $(OBJDIR)/%.elf $(COMMON_DEPS)
 
 $(OBJDIR)/%.sym: $(OBJDIR)/%.elf $(COMMON_DEPS)
 	@$(MKDIR) $(dir $@)
-	$(NM) --size-sort --demangle --reverse-sort --line-numbers $< > $@
+	$(NM) $(AVR_SIZE_OPTS) --size-sort --demangle --reverse-sort --line-numbers $< > $@
 
 ########################################################################
 # Ctags
@@ -1705,7 +1712,7 @@ error_on_caterina:
 
 # Use submake so we can guarantee the reset happens
 # before the upload, even with make -j
-upload:		$(TARGET_HEX) verify_size
+upload:		$(TARGET_HEX) pre-upload verify_size
 ifeq ($(findstring sam, $(strip $(ARCHITECTURE))), sam)
 # do reset toggle at 1200 BAUD to enter bootloader if using avrdude or bossa
 ifeq ($(strip $(UPLOAD_TOOL)), avrdude)
@@ -1718,6 +1725,9 @@ else
 		$(MAKE) reset
 		$(MAKE) do_upload
 endif
+
+pre-upload:
+		$(call runscript_if_exists,$(PRE_UPLOAD_HOOK))
 
 raw_upload:	$(TARGET_HEX) verify_size
 ifeq ($(findstring sam, $(strip $(ARCHITECTURE))), sam)
@@ -1911,7 +1921,8 @@ help:
 
 .PHONY: all upload raw_upload raw_eeprom error_on_caterina reset reset_stty ispload \
         clean depends size show_boards monitor disasm symbol_sizes generated_assembly \
-        generate_assembly verify_size burn_bootloader help pre-build tags debug debug_init
+        generate_assembly verify_size burn_bootloader help pre-build tags debug debug_init \
+				pre-upload
 
 # added - in the beginning, so that we don't get an error if the file is not present
 -include $(DEPS)

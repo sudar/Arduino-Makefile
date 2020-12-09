@@ -1355,6 +1355,23 @@ PRE_BUILD_HOOK = $(HOME)/bin/bump-revision.sh
 
 **Requirement:** *Optional*
 
+### PRE_UPLOAD_HOOK
+
+**Description:**
+
+Path to shell script to be executed before uploading. Could be used to automatically
+last minute modification just before uploading code to chip.
+
+Defaults to `pre-upload-hook.sh`
+
+**Example:**
+
+```Makefile
+PRE_UPLOAD_HOOK = $(HOME)/bin/upload-revision.sh
+```
+
+**Requirement:** *Optional*
+
 ----
 
 ## Avrdude setting variables
