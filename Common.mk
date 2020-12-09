@@ -27,11 +27,19 @@ runscript_if_exists =                                                          \
 space_pad_to = $(shell echo "$(1)                                                       " | head -c$(2))
 
 # Call with some text, and a prefix tag if desired (like [AUTODETECTED]),
+ifndef ARDUINO_QUIET
 show_config_info = $(call arduino_output,- $(call space_pad_to,$(2),20) $(1))
+else
+show_config_info =
+endif
 
 # Call with the name of the variable, a prefix tag if desired (like [AUTODETECTED]),
 # and an explanation if desired (like (found in $$PATH)
+ifndef ARDUINO_QUIET
 show_config_variable = $(call show_config_info,$(1) = $($(1)) $(3),$(2))
+else
+show_config_variable =
+endif
 
 # Just a nice simple visual separator
 show_separator = $(call arduino_output,-------------------------)
