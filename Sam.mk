@@ -450,7 +450,7 @@ ifeq ($(strip $(UPLOAD_TOOL)), openocd)
     RESET_CMD = $(OPENOCD) $(OPENOCD_OPTS) -c "telnet_port disabled; init; targets; reset run; shutdown"
 else
     # Set zero flag for ard-reset for 1200 baud boot to bootloader
-    ARD_RESET_OPTS += --zero
+    ARD_RESET_OPTS += --caterina
 endif
 
 ########################################################################
