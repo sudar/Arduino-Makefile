@@ -3,6 +3,7 @@
 # Support for Robotis OpenCR boards 
 #
 # Written by Dowhan Jeong, EunJin Jeong
+# Changed by Woosuk Kang
 #
 # Based on work that is copyright Jeremy Shaw, Sudar, Nicholas Zambetti,
 # David A. Mellis & Hernando Barragan.
@@ -205,7 +206,7 @@ ifeq ($(CURRENT_OS), WINDOWS)
 else
     override AVRDUDE = $(ARDUINO_PACKAGE_DIR)/OpenCR/tools/opencr_tools/1.0.0/linux/opencr_ld
 endif
-override AVRDUDE_COM_OPTS = $(DEVICE_PATH) 
+override AVRDUDE_COM_OPTS = $(MONITOR_PORT) 
 override AVRDUDE_ISP_OPTS = 115200 $(TARGET_HEX) 1
 override AVRDUDE_ISPLOAD_OPTS = 
 
