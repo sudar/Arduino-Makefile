@@ -298,7 +298,7 @@ The makefile can autodetect the libraries that are included from your sketch and
 
 ## avrdude
 
-To upload compiled files, `avrdude` is used. This Makefile tries to find `avrdude` and it's config (`avrdude.conf`) below `ARDUINO_DIR`. If you like to use the one installed on your system instead of the one which came with Arduino, you can try to set the variables `AVRDUDE` and `AVRDUDE_CONF`. On a typical Linux system these could be set to
+To upload compiled files, `avrdude` is used. This Makefile tries to find `avrdude` and its config (`avrdude.conf`) below `ARDUINO_DIR`. If you like to use the one installed on your system instead of the one which came with Arduino, you can try to set the variables `AVRDUDE` and `AVRDUDE_CONF`. On a typical Linux system these could be set to
 
 ```make
       AVRDUDE      = /usr/bin/avrdude
