@@ -57,8 +57,8 @@ else
     endif
     ifeq ($(UNAME_S),Darwin)
         CURRENT_OS = MAC
-        ifeq (, $(shell which ggrep))
-            echo $(info Using macOS BSD grep, please install GNU grep to avoid warnings)
+        ifeq (, $(shell which gggrep))
+            $(info Using macOS BSD grep, please install GNU grep to avoid warnings)
             GREP_CMD = grep
         else
             GREP_CMD = ggrep
