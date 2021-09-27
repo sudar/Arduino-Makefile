@@ -894,12 +894,12 @@ endif
 ########################################################################
 # Local sources
 
-LOCAL_C_SRCS    ?= $(wildcard *.c)
-LOCAL_CPP_SRCS  ?= $(wildcard *.cpp)
-LOCAL_CC_SRCS   ?= $(wildcard *.cc)
-LOCAL_PDE_SRCS  ?= $(wildcard *.pde)
-LOCAL_INO_SRCS  ?= $(wildcard *.ino)
-LOCAL_AS_SRCS   ?= $(wildcard *.S)
+LOCAL_C_SRCS    ?= $(wildcard $(SRC_DIR)*.c)
+LOCAL_CPP_SRCS  ?= $(wildcard $(SRC_DIR)*.cpp)
+LOCAL_CC_SRCS   ?= $(wildcard $(SRC_DIR)*.cc)
+LOCAL_PDE_SRCS  ?= $(wildcard $(SRC_DIR)*.pde)
+LOCAL_INO_SRCS  ?= $(wildcard $(SRC_DIR)*.ino)
+LOCAL_AS_SRCS   ?= $(wildcard $(SRC_DIR)*.S)
 LOCAL_SRCS      = $(LOCAL_C_SRCS)   $(LOCAL_CPP_SRCS) \
 		$(LOCAL_CC_SRCS)   $(LOCAL_PDE_SRCS) \
 		$(LOCAL_INO_SRCS) $(LOCAL_AS_SRCS)
