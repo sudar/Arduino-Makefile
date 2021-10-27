@@ -1243,13 +1243,20 @@ CXXFLAGS      += -fpermissive -fno-exceptions $(CXXFLAGS_STD)
 ASFLAGS       += -x assembler-with-cpp
 DIAGNOSTICS_COLOR_WHEN ?= always
 
+LTO ?= y
 # Flags for AVR
 ifeq ($(findstring avr, $(strip $(CC_NAME))), avr)
     ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
-        ASFLAGS  += -flto
-        CXXFLAGS += -fno-threadsafe-statics -flto -fno-devirtualize -fdiagnostics-color=$(DIAGNOSTICS_COLOR_WHEN)
-        CFLAGS   += -flto -fno-fat-lto-objects -fdiagnostics-color=$(DIAGNOSTICS_COLOR_WHEN)
-        LDFLAGS += -flto -fuse-linker-plugin
+        ifeq ($(LTO), y)
+                LTO_ASFLAGS = -flto
+                LTO_CXXFLAGS = -flto
+                LTO_CFLAGS = -flto -fno-fat-lto-objects
+                LTO_LDFLAGS = -flto
+        endif
+        ASFLAGS  += $(LTO_ASFLAGS)
+        CXXFLAGS += -fno-threadsafe-statics $(LTO_CXXFLAGS) -fno-devirtualize -fdiagnostics-color=$(DIAGNOSTICS_COLOR_WHEN)
+        CFLAGS   += $(LTO_CFLAGS) -fdiagnostics-color=$(DIAGNOSTICS_COLOR_WHEN)
+        LDFLAGS += $(LTO_LDFLAGS) -fuse-linker-plugin
     endif
 # Flags for ARM (most set in Sam.mk)
 else
