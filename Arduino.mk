@@ -1733,7 +1733,7 @@ do_upload:
 
 do_sam_upload:  $(TARGET_BIN) verify_size
 ifeq ($(findstring openocd, $(strip $(UPLOAD_TOOL))), openocd)
-		$(OPENOCD) $(OPENOCD_OPTS) -c "telnet_port disabled; program {{$(TARGET_BIN)}} verify reset $(BOOTLOADER_SIZE); shutdown"
+		$(OPENOCD) $(OPENOCD_OPTS) -c "telnet_port disabled; program $(TARGET_BIN) verify reset $(BOOTLOADER_SIZE); shutdown"
 else ifeq ($(findstring bossac, $(strip $(UPLOAD_TOOL))), bossac)
 		$(BOSSA) $(BOSSA_OPTS) $(TARGET_BIN)
 else ifeq ($(findstring gdb, $(strip $(UPLOAD_TOOL))), gdb)
