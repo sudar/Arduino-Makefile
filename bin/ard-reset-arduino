@@ -1,4 +1,7 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+# NOTE: prefer the use of [/usr/bin/env] and call the correct python interpreter python3
+#       instead of using the shebang. [env] will find the correct binary in your environement
+#       and brings other interesting features which are great to portability (man env).
 
 import serial
 import serial.tools.list_ports
@@ -101,6 +104,8 @@ elif args.caterina:
     ser = serial.Serial(args.port[0], 57600)
     ser.close()
 
+    # NOTE: pyserial_version is not declared anywhere so I assumed you meant
+    pyserial_version = float(serial.VERSION)
     if pyserial_version < 3:
       ser.setBaudrate (1200)
     else:
