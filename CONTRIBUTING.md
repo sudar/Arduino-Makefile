@@ -32,5 +32,5 @@ At this point you're waiting on us to merge your pull request. We'll review all 
 # Additional Resources
 
 - [General GitHub Documentation](http://help.github.com/)
-- [GitHub Pull Request documentation](http://help.github.com/send-pull-requests/)
+- [GitHub Pull Request documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
 - [Guide about contributing code in GitHub](http://sudarmuthu.com/blog/contributing-to-project-hosted-in-github)
