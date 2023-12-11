@@ -36,6 +36,7 @@ include $(ARDMK_DIR)/Common.mk
 ARDMK_VENDOR        = teensy
 ARDUINO_CORE_PATH   = $(ARDUINO_DIR)/hardware/teensy/avr/cores/teensy3
 BOARDS_TXT          = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/avr/boards.txt
+HEX_PATH 	    = $(shell cygpath -w $(abspath $(OBJDIR)))
 
 
 ifndef F_CPU
@@ -128,7 +129,7 @@ MCU := $(shell echo ${CPUFLAGS} | sed -n -e 's/.*-mcpu=\([a-zA-Z0-9_-]*\).*/\1/p
 
 do_upload: override get_monitor_port=""
 AVRDUDE=@true
-RESET_CMD = nohup $(ARDUINO_DIR)/hardware/tools/teensy_post_compile -board=$(BOARD_TAG) -tools=$(abspath $(ARDUINO_DIR)/hardware/tools) -path=$(abspath $(OBJDIR)) -file=$(TARGET) > /dev/null ; $(ARDUINO_DIR)/hardware/tools/teensy_reboot
+RESET_CMD = $(ARDUINO_DIR)/hardware/tools/teensy_post_compile -board=$(BOARD_TAG) -tools=$(abspath $(ARDUINO_DIR)/hardware/tools) -path=$(HEX_PATH) -file=$(TARGET) > /dev/null ; $(ARDUINO_DIR)/hardware/tools/teensy_reboot
 
 ########################################################################
 # automatially include Arduino.mk for the user
