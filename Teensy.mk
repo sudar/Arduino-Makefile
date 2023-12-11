@@ -37,15 +37,6 @@ ARDMK_VENDOR        = teensy
 ARDUINO_CORE_PATH   = $(ARDUINO_DIR)/hardware/teensy/avr/cores/teensy3
 BOARDS_TXT          = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/avr/boards.txt
 
-# get hex path from the build directory. if path is cygwin based (cygdrive/path/example/), just discard cygwin root when calling Windows-native applications
-ifeq ($(shell uname | grep -c "CYGWIN"), 1)
-    HEX_PATH = $(shell cygpath -w $(abspath $(OBJDIR)))
-    HEX_PATH := $(subst \,/, $(HEX_PATH))
-else
-    # Default for non-Cygwin environments
-    HEX_PATH = $(abspath $(OBJDIR))
-endif
-
 ifndef F_CPU
   ifndef BOARD_SUB
     SPEEDS := $(call PARSE_BOARD,"$(BOARD_TAG),menu.speed.*.build.fcpu") # Obtain sequence of supported frequencies.
@@ -136,7 +127,15 @@ MCU := $(shell echo ${CPUFLAGS} | sed -n -e 's/.*-mcpu=\([a-zA-Z0-9_-]*\).*/\1/p
 
 do_upload: override get_monitor_port=""
 AVRDUDE=@true
-RESET_CMD = nohup $(ARDUINO_DIR)/hardware/tools/teensy_post_compile -board=$(BOARD_TAG) -tools=$(abspath $(ARDUINO_DIR)/hardware/tools) -path=$(HEX_PATH) -file=$(TARGET) > /dev/null ; $(ARDUINO_DIR)/hardware/tools/teensy_reboot
+
+ifeq ($(shell uname | grep -c "CYGWIN"), 1)
+    OBJ_BUILD_PATH = "$(shell cygpath -w $(abspath $(OBJDIR)))"
+else
+    # Default for non-Cygwin environments
+    OBJ_BUILD_PATH = $(abspath $(OBJDIR))
+endif
+
+RESET_CMD = nohup $(ARDUINO_DIR)/hardware/tools/teensy_post_compile -board=$(BOARD_TAG) -tools=$(abspath $(ARDUINO_DIR)/hardware/tools) -path=$(OBJ_BUILD_PATH) -file=$(TARGET) > /dev/null ; $(ARDUINO_DIR)/hardware/tools/teensy_reboot
 
 ########################################################################
 # automatially include Arduino.mk for the user
