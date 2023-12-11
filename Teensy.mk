@@ -36,8 +36,10 @@ include $(ARDMK_DIR)/Common.mk
 ARDMK_VENDOR        = teensy
 ARDUINO_CORE_PATH   = $(ARDUINO_DIR)/hardware/teensy/avr/cores/teensy3
 BOARDS_TXT          = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/avr/boards.txt
-HEX_PATH  	    := $(wildcard $(shell cygpath -w $(abspath $(OBJDIR))))
 
+# get hex path from the build directory. if path is cygwin based (cygdrive/path/example/), just discard cygwin root when calling Windows-native applications
+UNAME := $(shell uname)
+HEX_PATH := $(if $(findstring CYGWIN,$(UNAME)),$(subst cygdrive/,,$(OBJDIR)),$(OBJDIR))
 
 ifndef F_CPU
   ifndef BOARD_SUB
