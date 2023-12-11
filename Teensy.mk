@@ -36,7 +36,7 @@ include $(ARDMK_DIR)/Common.mk
 ARDMK_VENDOR        = teensy
 ARDUINO_CORE_PATH   = $(ARDUINO_DIR)/hardware/teensy/avr/cores/teensy3
 BOARDS_TXT          = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/avr/boards.txt
-HEX_PATH 	    = $(shell cygpath -w $(abspath $(OBJDIR)))
+HEX_PATH  	    := $(wildcard $(shell cygpath -w $(abspath $(OBJDIR))))
 
 
 ifndef F_CPU
