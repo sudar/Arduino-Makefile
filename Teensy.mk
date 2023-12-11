@@ -38,8 +38,13 @@ ARDUINO_CORE_PATH   = $(ARDUINO_DIR)/hardware/teensy/avr/cores/teensy3
 BOARDS_TXT          = $(ARDUINO_DIR)/hardware/$(ARDMK_VENDOR)/avr/boards.txt
 
 # get hex path from the build directory. if path is cygwin based (cygdrive/path/example/), just discard cygwin root when calling Windows-native applications
-UNAME := $(shell uname)
-HEX_PATH := $(if $(findstring CYGWIN,$(UNAME)),$(subst cygdrive/,,$(OBJDIR)),$(OBJDIR))
+ifeq ($(shell uname | grep -c "CYGWIN"), 1)
+    HEX_PATH = $(shell cygpath -w $(abspath $(OBJDIR)))
+    HEX_PATH := $(subst \,/, $(HEX_PATH))
+else
+    # Default for non-Cygwin environments
+    HEX_PATH = $(abspath $(OBJDIR))
+endif
 
 ifndef F_CPU
   ifndef BOARD_SUB
